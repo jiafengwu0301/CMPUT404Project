@@ -10,3 +10,6 @@ Copy right 2016
 - Tianyu Hu
 - Xinyi Pan
 ```
+Travis Status: ![Travis Status](https://travis-ci.org/CMPUT404F16T06/CMPUT404Project.svg)
+
+Link to Travis: https://travis-ci.org/CMPUT404F16T06/CMPUT404Project
