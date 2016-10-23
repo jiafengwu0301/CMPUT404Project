@@ -1,0 +1,107 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Bloooooooog</a>
+        </div>
+
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+        </ul>
+
+        <div class="col-md-4">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="col-md-9">
+        <div class="form-group">
+            <textarea style="resize:none" class="form-control" rows="5" id="comment"></textarea>
+            <select name="privacyLevel" form="PLform">
+                <option value="PL-private">Private to myself</option>
+                <option value="PL-oneAuthor">Only another author can see</option>
+                <option value="PL-friends">Only my friends can see</option>
+                <option value="PL-friends'friends">Only friend's of friends can see</option>
+                <option value="PL-friendsOnHost">Only friends on host can see</option>
+                <option value="PL-public">Make it public</option>
+            </select>
+            <input type="submit" class="btn pull-right" value="Submit">
+        </div>
+
+        <hr>
+        <h4><small>Recent Posts</small></h4>
+        <hr>
+
+        <div class="well">
+            <h3>Anny</h3>
+            <h5><span class="glyphicon glyphicon-time"></span> Posted on Oct 22th, 2016</h5>
+            <p>Blah Blah Blah</p>
+
+            <div class="form-group">
+                <textarea style="resize:none" class="form-control" rows="1" id="comment">Write a comment</textarea>
+                <input type="submit" value="Submit">
+            </div>
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse1">Comments</a>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse">
+                        <div class="panel-body">Jack: What?</div>
+                        <div class="panel-footer">Emily: Boring</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="well">
+            <h3>Jack</h3>
+            <h5><span class="glyphicon glyphicon-time"></span> Posted on Oct 21th, 2016</h5>
+            <p>Happy Day :D</p>
+            <div class="form-group">
+                <textarea style="resize:none" class="form-control" rows="1" id="comment">Write a comment</textarea>
+                <input type="submit" value="Submit">
+            </div>
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse2">Comments</a>
+                        </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse">
+                        <div class="panel-body">Anny: Ha ha ha</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="avatar">
+            <img src="https://freeiconshop.com/files/edd/person-outline-filled.png" height="260" width="260">
+            <h2>Anny Pan</h2>
+        </div>
+
+        <ul class="list-group">
+            <li class="list-group-item"><a href="#friends">Manage Friends</a></li>
+            <li class="list-group-item"><a href="#posts">Manage MyPosts</a></li>
+        </ul>
+
+    </div>
+</div>
