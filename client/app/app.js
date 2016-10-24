@@ -1,40 +1,63 @@
-var app = angular.module('myApp', ['ngRoute'])
-    app.config(['$routeProvider', function($routeProvider){
-        $routeProvider.when('/',{
-            templateUrl: 'view/login.html',
-            controller: 'loginController'
-        })
+// http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
 
-        .when('/main',{
-            templateUrl: 'view/main.html'
+angular
+    .module('myApp', ['ngRoute', 'ngCookies'])
+    .config(config)
+    .run(run);
+config.$inject = ['$routeProvider', '$locationProvider'];
+function config($routeProvider, $locationProvider) {
+    $routeProvider.when('/',{
+        templateUrl: 'view/main.html',
+        controller:'HomeController',
+        controllerAs: 'vm'
+    })
+
+    .when('/login',{
+        templateUrl: 'view/login.html',
+        controller: 'LoginController',
+        controllerAs: 'vm'
+
+    })
+
+    .when('/signup',{
+        templateUrl: 'view/signup.html',
+        controller: 'RegisterController',
+        controllerAs: 'vm'
+
+    })
+
+    .when('/managefriends',{
+        templateUrl: 'view/manageFriends.html'
 
 
-        })
+    })
 
-        .when('/managefriends',{
-            templateUrl: 'view/manageFriends.html'
-
-
-        })
-
-        .when('/manageinfo',{
-            templateUrl: 'view/manageInfo.html'
+    .when('/manageinfo',{
+        templateUrl: 'view/manageInfo.html'
 
 
-        })
+    })
 
-        .when('/signup',{
-            templateUrl: 'view/signup.html'
+    .otherwise({
+        redirectTo:'/'
+    });
+};
 
 
-        })
+run.$inject = ['$rootScope', '$location', '$cookieStore', '$http'];
+function run($rootScope, $location, $cookieStore, $http) {
+    // keep user logged in after page refresh
+    $rootScope.globals = $cookieStore.get('globals') || {};
+    if ($rootScope.globals.currentUser) {
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+    }
 
-        .otherwise({
-            redirectTo:'/'
-        });
-    }]);
-
-    // app.controller('myCtrl', function($scope) {
-    //     $scope.username = "";
-    //     $scope.password = "";
-    // });
+    $rootScope.$on('$locationChangeStart', function (event, next, current) {
+        // redirect to login page if not logged in and trying to access a restricted page
+        var restrictedPage = $.inArray($location.path(), ['/login', '/signup']) === -1;
+        var loggedIn = $rootScope.globals.currentUser;
+        if (restrictedPage && !loggedIn) {
+            $location.path('/login');
+        }
+    });
+}
