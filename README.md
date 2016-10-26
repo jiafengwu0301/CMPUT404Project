@@ -14,7 +14,11 @@ Travis Status: ![Travis Status](https://travis-ci.org/CMPUT404F16T06/CMPUT404Pro
 
 Link to Travis: https://travis-ci.org/CMPUT404F16T06/CMPUT404Project
 
-installed libraries:
+Installed Libraries:
 - pip install django
 - pip install djangorestframework
 - pip install Pillow (for images loading images on django)
+
+Content served:
+List of posts: http://127.0.0.1:8000/socialnet/posts/?format=json
+
