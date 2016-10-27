@@ -47,10 +47,8 @@ class AuthorListView(ListAPIView):
 	queryset = Author.objects.all()
 	serializer_class = PostSerializer
 
-class AuthorProfileView(ListAPIView):
-	supposed to be getting the authors username, firstname, and lastname
-	queryset = Author.objects.user() #?
-	serializer_class = PostSerializer
+#class AuthorProfileView(ListAPIView):
+	#supposed to be getting the authors username, firstname, and lastname
 
 class AuthorProfileUpdateView(UpdateAPIView):
 	queryset = Author.objects.user() #?
