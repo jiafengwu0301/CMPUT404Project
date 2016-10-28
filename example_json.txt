@@ -1,0 +1,79 @@
+authors = [{
+	id:1,
+	user:{id:1, firstname:"john", lastname:"Riddle", email:"john@u.ca"},
+	github: "http://github.com/"
+	avatar: "http://127.0.0.1:8000/avatars/myphoto.jpg",
+	date_created: "16/08/2016"
+	friends: [1, 2, 3, 5, 7]
+	friend_requests: [4, 6] 
+},{
+	id:2,
+	user:{id:1, firstname:"john", lastname:"Riddle", email:"john@u.ca"},
+	github: "http://github.com/"
+	avatar: "http://127.0.0.1:8000/avatars/myphoto.jpg",
+	date_created: "16/08/2016"
+	friends: [1, 2, 3, 5, 7]
+	friend_requests: [4, 6] 
+},{
+	id:3,
+	user:{id:1, firstname:"john", lastname:"Riddle", email:"john@u.ca"},
+	github: "http://github.com/"
+	avatar: "http://127.0.0.1:8000/avatars/myphoto.jpg",
+	date_created: "16/08/2016"
+	friends: [1, 2, 3, 5, 7]
+	friend_requests: [4, 6] 
+},{
+	id:4,
+	user:{id:1, firstname:"john", lastname:"Riddle", email:"john@u.ca"},
+	github: "http://github.com/	avatar: "http://127.0.0.1:8000/avatars/myphoto.jpg",
+	date_created: "16/08/2016"
+	friends: [1, 2, 3, 5, 7]
+	friend_requests: [4, 6] 
+}];
+
+author.user.id
+
+currentauthor = {
+	id:1,
+	user:{id:1, firstname:"john", lastname:"Riddle", email:"john@u.ca"},
+	github: "http://github.com/"
+	avatar: "http://127.0.0.1:8000/avatars/myphoto.jpg",
+	date_created: "16/08/2016"
+	friends: [1, 2, 3, 5, 7]
+	friend_requests: [4, 6] 
+}
+
+post = {
+    "id": 1,
+    "published_date": "2016-10-24",
+    "author": 1,
+    "text": "hahaha",
+    "public": true
+    "comments": {id:1, author:1, text:"asdasdasd"}
+}
+
+comment = {
+    "id": 1,
+    "author": 1,
+    "text": "something here"
+}
+
+post.author
+post.comments.author
+
+
+author.user.Firstname + " " + author.user.Lastname;
+
+api/authenticate/
+authkey = Encode(username+":"+password)
+
+get authkey@127.0.0.1:8000/api/authenticate
+
+//User: {id:1, firstname:"john", lastname:"Riddle", username:"john1234", email:"john@u.ca"}
+authkey = 'sadkjasdkajsdkasjdkasjdkasjd'
+
+
+
+get authkey@127.0.0.1:8000/socialnet/posts/author/author.id
+
+
