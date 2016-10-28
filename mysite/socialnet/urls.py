@@ -1,6 +1,7 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from . import views
+from . import viewsauthor
 
 urlpatterns = [
 	url(r'^$', views.index, name='index'),
@@ -11,7 +12,7 @@ urlpatterns = [
 	url(r'^posts/(?P<pk>\d+)/update/$', views.PostUpdateView.as_view(), name='post_update'),
 	url(r'^posts/(?P<pk>\d+)/destroy/$', views.PostDestroyView.as_view(), name='post_destroy'),
 	
-	url(r'^authors/', include('socialnet.urlsauthors.py')),
+	url(r'^authors/', include('socialnet.urlsauthors')),
 ]
 
 # What should be working url(r'^socialnet/', include('socialnet.urls')),

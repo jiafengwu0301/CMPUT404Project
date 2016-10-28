@@ -1,10 +1,11 @@
 from django.conf.urls import url
 
 from . import views
+from . import viewsauthor
 
 urlpatterns = [
-	url(r'^/authors/$', views.AuthorListView.as_view(), name='author_create'),
-	url(r'^/authors/(?P<author>\d+)/$', views.AuthorProfileView.as_view(), name='author_profile')
-
+	url(r'^$', viewsauthor.AuthorListView.as_view(), name='author_create'),
+	url(r'^authors/(?P<author>\d+)/$', viewsauthor.AuthorRetrieveView.as_view(), name='author_profile'),
+	url(r'^authors/(?P<author>\d+)/update/$', viewsauthor.AuthorUpdateView.as_view(), name='author_update'),
 ]
 

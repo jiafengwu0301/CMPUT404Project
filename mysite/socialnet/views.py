@@ -42,20 +42,7 @@ class PostDestroyView(DestroyAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
 
-class AuthorListView(ListAPIView):
-	#getting list of all avaliable authors
-	queryset = Author.objects.all()
-	serializer_class = PostSerializer
 
-class AuthorProfileView(ListAPIView):
-	supposed to be getting the authors username, firstname, and lastname
-	queryset = Author.objects.user() #?
-	serializer_class = PostSerializer
-
-class AuthorProfileUpdateView(UpdateAPIView):
-	queryset = Author.objects.user() #?
-	serializer_class = PostSerializer
-	
 	
 
 
