@@ -1,4 +1,6 @@
 // http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
+
+//Login Controller
 angular
     .module('myApp')
     .controller('LoginController', LoginController);
@@ -28,6 +30,8 @@ function LoginController($location, AuthenticationService, FlashService) {
     };
 }
 
+
+//Sign Up Controller
 angular
     .module('myApp')
     .controller('RegisterController', RegisterController);
@@ -40,7 +44,7 @@ function RegisterController(UserService, $location, $rootScope, FlashService) {
 
     function register() {
         vm.dataLoading = true;
-        UserService.Create(vm.user)
+        UserService.CreateUser(vm.user)
             .then(function (response) {
                 if (response.success) {
                     FlashService.Success('Registration successful', true);
@@ -53,6 +57,8 @@ function RegisterController(UserService, $location, $rootScope, FlashService) {
     }
 }
 
+
+//Home page Controller
 angular
     .module('myApp')
     .controller('HomeController', HomeController);
@@ -64,12 +70,16 @@ function HomeController(UserService, $rootScope) {
     vm.user = null;
     vm.allUsers = [];
     vm.deleteUser = deleteUser;
+    vm.allPosts = [];
+    vm.makePost = makePost;
+    vm.post = null;
 
     initController();
 
     function initController() {
         loadCurrentUser();
         loadAllUsers();
+        loadAllPosts();
     }
 
     function loadCurrentUser() {
@@ -80,16 +90,23 @@ function HomeController(UserService, $rootScope) {
     }
 
     function loadAllUsers() {
-        UserService.GetAll()
-            .then(function (users) {
-                vm.allUsers = users;
-            });
+        vm.allUsers=UserService.GetAllUser();
     }
 
     function deleteUser(id) {
-        UserService.Delete(id)
+        UserService.DeleteUser(id)
         .then(function () {
             loadAllUsers();
         });
+    }
+
+    function loadAllPosts() {
+        vm.allPosts=UserService.GetAllPost();
+    }
+
+    function makePost(){
+        vm.post.published_date = Date();
+        vm.post.author = vm.user;
+        UserService.NewPost(vm.post);
     }
 }

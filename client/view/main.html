@@ -28,29 +28,36 @@
 
 <div class="container">
     <div class="col-md-9">
-        <div class="form-group">
-            <textarea style="resize:none" class="form-control" rows="5" id="comment"></textarea>
-            <select name="privacyLevel" form="PLform">
-                <option value="PL-private">Private to myself</option>
-                <option value="PL-oneAuthor">Only another author can see</option>
-                <option value="PL-friends">Only my friends can see</option>
-                <option value="PL-friends'friends">Only friend's of friends can see</option>
-                <option value="PL-friendsOnHost">Only friends on host can see</option>
-                <option value="PL-public">Make it public</option>
-            </select>
-            <input type="submit" class="btn pull-right" value="Submit">
-        </div>
+        <!-- here need a form -->
+        <form name="form" ng-submit="vm.makePost()" role="form">
+            <div class="form-group">
+                <textarea style="resize:none" class="form-control" rows="5" id="comment" ng-model="vm.post.text"></textarea>
+            </div>
+            <div class="form-group">
+                <select name="privacyLevel" form="PLform" ng-model="vm.post.public">
+                    <option value="PL-private">Private to myself</option>
+                    <option value="PL-oneAuthor">Only another author can see</option>
+                    <option value="PL-friends">Only my friends can see</option>
+                    <option value="PL-friends'friends">Only friend's of friends can see</option>
+                    <option value="PL-friendsOnHost">Only friends on host can see</option>
+                    <option value="PL-public">Make it public</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn pull-right">Submit</button>
+            </div>
+        </form>
 
         <hr>
         <h4><small>Recent Posts</small></h4>
         <hr>
 
-        <div class="well">
-            <h3>Anny</h3>
-            <h5><span class="glyphicon glyphicon-time"></span> Posted on Oct 22th, 2016</h5>
-            <p>Blah Blah Blah</p>
+        <div class="well" ng-repeat="post in vm.allPosts">
+            <h3>{{post.author.firstname}}</h3>
+            <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}}</h5>
+            <p>{{post.text}}</p>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <textarea style="resize:none" class="form-control" rows="1" id="comment">Write a comment</textarea>
                 <input type="submit" value="Submit">
             </div>
@@ -66,29 +73,7 @@
                         <div class="panel-footer">Emily: Boring</div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="well">
-            <h3>Jack</h3>
-            <h5><span class="glyphicon glyphicon-time"></span> Posted on Oct 21th, 2016</h5>
-            <p>Happy Day :D</p>
-            <div class="form-group">
-                <textarea style="resize:none" class="form-control" rows="1" id="comment">Write a comment</textarea>
-                <input type="submit" value="Submit">
-            </div>
-            <div class="panel-group">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#collapse2">Comments</a>
-                        </h4>
-                    </div>
-                    <div id="collapse2" class="panel-collapse collapse">
-                        <div class="panel-body">Anny: Ha ha ha</div>
-                    </div>
-                </div>
-            </div>
+            </div> -->
         </div>
     </div>
 

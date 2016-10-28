@@ -9,22 +9,26 @@ function UserService($timeout, $filter, $q) {
 
     var service = {};
 
-    service.GetAll = GetAll;
-    service.GetById = GetById;
+    service.GetAllUser = GetAllUser;
+    service.GetByUserId = GetByUserId;
     service.GetByUsername = GetByUsername;
-    service.Create = Create;
-    service.Update = Update;
-    service.Delete = Delete;
+    service.CreateUser = CreateUser;
+    service.UpdateUser = UpdateUser;
+    service.DeleteUser = DeleteUser;
+    service.GetAllPost = GetAllPost;
+    service.NewPost = NewPost;
 
     return service;
 
-    function GetAll() {
-        var deferred = $q.defer();
-        deferred.resolve(getUsers());
-        return deferred.promise;
+    function GetAllUser() {
+        return JSON.parse(localStorage.users)
     }
 
-    function GetById(id) {
+    function GetAllPost(){
+        return JSON.parse(localStorage.posts)
+    }
+
+    function GetByUserId(id) {
         var deferred = $q.defer();
         var filtered = $filter('filter')(getUsers(), { id: id });
         var user = filtered.length ? filtered[0] : null;
@@ -40,7 +44,7 @@ function UserService($timeout, $filter, $q) {
         return deferred.promise;
     }
 
-    function Create(user) {
+    function CreateUser(user) {
         var deferred = $q.defer();
 
         // simulate api call with $timeout
@@ -68,7 +72,7 @@ function UserService($timeout, $filter, $q) {
         return deferred.promise;
     }
 
-    function Update(user) {
+    function UpdateUser(user) {
         var deferred = $q.defer();
 
         var users = getUsers();
@@ -84,7 +88,7 @@ function UserService($timeout, $filter, $q) {
         return deferred.promise;
     }
 
-    function Delete(id) {
+    function DeleteUser(id) {
         var deferred = $q.defer();
 
         var users = getUsers();
@@ -101,6 +105,14 @@ function UserService($timeout, $filter, $q) {
         return deferred.promise;
     }
 
+    function NewPost(post){
+        var posts = JSON.parse(localStorage.posts)
+        var lastPost = posts[posts.length - 1] || { id: 0 };
+        post.id = lastPost.id + 1;
+        posts.push(post);
+        localStorage.posts = JSON.stringify(posts);
+    }
+
     // private functions
 
     function getUsers() {
@@ -109,6 +121,14 @@ function UserService($timeout, $filter, $q) {
         }
 
         return JSON.parse(localStorage.users);
+    }
+
+    function getPosts() {
+        if(!localStorage.posts){
+            localStorage.posts = JSON.stringify([]);
+        }
+
+        return JSON.parse(localStorage.posts);
     }
 
     function setUsers(users) {
