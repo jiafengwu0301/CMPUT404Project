@@ -1,15 +1,15 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
+from . import viewsauthors
 
-from . import views
+from . import viewsposts
 
 urlpatterns = [
-	url(r'^$', views.index, name='index'),
-	url(r'^posts/create/$', views.PostCreateView.as_view(), name='post_create'),
-	url(r'^posts/$', views.PostListView.as_view(), name='post_list'),
-	url(r'^posts/author/(?P<author>\d+)/$', views.PostByAuthorListView.as_view(), name='post_list_by_author'),
-	url(r'^posts/(?P<pk>\d+)/$', views.PostRetrieveView.as_view(), name='post_detail'),
-	url(r'^posts/(?P<pk>\d+)/update/$', views.PostUpdateView.as_view(), name='post_update'),
-	url(r'^posts/(?P<pk>\d+)/destroy/$', views.PostDestroyView.as_view(), name='post_destroy'),
+	url(r'^$', viewsposts.index, name='index'),
+	url(r'^posts/', include('socialnet.urlsposts')),
+	url(r'^authors/', include('socialnet.urlsauthors')),
+	url(r'^auth/', viewsauthors.AuthorAuthenticationView.as_view(), name='auth'),
+	url(r'^api-auth/', include('rest_framework.urls',
+	                           namespace='rest_framework')),
 ]
 
 #127.0.0.1:8000/posts/create/
