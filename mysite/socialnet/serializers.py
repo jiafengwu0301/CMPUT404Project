@@ -6,8 +6,9 @@ from django.contrib.auth.models import User
 
 
 class PostSerializer(serializers.ModelSerializer):
+	first_name = serializers.CharField(source='author.user.first_name')
+	last_name = serializers.CharField(source='author.user.last_name')
 	class Meta:
-		depth = 1
 		model = Post
 		fields = [
 			'id',
@@ -15,6 +16,8 @@ class PostSerializer(serializers.ModelSerializer):
 			'author',
 			'text',
 			'public',
+			'first_name',
+			'last_name',
 		]
 
 
@@ -48,8 +51,8 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class FriendsAuthorSerializer(serializers.ModelSerializer):
-
 	class Meta:
+		depth = 1
 		model = Author
 		fields = [
 			'friends',
