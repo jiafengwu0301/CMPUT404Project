@@ -1,5 +1,6 @@
 from .models import Author
-from .serializers import AuthorSerializer, FullAuthorSerializer, AuthenticateSerializer, FriendsAuthorSerializer
+from .serializers import AuthorSerializer, FullAuthorSerializer, AuthenticateSerializer, FriendsAuthorSerializer, \
+	FriendRequestsAuthorSerializer
 from rest_framework import generics, permissions, response, status, views
 from . import permissions as my_permissions
 
@@ -38,4 +39,10 @@ class AuthorAuthenticationView(views.APIView):
 class FriendsAuthorView(generics.RetrieveAPIView):
 	queryset = Author.objects.all()
 	serializer_class = FriendsAuthorSerializer
+	permission_classes = [permissions.IsAuthenticated]
+
+
+class FriendRequestsAuthorView(generics.RetrieveAPIView):
+	queryset = Author.objects.all()
+	serializer_class = FriendRequestsAuthorSerializer
 	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForAuthenticateAuthor]

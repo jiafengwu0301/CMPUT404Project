@@ -12,7 +12,7 @@ class Author(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	github = models.CharField(max_length=255)
 	avatar = models.ImageField(upload_to=settings.STATIC_ROOT, blank=True)
-	date_created = models.DateField(auto_now_add=True)
+	date_created = models.DateTimeField(auto_now_add=True)
 	friends = models.ManyToManyField("self", blank=True)
 	friend_requests = models.ManyToManyField("self", blank=True)
 
@@ -21,11 +21,11 @@ class Author(models.Model):
 
 
 class Post(models.Model):
-	published_date = models.DateField(auto_now_add=True)
+	published_date = models.DateTimeField(auto_now_add=True)
 	author = models.ForeignKey(Author)
 	text = models.CharField(max_length=255)
 	public = models.BooleanField(default=True)
-
+ 
 	def __str__(self):
 		return self.author.user.username + " on " + str(self.published_date)
 

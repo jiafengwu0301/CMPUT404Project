@@ -38,7 +38,7 @@ class PostListView(generics.ListAPIView):
 # List of Posts of the user or the visible posts of other users
 class PostByAuthorListView(generics.ListAPIView):
 	queryset = Post.objects.all()
-	serializer_class = PostSerializer()
+	serializer_class = PostSerializer
 	permission_classes = [permissions.IsAuthenticated]
 
 	def get_queryset(self):

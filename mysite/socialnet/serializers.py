@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 class PostSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='author.user.first_name')
 	last_name = serializers.CharField(source='author.user.last_name')
+
 	class Meta:
 		model = Post
 		fields = [
@@ -22,7 +23,6 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
-
 	class Meta:
 		model = Post
 		fields = [
@@ -33,10 +33,26 @@ class CreatePostSerializer(serializers.ModelSerializer):
 		]
 
 
+class FriendDataSerializer(serializers.ModelSerializer):
+	first_name = serializers.CharField(source='user.first_name')
+	last_name = serializers.CharField(source='user.last_name')
+
+	class Meta:
+		model = Author
+		fields = [
+			'id',
+			'first_name',
+			'last_name',
+			'avatar',
+		]
+
+
 class AuthorSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
 	last_name = serializers.CharField(source='user.last_name')
 	email = serializers.CharField(source='user.email')
+	friends = FriendDataSerializer(many=True)
+
 	class Meta:
 		model = Author
 		fields = [
@@ -51,11 +67,22 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class FriendsAuthorSerializer(serializers.ModelSerializer):
+	friends = FriendDataSerializer(many=True)
+
 	class Meta:
-		depth = 1
 		model = Author
 		fields = [
 			'friends',
+		]
+
+
+class FriendRequestsAuthorSerializer(serializers.ModelSerializer):
+	friend_requests = FriendDataSerializer(many=True)
+
+	class Meta:
+		model = Author
+		fields = [
+			'friend_requests',
 		]
 
 
@@ -79,7 +106,7 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 			'avatar',
 			'date_created',
 		]
-		#extra_kwargs = {"password" : {"write_only": True}}
+	# extra_kwargs = {"password" : {"write_only": True}}
 
 	# http://stackoverflow.com/questions/29457630/extend-user-model-django-rest-framework-3-x-x
 
@@ -121,4 +148,3 @@ class AuthenticateSerializer(serializers.ModelSerializer):
 		print username
 		print password
 		return attrs
-
