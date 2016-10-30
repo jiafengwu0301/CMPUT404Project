@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 class PostSerializer(serializers.ModelSerializer):
 	class Meta:
+		depth = 1
 		model = Post
 		fields = [
 			'id',
@@ -43,6 +44,15 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'avatar',
 			'friends',
 			'email',
+		]
+
+
+class FriendsAuthorSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Author
+		fields = [
+			'friends',
 		]
 
 
