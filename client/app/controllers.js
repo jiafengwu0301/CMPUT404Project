@@ -18,15 +18,20 @@ function LoginController($location, AuthenticationService, FlashService) {
 
     function login() {
         vm.dataLoading = true;
-        AuthenticationService.Login(vm.username, vm.password, function (response) {
-            if (response.success) {
-                AuthenticationService.SetCredentials(vm.username, vm.password);
-                $location.path('/');
-            } else {
-                FlashService.Error(response.message);
-                vm.dataLoading = false;
-            }
-        });
+        AuthenticationService.SetCredentials(vm.username, vm.password);
+        $location.path('/');
+        // AuthenticationService.Login(vm.username, vm.password, function (response) {
+        //     if (response.success) {
+        //         AuthenticationService.SetCredentials(vm.username, vm.password);
+        //         $location.path('/');
+        //     } else {
+        //         FlashService.Error(response.message);
+        //         vm.dataLoading = false;
+        //     }
+        //
+        //     // AuthenticationService.SetCredentials(vm.username, vm.password);
+        //     // $location.path('/');
+        // });
     };
 }
 
@@ -67,46 +72,107 @@ HomeController.$inject = ['UserService', '$rootScope'];
 function HomeController(UserService, $rootScope) {
     var vm = this;
 
-    vm.user = null;
-    vm.allUsers = [];
-    vm.deleteUser = deleteUser;
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+
     vm.allPosts = [];
     vm.makePost = makePost;
+    // vm.getAuthor = getAuthor;
+    vm.author = null;
     vm.post = null;
+    initController();
+
+    function initController() {
+        loadAllPosts();
+    }
+
+    function loadAllPosts() {
+        UserService.GetAllPost()
+            .then(function (allpost) {
+                vm.allPosts = allpost;
+            });
+    }
+
+    function makePost(){
+        UserService.NewPost(vm.post);
+        loadAllPosts();
+        vm.post.text = "";
+    }
+
+}
+
+//My post Controller
+angular
+    .module('myApp')
+    .controller('MyPostController', MyPostController);
+
+MyPostController.$inject = ['UserService', '$rootScope'];
+function MyPostController(UserService, $rootScope) {
+    var vm = this;
+
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+    vm.myPosts = [];
+    vm.deletePost=deletePost;
+    vm.edit = null;
+    vm.editPost = editPost;
 
     initController();
 
     function initController() {
-        loadCurrentUser();
-        loadAllUsers();
-        loadAllPosts();
+        loadAllMyPost();
     }
 
-    function loadCurrentUser() {
-        UserService.GetByUsername($rootScope.globals.currentUser.username)
-            .then(function (user) {
-                vm.user = user;
+    function loadAllMyPost(){
+        UserService.GetAllMyPost(vm.currentAuthor.id)
+            .then(function (allpost) {
+                vm.myPosts = allpost;
             });
     }
 
-    function loadAllUsers() {
-        vm.allUsers=UserService.GetAllUser();
+    function deletePost(id){
+        UserService.DeletePost(id);
+        loadAllMyPost();
     }
 
-    function deleteUser(id) {
-        UserService.DeleteUser(id)
-        .then(function () {
-            loadAllUsers();
-        });
+    function editPost(id){
+        UserService.EditPost(id, vm.edit);
+        loadAllMyPost();
+    }
+}
+
+// My friend Controller
+angular
+    .module('myApp')
+    .controller('MyFriendController', MyFriendController);
+
+MyFriendController.$inject = ['UserService', '$rootScope'];
+function MyFriendController(UserService, $rootScope) {
+    var vm = this;
+
+    vm.myFriends = [];
+    vm.friend =null;
+    vm.friendPosts=[];
+    vm.loadFriendPost=loadFriendPost;
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+
+    initController();
+
+    function initController() {
+        loadAllMyFriend();
     }
 
-    function loadAllPosts() {
-        vm.allPosts=UserService.GetAllPost();
+    function loadAllMyFriend(){
+        UserService.GetAllMyFriend(vm.currentAuthor.id)
+            .then(function (myFriends) {
+                vm.myFriends = myFriends.friends;
+            });
+    }
+    function loadFriendPost(id){
+        alert(id);
+        UserService.GetFriendPosts(id)
+            .then(function (friendPosts) {
+                vm.friendPosts = friendPosts;
+                alert(vm.friendPosts[0].text);
+            });
     }
 
-    function makePost(){
-        vm.post.published_date = Date();
-        vm.post.author = vm.user;
-        UserService.NewPost(vm.post);
-    }
 }

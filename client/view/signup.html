@@ -7,16 +7,16 @@
         <form name="form" ng-submit="vm.register()" role="form">
             <div class="well">
 
-                <div class="form-group" ng-class="{ 'has-error': form.firstname.$dirty && form.firstname.$error.required }">
+                <div class="form-group" ng-class="{ 'has-error': form.first_name.$dirty && form.first_name.$error.required }">
                     <h2>First Name: </h2>
-                    <input type="text" name="firstname" id="firstname" class="form-control" placeholder="Enter First Name" ng-model="vm.user.firstname" required />
-                    <span ng-show="form.firstname.$dirty && form.firstname.$error.required" class="help-block">First name is required</span>
+                    <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter First Name" ng-model="vm.user.first_name" required />
+                    <span ng-show="form.first_name.$dirty && form.first_name.$error.required" class="help-block">First name is required</span>
                 </div>
 
-                <div class="form-group" ng-class="{ 'has-error': form.lastname.$dirty && form.lastname.$error.required }">
+                <div class="form-group" ng-class="{ 'has-error': form.last_namelast_name.$dirty && form.last_name.$error.required }">
                     <h2>Last Name: </h2>
-                    <input type="text" name="lastname" id="lastname" class="form-control" placeholder="Enter Last Name" ng-model="vm.user.lastname" required />
-                    <span ng-show="form.lastname.$dirty && form.lastname.$error.required" class="help-block">Last name is required</span>
+                    <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter Last Name" ng-model="vm.user.last_namelast_namelast_namelast_name" required />
+                    <span ng-show="form.last_namelast_namelast_name.$dirty && form.last_name.$error.required" class="help-block">Last name is required</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
@@ -31,11 +31,23 @@
                     <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
                 </div>
 
-                <!-- <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
-                    <h2>Re-Enter Password:</h2>
-                    <input type="password" name="password2" id="password2" class="form-control" placeholder="Re-Enter Password" ng-model="vm.user.password2" required />
-                    <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
-                </div> -->
+                <div class="form-group" ng-class="{ 'has-error': form.github.$dirty && form.github.$error.required }">
+                    <h2>Github:</h2>
+                    <input type="text" name="github" id="github" class="form-control" placeholder="Enter Github" ng-model="vm.user.github" required />
+                    <span ng-show="form.github.$dirty && form.github.$error.required" class="help-block">Github is required</span>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
+                    <h2>Email:</h2>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" ng-model="vm.user.email" required />
+                    <span ng-show="form.email.$dirty && form.email.$error.required" class="help-block">Email is required</span>
+                </div>
+
+                <div class="form-group">
+                    <h2>Avatar:</h2>
+                    <input type="file" class="form-control" id="avatar" placeholder="Select a Picture" ng-model="vm.user.avatar" />
+
+                </div>
 
                 <br><br>
                 <div class="form-actions">

@@ -26,15 +26,31 @@ function config($routeProvider, $locationProvider) {
 
     })
 
-    .when('/managefriends',{
-        templateUrl: 'view/manageFriends.html'
+    .when('/myposts',{
+        templateUrl: 'view/myposts.html',
+        controller: 'MyPostController',
+        controllerAs: 'vm'
 
+    })
+
+    .when('/managefriends',{
+        templateUrl: 'view/manageFriends.html',
+        controller: 'MyFriendController',
+        controllerAs: 'vm'
 
     })
 
     .when('/manageinfo',{
-        templateUrl: 'view/manageInfo.html'
+        templateUrl: 'view/manageInfo.html',
+        controller: 'HomeController',
+        controllerAs: 'vm'
 
+    })
+
+    .when('/friendPost',{
+        templateUrl: 'view/friendpost.html',
+        controller: 'MyFriendController',
+        controllerAs: 'vm'
 
     })
 

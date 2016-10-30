@@ -18,22 +18,22 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
 
         /* Dummy authentication for testing, uses $timeout to simulate api call
          ----------------------------------------------*/
-        $timeout(function () {
-            var response;
-            UserService.GetByUsername(username)
-                .then(function (user) {
-                    if (user !== null && user.password === password) {
-                        response = { success: true };
-                    } else {
-                        response = { success: false, message: 'Username or password is incorrect' };
-                    }
-                    callback(response);
-                });
-        }, 1000);
+        // $timeout(function () {
+        //     var response;
+        //     UserService.GetByUsername(username)
+        //         .then(function (user) {
+        //             if (user !== null && user.password === password) {
+        //                 response = { success: true };
+        //             } else {
+        //                 response = { success: false, message: 'Username or password is incorrect' };
+        //             }
+        //             callback(response);
+        //         });
+        // }, 1000);
 
         /* Use this for real authentication
          ----------------------------------------------*/
-        //$http.post('/api/authenticate', { username: username, password: password })
+        // $http.post('http://127.0.0.1:8000/socialnet/auth/', { username: username, password: password })
         //    .success(function (response) {
         //        callback(response);
         //    });
@@ -46,6 +46,17 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
         $rootScope.globals = {
             currentUser: {
                 username: username,
+                author: {
+                        id: 1,
+                        first_name: 'asfdas',
+                        last_name: 'asdfas',
+                        github: 'http://github.com/randomadminurl',
+                        avatar: 'http://127.0.0.1:8000/socialnet/authors/1/home/user/Documents/404/CMPUT404Project/mysite/static/std-avatar.png',
+                        friends: [
+                            2
+                        ],
+                        email: 'asd@sad.c.cc'
+                    },
                 authdata: authdata
             }
         };

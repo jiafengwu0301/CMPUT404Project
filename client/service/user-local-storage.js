@@ -17,16 +17,29 @@ function UserService($timeout, $filter, $q) {
     service.DeleteUser = DeleteUser;
     service.GetAllPost = GetAllPost;
     service.NewPost = NewPost;
+    // service.GetAllMyPost = GetAllMyPost;
 
     return service;
 
     function GetAllUser() {
-        return JSON.parse(localStorage.users)
+        return JSON.parse(localStorage.users);
     }
 
     function GetAllPost(){
-        return JSON.parse(localStorage.posts)
+        return JSON.parse(localStorage.posts);
     }
+
+    // function GetAllMyPost(id){
+    //     var all = JSON.parse(localStorage.posts);
+    //     var myposts = [];
+    //     for (var i=0; i<all.length; i++){
+    //         var post = all[i];
+    //         if (post.author === id ){
+    //             myposts.push(post)
+    //         }
+    //     };
+    //     return myposts;
+    // }
 
     function GetByUserId(id) {
         var deferred = $q.defer();
@@ -122,6 +135,7 @@ function UserService($timeout, $filter, $q) {
 
         return JSON.parse(localStorage.users);
     }
+
 
     function getPosts() {
         if(!localStorage.posts){

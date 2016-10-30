@@ -34,17 +34,15 @@
             <h1>Friends:</h1>
         </div>
 
-        <ul class="list-group">
-            <li class="list-group-item">lalalala</li>
-            <li class="list-group-item">yoyoyoyo</li>
-            <li class="list-group-item">papapapa</li>
-        </ul>
+        <div class="well" ng-repeat="friend in vm.myFriends">
+            <li class="list-group-item"><a href="#friendPost" ng-click = "vm.loadFriendPost(friend.id)">{{friend.first_name}}</a></li>
+        </div>
     </div>
 
     <div class="col-sm-3">
         <div class="avatar">
             <img src="https://freeiconshop.com/files/edd/person-outline-filled.png" height="260" width="260">
-            <h2>Anny Pan</h2>
+            <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 
         <ul class="list-group">
