@@ -28,6 +28,7 @@ class AuthorRetrieveView(generics.RetrieveAPIView):
 class AuthorAuthenticationView(views.APIView):
 	queryset = Author.objects.all()
 	serializer_class = AuthenticateSerializer
+	permission_classes = [permissions.AllowAny]
 
 	def post(self, request, *args, **kwargs):
 		data = request.data

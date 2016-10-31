@@ -20,15 +20,6 @@ class Author(models.Model):
 		return self.user.username
 
 
-
-class Requests(models.Model):
-	whosend = models.ForeignKey(Author, related_name="who_send")
-	whoanswer = models.ForeignKey(Author, related_name="who_answer")
-
-	def __str__(self):
-		return self.whosend.user.username + " to " + self.whoanswer.user.username
-
-
 class Post(models.Model):
 	published_date = models.DateTimeField(auto_now_add=True)
 	author = models.ForeignKey(Author)
