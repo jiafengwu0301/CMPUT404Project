@@ -28,7 +28,6 @@ class AuthorRetrieveView(generics.RetrieveAPIView):
 class AuthorAuthenticationView(views.APIView):
 	queryset = Author.objects.all()
 	serializer_class = AuthenticateSerializer
-	permission_classes = [permissions.AllowAny]
 
 	def post(self, request, *args, **kwargs):
 		data = request.data
@@ -62,6 +61,7 @@ class FriendRequestsAuthorView(viewsets.ModelViewSet):
 			friend_requests += request.data
 			friend_requests.save()
 			return friend_requests
+
 
 class SendFriendRequestAuthorView(generics.CreateAPIView):
 	queryset = Author.objects.all()

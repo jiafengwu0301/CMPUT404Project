@@ -134,15 +134,14 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 class AuthenticateSerializer(serializers.ModelSerializer):
 	username = serializers.CharField(source='user.username')
 	password = serializers.CharField(source='user.password', style={'input_type': 'password'})
-	id = serializers.CharField(allow_blank=True, read_only=True)
-
+	author = AuthorSerializer(allow_null=True, read_only=True)
 	class Meta:
 		model = User
 		depth = 1
 		fields = [
 			'username',
 			'password',
-			'id',
+			'author',
 		]
 		extra_kwargs = {"password": {"write_only": True}}
 
@@ -150,8 +149,11 @@ class AuthenticateSerializer(serializers.ModelSerializer):
 		validation_data = dict(attrs)['user']
 		username = validation_data.get('username', None);
 		password = validation_data.get('password', None);
-		user = User.objects.get(username=username)
+		try:
+			user = User.objects.get(username=username)
+		except:
+			raise ValidationError("Incorrect login/password.")
 		if user.check_password(password):
-			attrs['id'] = user.author.id
+			attrs['author'] = user.author
 			return attrs
-		raise ValidationError("Incorrect login/password")
+		raise ValidationError("Incorrect login/password.")
