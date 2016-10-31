@@ -1,7 +1,9 @@
+from rest_framework import viewsets
+from rest_framework.decorators import detail_route
+from rest_framework import generics, permissions, response, status, views
 from .models import Author
 from .serializers import AuthorSerializer, FullAuthorSerializer, AuthenticateSerializer, FriendsAuthorSerializer, \
 	FriendRequestsAuthorSerializer
-from rest_framework import generics, permissions, response, status, views
 from . import permissions as my_permissions
 
 
@@ -14,6 +16,7 @@ class AuthorListView(generics.ListAPIView):
 class AuthorCreateView(generics.CreateAPIView):
 	queryset = Author.objects.all()
 	serializer_class = FullAuthorSerializer
+	permission_classes = [permissions.AllowAny]
 
 
 class AuthorRetrieveView(generics.RetrieveAPIView):
@@ -42,7 +45,25 @@ class FriendsAuthorView(generics.RetrieveAPIView):
 	permission_classes = [permissions.IsAuthenticated]
 
 
-class FriendRequestsAuthorView(generics.RetrieveAPIView):
+class FriendRequestsAuthorView(viewsets.ModelViewSet):
+	#queryset = Author.objects.all()
+	serializer_class = FriendRequestsAuthorSerializer
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForAccessAuthor]
+
+	def get_queryset(self):
+		result_list = Author.objects.filter(id=self.request.user.author.id)
+		return result_list
+
+	@detail_route(methods=['put'])
+	def add_friend_request(self, request):
+		friend_requests = request.user.author.friend_requests
+		serializer = FriendRequestsAuthorSerializer(data=request.data)
+		if serializer.is_valid():
+			friend_requests += request.data
+			friend_requests.save()
+			return friend_requests
+
+class SendFriendRequestAuthorView(generics.CreateAPIView):
 	queryset = Author.objects.all()
 	serializer_class = FriendRequestsAuthorSerializer
-	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForAuthenticateAuthor]
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForAccessAuthor]

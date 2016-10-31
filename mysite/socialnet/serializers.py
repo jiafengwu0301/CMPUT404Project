@@ -1,6 +1,8 @@
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework import exceptions
+from rest_framework.exceptions import ValidationError
+
 from .models import Post, Author
 from django.contrib.auth.models import User
 
@@ -106,6 +108,7 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 			'avatar',
 			'date_created',
 		]
+
 	# extra_kwargs = {"password" : {"write_only": True}}
 
 	# http://stackoverflow.com/questions/29457630/extend-user-model-django-rest-framework-3-x-x
@@ -131,20 +134,24 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 class AuthenticateSerializer(serializers.ModelSerializer):
 	username = serializers.CharField(source='user.username')
 	password = serializers.CharField(source='user.password', style={'input_type': 'password'})
+	id = serializers.CharField(allow_blank=True, read_only=True)
 
 	class Meta:
 		model = User
+		depth = 1
 		fields = [
 			'username',
 			'password',
+			'id',
 		]
 		extra_kwargs = {"password": {"write_only": True}}
 
 	def validate(self, attrs):
 		validation_data = dict(attrs)['user']
-		user_obj = None
 		username = validation_data.get('username', None);
 		password = validation_data.get('password', None);
-		print username
-		print password
-		return attrs
+		user = User.objects.get(username=username)
+		if user.check_password(password):
+			attrs['id'] = user.author.id
+			return attrs
+		raise ValidationError("Incorrect login/password")

@@ -20,3 +20,10 @@ class IsOwnerForAuthenticateAuthor(permissions.BasePermission):
 
 	def has_object_permission(self, request, view, obj):
 		return obj.user.id == request.user.id
+
+
+class IsOwnerForAccessAuthor(permissions.BasePermission):
+	message = "You can't access personal data from a user that is not you."
+
+	def has_object_permission(self, request, view, obj):
+		return obj.user.id == request.user.id
