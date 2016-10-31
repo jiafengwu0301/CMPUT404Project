@@ -8,49 +8,49 @@ UserService.$inject = ['$http','$rootScope'];
 function UserService($http,$rootScope) {
     var service = {};
 
-    service.GetAllPost = GetAllPost;
-    service.NewPost = NewPost;
-    service.GetAllMyPost = GetAllMyPost;
-    service.DeletePost = DeletePost;
-    service.EditPost = EditPost;
-    service.GetAllMyFriend=GetAllMyFriend;
-    service.GetFriendPosts =GetFriendPosts;
-    service.CreateUser=CreateUser;
+    service.getAllPost = getAllPost;
+    service.newPost = newPost;
+    service.getPost = getPost;
+    service.deletePost = deletePost;
+    service.editPost = editPost;
+    service.getAllMyFriend=getAllMyFriend;
+    service.getFriendPosts =getFriendPosts;
+    service.createUser=createUser;
     service.getAuthorById=getAuthorById;
 
     return service;
 
-    function CreateUser(author){
+    function createUser(author){
         return $http.post('http://127.0.0.1:8000/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
     }
 
-    function GetAllPost(){
+    function getAllPost(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/').then(handleSuccess, handleError('Error'));
     }
     // change name to getPosts
-    function GetAllMyPost(id){
+    function getPost(id){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/posts/').then(handleSuccess, handleError('Error'));
     }
 
-    function NewPost(post){
+    function newPost(post){
         var a = JSON.stringify(post);
         return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/create/',JSON.parse(a)).then(handleSuccess, handleError('Error'));
     }
 
-    function DeletePost(id){
+    function deletePost(id){
         return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/'+id+'/destroy/');
     }
 
-    function EditPost(id, post){
+    function editPost(id, post){
         var a = JSON.stringify(post);
         return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/'+id+'/update/', JSON.parse(a));
     }
 
-    function GetAllMyFriend(id){
+    function getAllMyFriend(id){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/friends/').then(handleSuccess, handleError('Error'));
     }
 
-    function GetFriendPosts(id){
+    function getFriendPosts(id){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/posts/').then(handleSuccess, handleError('Error'));
     }
 

@@ -50,7 +50,7 @@ function RegisterController(UserService, $location, $rootScope, FlashService) {
     function register() {
         vm.dataLoading = true;
         // alert(vm.user);
-        UserService.CreateUser(vm.user)
+        UserService.createUser(vm.user)
             .then(function (response) {
                 if (response) {
                     FlashService.Success('Registration successful', true);
@@ -87,14 +87,14 @@ function HomeController(UserService, $rootScope) {
     }
 
     function loadAllPosts() {
-        UserService.GetAllPost()
+        UserService.getAllPost()
             .then(function (allpost) {
                 vm.allPosts = allpost;
             });
     }
 
     function makePost(){
-        UserService.NewPost(vm.post);
+        UserService.newPost(vm.post);
         loadAllPosts();
         vm.post.text = "";
     }
@@ -123,19 +123,19 @@ function MyPostController(UserService, $rootScope) {
     }
 
     function loadAllMyPost(){
-        UserService.GetAllMyPost(vm.currentAuthor.id)
+        UserService.getPost(vm.currentAuthor.id)
             .then(function (allpost) {
                 vm.myPosts = allpost;
             });
     }
 
     function deletePost(id){
-        UserService.DeletePost(id);
+        UserService.deletePost(id);
         loadAllMyPost();
     }
 
     function editPost(id){
-        UserService.EditPost(id, vm.edit);
+        UserService.editPost(id, vm.edit);
         loadAllMyPost();
     }
 }
@@ -163,13 +163,13 @@ function MyFriendController(UserService, $rootScope) {
     }
 
     function loadAllMyFriend(){
-        UserService.GetAllMyFriend(vm.currentAuthor.id)
+        UserService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
                 vm.myFriends = myFriends.friends;
             });
     }
     // function loadFriendPost(id){
-    //     UserService.GetFriendPosts(id)
+    //     UserService.getFriendPosts(id)
     //         .then(function (friendPosts) {
     //             vm.friendPosts = friendPosts;
     //             alert(vm.friendPosts[0].text);
@@ -198,7 +198,7 @@ function FriendPostController(UserService, $rootScope, $routeParams) {
     }
 
     function getFriendPost(){
-        UserService.GetAllMyPost(vm.friend_id)
+        UserService.getPost(vm.friend_id)
             .then(function (friendPosts) {
                 vm.friendPosts = friendPosts;
             });
