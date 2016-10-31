@@ -15,13 +15,19 @@ function UserService($http,$rootScope) {
     service.EditPost = EditPost;
     service.GetAllMyFriend=GetAllMyFriend;
     service.GetFriendPosts =GetFriendPosts;
+    service.CreateUser=CreateUser;
+    service.getAuthorById=getAuthorById;
 
     return service;
+
+    function CreateUser(author){
+        return $http.post('http://127.0.0.1:8000/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
+    }
 
     function GetAllPost(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/').then(handleSuccess, handleError('Error'));
     }
-
+    // change name to getPosts
     function GetAllMyPost(id){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/posts/').then(handleSuccess, handleError('Error'));
     }
@@ -46,6 +52,10 @@ function UserService($http,$rootScope) {
 
     function GetFriendPosts(id){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/posts/').then(handleSuccess, handleError('Error'));
+    }
+
+    function getAuthorById(id){
+        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/').then(handleSuccess, handleError('Error'));
     }
 
     // private functions

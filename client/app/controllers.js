@@ -49,9 +49,10 @@ function RegisterController(UserService, $location, $rootScope, FlashService) {
 
     function register() {
         vm.dataLoading = true;
+        // alert(vm.user);
         UserService.CreateUser(vm.user)
             .then(function (response) {
-                if (response.success) {
+                if (response) {
                     FlashService.Success('Registration successful', true);
                     $location.path('/login');
                 } else {
@@ -150,10 +151,11 @@ function MyFriendController(UserService, $rootScope) {
 
     vm.myFriends = [];
     vm.friend =null;
-    vm.friendPosts=[];
-    vm.loadFriendPost=loadFriendPost;
+    // vm.friendPosts=[];
+    // vm.loadFriendPost=loadFriendPost;
     vm.currentAuthor = $rootScope.globals.currentUser.author;
-
+    // vm.friend_id = null;
+    // loadFriendPost(friend_id);
     initController();
 
     function initController() {
@@ -166,13 +168,45 @@ function MyFriendController(UserService, $rootScope) {
                 vm.myFriends = myFriends.friends;
             });
     }
-    function loadFriendPost(id){
-        alert(id);
-        UserService.GetFriendPosts(id)
-            .then(function (friendPosts) {
-                vm.friendPosts = friendPosts;
-                alert(vm.friendPosts[0].text);
-            });
+    // function loadFriendPost(id){
+    //     UserService.GetFriendPosts(id)
+    //         .then(function (friendPosts) {
+    //             vm.friendPosts = friendPosts;
+    //             alert(vm.friendPosts[0].text);
+    //         });
+    // }
+}
+
+// Friend Post Controller
+angular
+    .module('myApp')
+    .controller('FriendPostController', FriendPostController);
+
+FriendPostController.$inject = ['UserService', '$rootScope', '$routeParams'];
+function FriendPostController(UserService, $rootScope, $routeParams) {
+    var vm = this;
+
+    vm.friend_id = $routeParams.id;
+    vm.friendPosts=[];
+    vm.friend = [];
+
+    initController();
+
+    function initController() {
+        getFriendPost();
+        getFriend();
     }
 
+    function getFriendPost(){
+        UserService.GetAllMyPost(vm.friend_id)
+            .then(function (friendPosts) {
+                vm.friendPosts = friendPosts;
+            });
+    }
+    function getFriend(){
+        UserService.getAuthorById(vm.friend_id)
+            .then(function (friend) {
+                vm.friend = friend;
+            });
+    }
 }

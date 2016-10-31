@@ -47,9 +47,9 @@ function config($routeProvider, $locationProvider) {
 
     })
 
-    .when('/friendPost',{
+    .when('/friendPost/:id',{
         templateUrl: 'view/friendpost.html',
-        controller: 'MyFriendController',
+        controller: 'FriendPostController',
         controllerAs: 'vm'
 
     })
