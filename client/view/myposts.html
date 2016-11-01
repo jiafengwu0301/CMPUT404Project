@@ -13,7 +13,7 @@
             <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
         </ul>
 
-        <!-- <div class="col-md-4">
+        <div class="col-md-4">
             <form class="navbar-form" ng-submit = "vm.search" role="search">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search" name="q">
@@ -22,7 +22,7 @@
                     </div>
                 </div>
             </form>
-        </div> -->
+        </div>
     </div>
 </nav>
 
@@ -46,22 +46,22 @@
             </div>
 
             <div ng-show="collapsed_comments">
-                <p class="well">{{post.comments.author}}: {{post.comments.text}}</p>
+                <p class="well" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}}: {{comment.text}}<button type="button" class="btn btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)">Delete</button></p>
+
             </div>
 
             <div ng-show="collapsed_edit">
                 <form name="form" ng-submit="vm.editPost(post.id)" role="form">
-                    <textarea style="resize:none" class="form-control" rows="2" id="edit" placeholder="Edit your post here..." ng-model="vm.edit.text"></textarea>
+                    <textarea style="resize:none" class="form-control" rows="2" id="edit" placeholder="Edit your post here..." ng-model="vm.edit.text" required></textarea>
                     <div class="form-group">
-                        <select name="privacyLevel" form="PLform" ng-model="vm.edit.public">
+                        <select name="privacyLevel" ng-model="vm.edit.public" required>
                             <option value="true">True</option>
                             <option value="false">False</option>
                         </select>
-                        <button type="submit" class="btn btn-info pull-right">Submit</button>
+                        <button type="submit" class="btn btn-info pull-right" ng-disabled="form.$invalid">Submit</button>
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 

@@ -1,29 +1,30 @@
 // http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
 
-//Login Controller
+
 angular
     .module('myApp')
-    .controller('LoginController', LoginController)
-    .controller('RegisterController', RegisterController)
-    .controller('HomeController', HomeController)
-    .controller('MyPostController', MyPostController)
-    .controller('MyFriendController', MyFriendController)
-    .controller('FriendPostController', FriendPostController);
+    .controller('loginController', loginController)
+    .controller('registerController', registerController)
+    .controller('homeController', homeController)
+    .controller('myPostController', myPostController)
+    .controller('myFriendController', myFriendController)
+    .controller('friendPostController', friendPostController);
 
-function LoginController($location, AuthenticationService, FlashService, UserService) {
+// Login Controller
+function loginController($location, authenticationService, FlashService, userService) {
     var vm = this;
     vm.errorMessage = "";
     vm.login = login;
 
     (function initController() {
-        AuthenticationService.clearCredentials();
+        authenticationService.clearCredentials();
     })();
 
     function login() {
-        AuthenticationService.login(vm.username, vm.password)
+        authenticationService.login(vm.username, vm.password)
             .then(function(response){
                 if (response.status == 200){
-                    AuthenticationService.setCredentials(vm.username, vm.password, response.data);
+                    authenticationService.setCredentials(vm.username, vm.password, response.data.author);
                     $location.path('/');
                 } else {
                     alert(response.response.data.non_field_errors);
@@ -33,12 +34,12 @@ function LoginController($location, AuthenticationService, FlashService, UserSer
     }
 }
 
-function RegisterController(UserService, $location, $rootScope, FlashService) {
+function registerController(userService, $location, $rootScope, FlashService) {
     var vm = this;
     vm.register = register;
     function register() {
         vm.dataLoading = true;
-        UserService.createUser(vm.user)
+        userService.createUser(vm.user)
             .then(function (response) {
                 if (response) {
                     FlashService.Success('Registration successful', true);
@@ -51,13 +52,15 @@ function RegisterController(UserService, $location, $rootScope, FlashService) {
     }
 }
 
-function HomeController(UserService, $rootScope, $location, FlashService) {
+function homeController(userService, $rootScope, $location, FlashService) {
     var vm = this;
     vm.currentAuthor = $rootScope.globals.currentUser.author;
-
     vm.allPosts = [];
     vm.makePost = makePost;
     vm.post = null;
+    vm.comment =null;
+    vm.makeComment = makeComment;
+
     initController();
 
     function initController() {
@@ -65,15 +68,16 @@ function HomeController(UserService, $rootScope, $location, FlashService) {
     }
 
     function loadAllPosts() {
-        UserService.getAllPost()
+        userService.getAllPost()
             .then(function (allpost) {
-                vm.allPosts = allpost;
+                vm.allPosts = allpost.results;
             });
+
     }
 
     function makePost(){
         vm.dataLoading = true;
-        UserService.newPost(vm.post)
+        userService.newPost(vm.post)
             .then(function (response) {
                 if (response) {
                     FlashService.Success('Post successful', true);
@@ -83,12 +87,20 @@ function HomeController(UserService, $rootScope, $location, FlashService) {
                     vm.dataLoading = false;
                 }
             });
-        // loadAllPosts();
         vm.post.text = "";
+    }
+
+    function makeComment(id){
+        userService.newComment(id, vm.comment)
+            .then(function(response){
+                if (response){
+                    loadAllMyPost();
+                };
+            });
     }
 }
 
-function MyPostController(UserService, $rootScope) {
+function myPostController(userService, $rootScope, $location) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -96,6 +108,7 @@ function MyPostController(UserService, $rootScope) {
     vm.deletePost=deletePost;
     vm.edit = null;
     vm.editPost = editPost;
+    vm.deleteComment=deleteComment;
 
     initController();
 
@@ -104,33 +117,47 @@ function MyPostController(UserService, $rootScope) {
     }
 
     function loadAllMyPost(){
-        UserService.getPost(vm.currentAuthor.id)
+        userService.getPost(vm.currentAuthor.id)
             .then(function (allpost) {
-                vm.myPosts = allpost;
+                vm.myPosts = allpost.results;
             });
     }
 
     function deletePost(id){
-        UserService.deletePost(id);
-        loadAllMyPost();
+        userService.deletePost(id)
+            .then(function(response){
+                if (response){
+                    loadAllMyPost();
+                }
+            });
     }
 
     function editPost(id){
-        UserService.editPost(id, vm.edit);
-        loadAllMyPost();
+        userService.editPost(id, vm.edit)
+            .then(function(response){
+                if (response){
+                    loadAllMyPost();
+                }
+            });
     }
+
+    function deleteComment(id){
+        userService.deleteComment(id)
+            .then(function(response){
+                if (response){
+                    loadAllMyPost();
+                }
+            })
+    }
+
 }
 
-function MyFriendController(UserService, $rootScope) {
+function myFriendController(userService, $rootScope) {
     var vm = this;
 
     vm.myFriends = [];
     vm.friend =null;
-    // vm.friendPosts=[];
-    // vm.loadFriendPost=loadFriendPost;
     vm.currentAuthor = $rootScope.globals.currentUser.author;
-    // vm.friend_id = null;
-    // loadFriendPost(friend_id);
     initController();
 
     function initController() {
@@ -138,21 +165,14 @@ function MyFriendController(UserService, $rootScope) {
     }
 
     function loadAllMyFriend(){
-        UserService.getAllMyFriend(vm.currentAuthor.id)
+        userService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
                 vm.myFriends = myFriends.friends;
             });
     }
-    // function loadFriendPost(id){
-    //     UserService.getFriendPosts(id)
-    //         .then(function (friendPosts) {
-    //             vm.friendPosts = friendPosts;
-    //             alert(vm.friendPosts[0].text);
-    //         });
-    // }
 }
 
-function FriendPostController(UserService, $rootScope, $routeParams) {
+function friendPostController(userService, $rootScope, $routeParams) {
     var vm = this;
 
     vm.friend_id = $routeParams.id;
@@ -167,13 +187,13 @@ function FriendPostController(UserService, $rootScope, $routeParams) {
     }
 
     function getFriendPost(){
-        UserService.getPost(vm.friend_id)
+        userService.getPost(vm.friend_id)
             .then(function (friendPosts) {
                 vm.friendPosts = friendPosts;
             });
     }
     function getFriend(){
-        UserService.getAuthorById(vm.friend_id)
+        userService.getAuthorById(vm.friend_id)
             .then(function (friend) {
                 vm.friend = friend;
             });

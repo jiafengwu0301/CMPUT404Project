@@ -2,10 +2,10 @@
 
 ﻿angular
     .module('myApp')
-    .factory('UserService', UserService);
+    .factory('userService', userService);
 
-UserService.$inject = ['$http','$rootScope','$location','$cookies'];
-function UserService($http,$rootScope,$location,$cookies) {
+userService.$inject = ['$http','$rootScope','$location','$cookies'];
+function userService($http,$rootScope,$location,$cookies) {
     var service = {};
 
     service.getAllPost = getAllPost;
@@ -17,7 +17,8 @@ function UserService($http,$rootScope,$location,$cookies) {
     service.getFriendPosts =getFriendPosts;
     service.createUser=createUser;
     service.getAuthorById=getAuthorById;
-    //service.logIn = logIn;
+    service.newComment = newComment;
+    service.deleteComment = deleteComment;
 
     return service;
 
@@ -63,10 +64,17 @@ function UserService($http,$rootScope,$location,$cookies) {
         return $http.get('http://'+username+':'+password+'@127.0.0.1:8000/socialnet/authors/'+id+'/').then(handleSuccess, handleError('Error'));
     }
 
+    function newComment(id,comment){
+        return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/'+id+'/comments/create/',comment).then(handleSuccess, handleError('Error'));
+    }
+
+    function deleteComment(id){
+        return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/comments/'+id+'/destroy/').then(handleSuccess, handleError('Error'));
+    }
+
     // private functions
 
     function handleSuccess(res) {
-        //alert(res.data.github)
         return res.data;
     }
 

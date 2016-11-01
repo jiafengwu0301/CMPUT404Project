@@ -2,11 +2,11 @@
 
 ﻿angular
     .module('myApp')
-    .factory('AuthenticationService', AuthenticationService);
+    .factory('authenticationService', authenticationService);
 
-AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'UserService'];
+authenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'userService'];
 
-function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserService) {
+function authenticationService($http, $cookieStore, $rootScope, $timeout, userService) {
     var service = {};
 
     service.login = login;
@@ -16,11 +16,9 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
     return service;
 
     function login(username, password) {
-
-        user = {'username':username, 'password':password};
+        var user = {'username':username, 'password':password};
         return $http.post('http://127.0.0.1:8000/socialnet/auth/', user)
             .then(handleSuccess, handleError);
-
     }
 
     function handleSuccess(response) {
@@ -32,7 +30,6 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
     }
 
     function setCredentials(username, password, author) {
-        
         var authdata = Base64.encode(username + ':' + password);
         $rootScope.globals = {
             currentUser: {
@@ -42,17 +39,15 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
             }
         };
         $cookieStore.put('globals', $rootScope.globals);
-
     }
 
     function clearCredentials() {
         $rootScope.globals = {};
         $cookieStore.remove('globals');
-        //$http.defaults.headers.common.Authorization = 'Basic';
     }
 }
 
-// Base64 encoding service used by AuthenticationService
+// Base64 encoding service used by authenticationService
 var Base64 = {
 
     keyStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
