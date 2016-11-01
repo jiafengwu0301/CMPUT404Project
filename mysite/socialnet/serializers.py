@@ -22,16 +22,6 @@ class PostSerializer(serializers.ModelSerializer):
 		]
 
 
-class CommentByPostSerializer(serializers.ModelSerializer):
-	comments = CommentSerializer(source='post.comments')
-
-	class Meta:
-		model = Post
-		fields = [
-			'comments',
-		]
-
-
 class CommentSerializer(serializers.ModelSerializer):
 
 	class Meta:
@@ -41,6 +31,16 @@ class CommentSerializer(serializers.ModelSerializer):
 			'post',
 			'author',
 			'text',
+		]
+
+
+class CommentsByPostSerializer(serializers.ModelSerializer):
+	comments = CommentSerializer
+
+	class Meta:
+		model = Post
+		fields = [
+		'comments',
 		]
 
 

@@ -52,11 +52,10 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-#CORS_ORIGIN_WHITELIST = (
-#	'localhost:3000',
-#	'localhost:5000',
+CORS_ORIGIN_WHITELIST = (
+	'localhost:3000',
 	# '127.0.0.1:3000',
-#)
+)
 
 ROOT_URLCONF = 'mysite.urls'
 

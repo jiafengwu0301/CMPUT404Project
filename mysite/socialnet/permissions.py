@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from .models import Post
 
 
 class IsOwnerForModifyPost(permissions.BasePermission):
@@ -27,3 +28,11 @@ class IsOwnerForAccessAuthor(permissions.BasePermission):
 
 	def has_object_permission(self, request, view, obj):
 		return obj.user.id == request.user.id
+
+
+class IsPostPublicOrOwner(permissions.BasePermission):
+	message = "post not public for you to read it properties."
+
+	def has_permission(self, request, view):
+		actualPost = Post.objects.get(id=view.kwargs['postpk'])
+		return request.user.author.id == actualPost.author.id or actualPost.public

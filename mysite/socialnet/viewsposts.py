@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from rest_framework import generics, permissions
 from . import permissions as my_permissions
 from .models import Post, Comment
-from .serializers import PostSerializer, CreatePostSerializer
+from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer
 
 
 # Create your views here.
@@ -71,8 +71,17 @@ class PostDestroyView(generics.DestroyAPIView):
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, my_permissions.IsOwnerForModifyPost]
 
 
-<<<<<<< HEAD
-=======
-class CommentsByPostView(generics.RetrieveAPIView):
-	queryset = Post.objects.all()
->>>>>>> angularauth
+class CommentListView(generics.ListAPIView):
+	queryset = Comment.objects.all()
+	serializer_class = CommentSerializer
+
+
+class CommentsByAuthorView(generics.ListAPIView):
+	queryset = Comment.objects.all()
+	serializer_class = CommentSerializer
+	permission_classes = [permissions.IsAuthenticatedOrReadOnly, my_permissions.IsPostPublicOrOwner]
+
+	def get_queryset(self):
+		post = self.kwargs['postpk']
+		result_list = Comment.objects.filter(post=post)
+		return result_list
