@@ -69,3 +69,5 @@ class PostDestroyView(generics.DestroyAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, my_permissions.IsOwnerForModifyPost]
+
+
