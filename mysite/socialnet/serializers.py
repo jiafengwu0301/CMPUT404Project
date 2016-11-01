@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework import exceptions
 from rest_framework.exceptions import ValidationError
 
-from .models import Post, Author
+from .models import Post, Author, Comment
 from django.contrib.auth.models import User
 
 
@@ -21,6 +21,28 @@ class PostSerializer(serializers.ModelSerializer):
 			'public',
 			'first_name',
 			'last_name',
+		]
+
+
+class CommentByPostSerializer(serializers.ModelSerializer):
+	comments = CommentSerializer(source='post.comments')
+
+	class Meta:
+		model = Post
+		fields = [
+			'comments',
+		]
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Comment
+		fields = [
+			'id',
+			'post',
+			'author',
+			'text',
 		]
 
 

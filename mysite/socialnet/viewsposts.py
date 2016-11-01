@@ -2,7 +2,7 @@ from itertools import chain
 from django.http import HttpResponse
 from rest_framework import generics, permissions
 from . import permissions as my_permissions
-from .models import Post
+from .models import Post, Comment
 from .serializers import PostSerializer, CreatePostSerializer
 
 
@@ -69,3 +69,7 @@ class PostDestroyView(generics.DestroyAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
 	permission_classes = [permissions.IsAuthenticatedOrReadOnly, my_permissions.IsOwnerForModifyPost]
+
+
+class CommentsByPostView(generics.RetrieveAPIView):
+	queryset = Post.objects.all()
