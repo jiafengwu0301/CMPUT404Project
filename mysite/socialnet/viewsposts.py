@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from rest_framework import generics, permissions
 from . import permissions as my_permissions
 from .models import Post, Comment
-from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer
+from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer
 
 
 # Create your views here.
@@ -61,27 +61,22 @@ class PostRetrieveView(generics.RetrieveAPIView):
 class PostUpdateView(generics.UpdateAPIView):
 	queryset = Post.objects.all()
 	serializer_class = CreatePostSerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly, my_permissions.IsOwnerForModifyPost]
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForModifyPost]
 
 
 # DELETE an post. Requires authentication (Prove you are the owner by sending object)
 class PostDestroyView(generics.DestroyAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly, my_permissions.IsOwnerForModifyPost]
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForModifyPost]
 
 
-class CommentListView(generics.ListAPIView):
+# GET comments by author
+class CreateCommentView(generics.CreateAPIView):
 	queryset = Comment.objects.all()
-	serializer_class = CommentSerializer
+	serializer_class = CreateCommentSerializer
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsPostPublicOrOwner]
 
-
-class CommentsByAuthorView(generics.ListAPIView):
-	queryset = Comment.objects.all()
-	serializer_class = CommentSerializer
-	permission_classes = [permissions.IsAuthenticatedOrReadOnly, my_permissions.IsPostPublicOrOwner]
-
-	def get_queryset(self):
-		post = self.kwargs['postpk']
-		result_list = Comment.objects.filter(post=post)
-		return result_list
+	def perform_create(self, serializer):
+		currentPost = Post.objects.get(id=self.kwargs['postpk'])
+		serializer.save(author=self.request.user.author,post=currentPost)

@@ -32,7 +32,7 @@ class Post(models.Model):
 
 class Comment(models.Model):
 	author = models.ForeignKey(Author)
-	post = models.ForeignKey(Post)
+	post = models.ForeignKey(Post, related_name='comments')
 	text = models.CharField(max_length=255)
 	published_date = models.DateField(auto_now_add=True)
 

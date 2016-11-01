@@ -5,9 +5,21 @@ from .models import Post, Author, Comment
 from django.contrib.auth.models import User
 
 
+class CommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comment
+		fields = [
+			'id',
+			'post',
+			'author',
+			'text',
+		]
+
+
 class PostSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='author.user.first_name')
 	last_name = serializers.CharField(source='author.user.last_name')
+	comments = CommentSerializer(many=True)
 
 	class Meta:
 		model = Post
@@ -19,18 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
 			'public',
 			'first_name',
 			'last_name',
-		]
-
-
-class CommentSerializer(serializers.ModelSerializer):
-
-	class Meta:
-		model = Comment
-		fields = [
-			'id',
-			'post',
-			'author',
-			'text',
+			'comments'
 		]
 
 
@@ -40,7 +41,16 @@ class CommentsByPostSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Post
 		fields = [
-		'comments',
+			'comments',
+		]
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comment
+		fields = [
+			'id',
+			'text',
 		]
 
 
@@ -155,6 +165,7 @@ class AuthenticateSerializer(serializers.ModelSerializer):
 	username = serializers.CharField(source='user.username')
 	password = serializers.CharField(source='user.password', style={'input_type': 'password'})
 	author = AuthorSerializer(allow_null=True, read_only=True)
+
 	class Meta:
 		model = User
 		depth = 1
