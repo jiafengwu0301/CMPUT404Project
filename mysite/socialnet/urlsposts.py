@@ -8,7 +8,7 @@ urlpatterns = [
 	url(r'^(?P<pk>\d+)/$', viewsposts.PostRetrieveView.as_view(), name='post_detail'),
 	url(r'^(?P<pk>\d+)/update/$', viewsposts.PostUpdateView.as_view(), name='post_update'),
 	url(r'^(?P<pk>\d+)/destroy/$', viewsposts.PostDestroyView.as_view(), name='post_destroy'),
-	#url(r'^comments/$', viewsposts.CommentListView.as_view(), name='all_comments'),
-	url(r'^(?P<postpk>\d+)/comments/create/$', viewsposts.CreateCommentView.as_view(), name='post_comments'),
+	url(r'^comments/$', viewsposts.CommentListView.as_view(), name='all_comments'),
+	url(r'^(?P<pk>\d+)/comments/create/$', viewsposts.CommentCreateView.as_view(), name='comment_create'),
 
 ]

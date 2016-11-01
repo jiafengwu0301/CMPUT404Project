@@ -1,6 +1,6 @@
 from itertools import chain
 from django.http import HttpResponse
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, views, response, status
 from . import permissions as my_permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer
@@ -13,7 +13,7 @@ def index(request):
 	return HttpResponse("204 No Content")
 
 
-# PUT a new Post. Requires authentication (Prove you are the owner by sending object)
+# POST a new Post. Requires authentication (Prove you are the owner by sending object)
 class PostCreateView(generics.CreateAPIView):
 	queryset = Post.objects.all()
 	serializer_class = CreatePostSerializer
@@ -54,7 +54,7 @@ class PostByAuthorListView(generics.ListAPIView):
 class PostRetrieveView(generics.RetrieveAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
-	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerOrIsPublicPost]
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsPostPublicOrOwner]
 
 
 # PUT an Update. Requires authentication (Prove you are the owner by sending object)
@@ -71,12 +71,33 @@ class PostDestroyView(generics.DestroyAPIView):
 	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForModifyPost]
 
 
-# GET comments by author
-class CreateCommentView(generics.CreateAPIView):
+# POST a new comment in the post designated in the URL.
+class CommentCreateView(generics.CreateAPIView):
 	queryset = Comment.objects.all()
 	serializer_class = CreateCommentSerializer
 	permission_classes = [permissions.IsAuthenticated, my_permissions.IsPostPublicOrOwner]
 
 	def perform_create(self, serializer):
-		currentPost = Post.objects.get(id=self.kwargs['postpk'])
-		serializer.save(author=self.request.user.author,post=currentPost)
+		currentPost = Post.objects.get(id=self.kwargs['pk'])
+		serializer.save(author=self.request.user.author, post=currentPost)
+
+
+# GET all the comments. Admin only function
+class CommentListView(generics.ListAPIView):
+	queryset = Comment.objects.all()
+	serializer_class = CommentSerializer
+	permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+
+# GET a single comment. Admin only function
+class CommentRetrieveView(generics.RetrieveAPIView):
+	queryset = Comment.objects.all()
+	serializer_class = CommentSerializer
+	permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+
+# DELETE a comment. Requires authentication and owner of comment or post
+class CommentDestroyView(generics.DestroyAPIView):
+	queryset = Comment.objects.all()
+	serializer_class = CreateCommentSerializer
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForModifyComment]

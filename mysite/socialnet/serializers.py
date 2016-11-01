@@ -5,67 +5,7 @@ from .models import Post, Author, Comment
 from django.contrib.auth.models import User
 
 
-class CommentSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Comment
-		fields = [
-			'id',
-			'post',
-			'author',
-			'text',
-		]
-
-
-class PostSerializer(serializers.ModelSerializer):
-	first_name = serializers.CharField(source='author.user.first_name')
-	last_name = serializers.CharField(source='author.user.last_name')
-	comments = CommentSerializer(many=True)
-
-	class Meta:
-		model = Post
-		fields = [
-			'id',
-			'published_date',
-			'author',
-			'text',
-			'public',
-			'first_name',
-			'last_name',
-			'comments'
-		]
-
-
-class CommentsByPostSerializer(serializers.ModelSerializer):
-	comments = CommentSerializer
-
-	class Meta:
-		model = Post
-		fields = [
-			'comments',
-		]
-
-
-class CreateCommentSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Comment
-		fields = [
-			'id',
-			'text',
-		]
-
-
-class CreatePostSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Post
-		fields = [
-			'id',
-			'published_date',
-			'text',
-			'public',
-		]
-
-
-class FriendDataSerializer(serializers.ModelSerializer):
+class AuthorFriendSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
 	last_name = serializers.CharField(source='user.last_name')
 
@@ -83,7 +23,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
 	last_name = serializers.CharField(source='user.last_name')
 	email = serializers.CharField(source='user.email')
-	friends = FriendDataSerializer(many=True)
+	friends = AuthorFriendSerializer(many=True)
 
 	class Meta:
 		model = Author
@@ -95,26 +35,6 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'avatar',
 			'friends',
 			'email',
-		]
-
-
-class FriendsAuthorSerializer(serializers.ModelSerializer):
-	friends = FriendDataSerializer(many=True)
-
-	class Meta:
-		model = Author
-		fields = [
-			'friends',
-		]
-
-
-class FriendRequestsAuthorSerializer(serializers.ModelSerializer):
-	friend_requests = FriendDataSerializer(many=True)
-
-	class Meta:
-		model = Author
-		fields = [
-			'friend_requests',
 		]
 
 
@@ -139,9 +59,90 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 			'date_created',
 		]
 
-	# extra_kwargs = {"password" : {"write_only": True}}
 
-	# http://stackoverflow.com/questions/29457630/extend-user-model-django-rest-framework-3-x-x
+class CommentAuthorSerializer(serializers.ModelSerializer):
+	first_name = serializers.CharField(source='user.first_name')
+	last_name = serializers.CharField(source='user.last_name')
+
+	class Meta:
+		model = Author
+		fields = [
+			'first_name',
+			'last_name',
+			'avatar',
+		]
+
+
+class CommentSerializer(serializers.ModelSerializer):
+	author = CommentAuthorSerializer(read_only=True)
+
+	class Meta:
+		model = Comment
+		fields = [
+			'id',
+			'post',
+			'author',
+			'text',
+		]
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comment
+		fields = [
+			'id',
+			'text',
+		]
+
+
+class PostSerializer(serializers.ModelSerializer):
+	first_name = serializers.CharField(source='author.user.first_name')
+	last_name = serializers.CharField(source='author.user.last_name')
+	comments = CommentSerializer(many=True)
+
+	class Meta:
+		model = Post
+		fields = [
+			'id',
+			'published_date',
+			'author',
+			'text',
+			'public',
+			'first_name',
+			'last_name',
+			'comments'
+		]
+
+
+class CreatePostSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Post
+		fields = [
+			'id',
+			'published_date',
+			'text',
+			'public',
+		]
+
+
+class FriendsAuthorSerializer(serializers.ModelSerializer):
+	friends = AuthorFriendSerializer(many=True)
+
+	class Meta:
+		model = Author
+		fields = [
+			'friends',
+		]
+
+
+class FriendRequestsAuthorSerializer(serializers.ModelSerializer):
+	friend_requests = AuthorFriendSerializer(many=True)
+
+	class Meta:
+		model = Author
+		fields = [
+			'friend_requests',
+		]
 
 	def update(self, instance, validated_data):
 		user_data = validated_data.pop('user', None)
