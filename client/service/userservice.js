@@ -17,30 +17,12 @@ function UserService($http,$rootScope,$location,$cookies) {
     service.getFriendPosts =getFriendPosts;
     service.createUser=createUser;
     service.getAuthorById=getAuthorById;
-    service.logIn = logIn;
+    //service.logIn = logIn;
 
     return service;
 
     function createUser(author){
         return $http.post('http://127.0.0.1:8000/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
-    }
-
-    function logIn(info){
-
-        var req ={
-            method : "POST",
-            url: "http://127.0.0.1:8000/socialnet/auth/",
-            headers : {
-                'Content-Type' : 'application/json',
-                // 'X-CSRFToken' : $cookies['csrftoken']
-            },
-            data : info
-        };
-        // alert(info.username);
-        // $location.path('/')
-        // alert($cookies['csrftoken']);
-        return $http(req).then(handleSuccess, handleError('Error'));
-
     }
 
     function getAllPost(){
