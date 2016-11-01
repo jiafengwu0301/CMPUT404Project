@@ -18,12 +18,9 @@ function LoginController($location, AuthenticationService, FlashService, UserSer
 
     function login() {
         vm.dataLoading = true;
-        $location.path('/');
         AuthenticationService.Login(vm.username, vm.password, function (response) {
-            if (response) {
+            if (response.success) {
                 AuthenticationService.SetCredentials(vm.username, vm.password,response.author);
-
-                $location.path('/');
             } else {
                 FlashService.Error(response.message);
                 vm.dataLoading = false;

@@ -33,19 +33,36 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
 
         /* Use this for real authentication
          ----------------------------------------------*/
-        // var user = {username:username, password:password};
-        // var data = JSON.stringify(user);
-        // $http.post('http://127.0.0.1:8000/socialnet/auth/',data)
-        //    .success(function (response) {
-        //        callback(response);
-        //     // alert(response);
-        // });
-        var a = {username:username, password:password};
 
-        var b = UserService.logIn(a);
-
-        alert(b[0]);
-
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        var user = {'username':username, 'password':password};
+        var data = JSON.stringify(user);
+        //var csrftoken = getCookie('csrftoken');
+        //var config = {headers: { 'X-XSRF-TOKEN':csrftoken }};
+        //alert(csrftoken);
+        $http.post('http://127.0.0.1:8000/socialnet/auth/', user)
+            .success(function (response) {
+                callback(response);
+            })
+            .error(function(response){
+                alert(JSON.stringify(response.detail));
+            });
+        
         // return UserService.logIn(a).success(function (response){
         //     alert(response);
         //     callback(response);
