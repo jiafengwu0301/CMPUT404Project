@@ -33,37 +33,44 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
 
         /* Use this for real authentication
          ----------------------------------------------*/
-        // $http.post('http://127.0.0.1:8000/socialnet/auth/', { username: username, password: password })
+        // var user = {username:username, password:password};
+        // var data = JSON.stringify(user);
+        // $http.post('http://127.0.0.1:8000/socialnet/auth/',data)
         //    .success(function (response) {
         //        callback(response);
-        //    });
+        //     // alert(response);
+        // });
+        var a = {username:username, password:password};
+
+        var b = UserService.logIn(a);
+
+        alert(b[0]);
+
+        // return UserService.logIn(a).success(function (response){
+        //     alert(response);
+        //     callback(response);
+        // });
 
     }
 
-    function SetCredentials(username, password) {
+    function SetCredentials(username, password, author) {
         var authdata = Base64.encode(username + ':' + password);
 
         $rootScope.globals = {
             currentUser: {
                 username: username,
-                author: {
-                        id: 1,
-                        first_name: 'asfdas',
-                        last_name: 'asdfas',
-                        github: 'http://github.com/randomadminurl',
-                        avatar: 'http://127.0.0.1:8000/socialnet/authors/1/home/user/Documents/404/CMPUT404Project/mysite/static/std-avatar.png',
-                        friends: [
-                            2
-                        ],
-                        email: 'asd@sad.c.cc'
-                    },
+                author: author,
                 authdata: authdata
             }
         };
 
+
+
         $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
         $cookieStore.put('globals', $rootScope.globals);
     }
+
+
 
     function ClearCredentials() {
         $rootScope.globals = {};

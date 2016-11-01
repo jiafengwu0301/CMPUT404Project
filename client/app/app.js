@@ -1,7 +1,7 @@
 // http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
 
 angular
-    .module('myApp', ['ngRoute', 'ngCookies'])
+    .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField'])
     .config(config)
     .run(run);
 config.$inject = ['$routeProvider', '$locationProvider'];

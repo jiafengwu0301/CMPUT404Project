@@ -28,6 +28,7 @@
 
 <div class="container">
     <div class="col-md-9">
+        <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
         <form name="form" ng-submit="vm.makePost()" role="form">
             <div class="form-group">
                 <textarea style="resize:none" class="form-control" rows="5" id="post" ng-model="vm.post.text"></textarea>

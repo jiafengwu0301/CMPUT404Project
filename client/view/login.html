@@ -6,7 +6,6 @@
         <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
 
         <form name="form" ng-submit="vm.login()" role="form">
-
             <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
                 <h2>Username: </h2>
                 <input type="text" name="username" id="username" class="form-control" placeholder="Enter Username" ng-model="vm.username" required>

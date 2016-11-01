@@ -5,8 +5,8 @@ angular
     .module('myApp')
     .controller('LoginController', LoginController);
 
-LoginController.$inject = ['$location', 'AuthenticationService', 'FlashService'];
-function LoginController($location, AuthenticationService, FlashService) {
+LoginController.$inject = ['$location', 'AuthenticationService', 'FlashService','UserService'];
+function LoginController($location, AuthenticationService, FlashService, UserService) {
     var vm = this;
 
     vm.login = login;
@@ -18,20 +18,17 @@ function LoginController($location, AuthenticationService, FlashService) {
 
     function login() {
         vm.dataLoading = true;
-        AuthenticationService.SetCredentials(vm.username, vm.password);
         $location.path('/');
-        // AuthenticationService.Login(vm.username, vm.password, function (response) {
-        //     if (response.success) {
-        //         AuthenticationService.SetCredentials(vm.username, vm.password);
-        //         $location.path('/');
-        //     } else {
-        //         FlashService.Error(response.message);
-        //         vm.dataLoading = false;
-        //     }
-        //
-        //     // AuthenticationService.SetCredentials(vm.username, vm.password);
-        //     // $location.path('/');
-        // });
+        AuthenticationService.Login(vm.username, vm.password, function (response) {
+            if (response) {
+                AuthenticationService.SetCredentials(vm.username, vm.password,response.author);
+
+                $location.path('/');
+            } else {
+                FlashService.Error(response.message);
+                vm.dataLoading = false;
+            }
+        });
     };
 }
 
@@ -69,16 +66,14 @@ angular
     .module('myApp')
     .controller('HomeController', HomeController);
 
-HomeController.$inject = ['UserService', '$rootScope'];
-function HomeController(UserService, $rootScope) {
+HomeController.$inject = ['UserService', '$rootScope','$location','FlashService'];
+function HomeController(UserService, $rootScope, $location, FlashService) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
 
     vm.allPosts = [];
     vm.makePost = makePost;
-    // vm.getAuthor = getAuthor;
-    vm.author = null;
     vm.post = null;
     initController();
 
@@ -94,11 +89,20 @@ function HomeController(UserService, $rootScope) {
     }
 
     function makePost(){
-        UserService.newPost(vm.post);
-        loadAllPosts();
+        vm.dataLoading = true;
+        UserService.newPost(vm.post)
+            .then(function (response) {
+                if (response) {
+                    FlashService.Success('Post successful', true);
+                    $location.path('/main');
+                } else {
+                    FlashService.Error(response.message);
+                    vm.dataLoading = false;
+                }
+            });
+        // loadAllPosts();
         vm.post.text = "";
     }
-
 }
 
 //My post Controller
