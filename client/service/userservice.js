@@ -25,23 +25,6 @@ function UserService($http,$rootScope,$location,$cookies) {
         return $http.post('http://127.0.0.1:8000/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
     }
 
-/*    function logIn(info){
-
-        var req ={
-            method : "POST",
-            url: "http://127.0.0.1:8000/socialnet/auth/",
-            headers : {
-                'Content-Type' : 'application/json',
-            },
-            data : info
-        };
-        // alert(info.username);
-        // $location.path('/')
-        // alert($cookies['csrftoken']);
-        return $http(req).then(handleSuccess, handleError('Error'));
-
-    }*/
-
     function getAllPost(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/').then(handleSuccess, handleError('Error'));
     }

@@ -5,74 +5,35 @@
     .factory('AuthenticationService', AuthenticationService);
 
 AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'UserService'];
+
 function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserService) {
     var service = {};
 
-    service.Login = Login;
-    service.SetCredentials = SetCredentials;
-    service.ClearCredentials = ClearCredentials;
+    service.login = login;
+    service.setCredentials = setCredentials;
+    service.clearCredentials = clearCredentials;
 
     return service;
 
-    function Login(username, password, callback) {
+    function login(username, password) {
 
-        /* Dummy authentication for testing, uses $timeout to simulate api call
-         ----------------------------------------------*/
-        // $timeout(function () {
-        //     var response;
-        //     UserService.GetByUsername(username)
-        //         .then(function (user) {
-        //             if (user !== null && user.password === password) {
-        //                 response = { success: true };
-        //             } else {
-        //                 response = { success: false, message: 'Username or password is incorrect' };
-        //             }
-        //             callback(response);
-        //         });
-        // }, 1000);
-
-        /* Use this for real authentication
-         ----------------------------------------------*/
-
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        
-        var user = {'username':username, 'password':password};
-        var data = JSON.stringify(user);
-        //var csrftoken = getCookie('csrftoken');
-        //var config = {headers: { 'X-XSRF-TOKEN':csrftoken }};
-        //alert(csrftoken);
-        $http.post('http://127.0.0.1:8000/socialnet/auth/', user)
-            .success(function (response) {
-                callback(response);
-            })
-            .error(function(response){
-                alert(JSON.stringify(response.detail));
-            });
-        
-        // return UserService.logIn(a).success(function (response){
-        //     alert(response);
-        //     callback(response);
-        // });
+        user = {'username':username, 'password':password};
+        return $http.post('http://127.0.0.1:8000/socialnet/auth/', user)
+            .then(handleSuccess, handleError);
 
     }
 
-    function SetCredentials(username, password, author) {
-        var authdata = Base64.encode(username + ':' + password);
+    function handleSuccess(response) {
+        return response;
+    }
 
+    function handleError(error) {
+        return { success: false, response: error };
+    }
+
+    function setCredentials(username, password, author) {
+        
+        var authdata = Base64.encode(username + ':' + password);
         $rootScope.globals = {
             currentUser: {
                 username: username,
@@ -80,19 +41,14 @@ function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserSe
                 authdata: authdata
             }
         };
-
-
-
-        $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
         $cookieStore.put('globals', $rootScope.globals);
+
     }
 
-
-
-    function ClearCredentials() {
+    function clearCredentials() {
         $rootScope.globals = {};
         $cookieStore.remove('globals');
-        $http.defaults.headers.common.Authorization = 'Basic';
+        //$http.defaults.headers.common.Authorization = 'Basic';
     }
 }
 

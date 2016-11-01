@@ -3,47 +3,41 @@
 //Login Controller
 angular
     .module('myApp')
-    .controller('LoginController', LoginController);
+    .controller('LoginController', LoginController)
+    .controller('RegisterController', RegisterController)
+    .controller('HomeController', HomeController)
+    .controller('MyPostController', MyPostController)
+    .controller('MyFriendController', MyFriendController)
+    .controller('FriendPostController', FriendPostController);
 
-LoginController.$inject = ['$location', 'AuthenticationService', 'FlashService','UserService'];
 function LoginController($location, AuthenticationService, FlashService, UserService) {
     var vm = this;
-
+    vm.errorMessage = "";
     vm.login = login;
 
     (function initController() {
-        // reset login status
-        AuthenticationService.ClearCredentials();
+        AuthenticationService.clearCredentials();
     })();
 
     function login() {
-        vm.dataLoading = true;
-        AuthenticationService.Login(vm.username, vm.password, function (response) {
-            if (response.success) {
-                AuthenticationService.SetCredentials(vm.username, vm.password,response.author);
-            } else {
-                FlashService.Error(response.message);
-                vm.dataLoading = false;
+        AuthenticationService.login(vm.username, vm.password)
+            .then(function(response){
+                if (response.status == 200){
+                    AuthenticationService.setCredentials(vm.username, vm.password, response.data);
+                    $location.path('/');
+                } else {
+                    alert(response.response.data.non_field_errors);
+                }
             }
-        });
-    };
+        );
+    }
 }
 
-
-//Sign Up Controller
-angular
-    .module('myApp')
-    .controller('RegisterController', RegisterController);
-
-RegisterController.$inject = ['UserService', '$location', '$rootScope', 'FlashService'];
 function RegisterController(UserService, $location, $rootScope, FlashService) {
     var vm = this;
-
     vm.register = register;
-
     function register() {
         vm.dataLoading = true;
-        // alert(vm.user);
         UserService.createUser(vm.user)
             .then(function (response) {
                 if (response) {
@@ -57,16 +51,8 @@ function RegisterController(UserService, $location, $rootScope, FlashService) {
     }
 }
 
-
-//Home page Controller
-angular
-    .module('myApp')
-    .controller('HomeController', HomeController);
-
-HomeController.$inject = ['UserService', '$rootScope','$location','FlashService'];
 function HomeController(UserService, $rootScope, $location, FlashService) {
     var vm = this;
-
     vm.currentAuthor = $rootScope.globals.currentUser.author;
 
     vm.allPosts = [];
@@ -102,12 +88,6 @@ function HomeController(UserService, $rootScope, $location, FlashService) {
     }
 }
 
-//My post Controller
-angular
-    .module('myApp')
-    .controller('MyPostController', MyPostController);
-
-MyPostController.$inject = ['UserService', '$rootScope'];
 function MyPostController(UserService, $rootScope) {
     var vm = this;
 
@@ -141,12 +121,6 @@ function MyPostController(UserService, $rootScope) {
     }
 }
 
-// My friend Controller
-angular
-    .module('myApp')
-    .controller('MyFriendController', MyFriendController);
-
-MyFriendController.$inject = ['UserService', '$rootScope'];
 function MyFriendController(UserService, $rootScope) {
     var vm = this;
 
@@ -178,12 +152,6 @@ function MyFriendController(UserService, $rootScope) {
     // }
 }
 
-// Friend Post Controller
-angular
-    .module('myApp')
-    .controller('FriendPostController', FriendPostController);
-
-FriendPostController.$inject = ['UserService', '$rootScope', '$routeParams'];
 function FriendPostController(UserService, $rootScope, $routeParams) {
     var vm = this;
 
