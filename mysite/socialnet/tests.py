@@ -74,7 +74,7 @@ from .serializers import AuthorSerializer
 class CreateUserTest(APITestCase):
     def setUp(self):
         self.superuser = User.objects.create_superuser('admin', 'admin123', 'admin@email.com')
-        self.assertTrue(self.suerpuser.is_staff)
+        self.assertTrue(self.superuser.is_staff)
         # self.assertTrue(self.admin.is_admin)
         self.assertTrue(self.superuser.is_superuser)
         self.superuser.save()
