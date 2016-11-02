@@ -1,6 +1,6 @@
 from django.test import TestCase
 #create your test here
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 from django.contrib.auth.models import User
 
 from socialnet.models import *
