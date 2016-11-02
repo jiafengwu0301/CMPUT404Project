@@ -4,7 +4,7 @@ language: python
 python:
   - "2.7"
 
-before_script: -python mysite/manage.py createsuperuser
+before_script: - python mysite/manage.py createsuperuser
 #command to install dependencies
 install: pip install -r requirements.txt
 
