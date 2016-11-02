@@ -72,6 +72,7 @@ from rest_framework.test import APITestCase
 from .serializers import AuthorSerializer
 
 class CreateUserTest(APITestCase):
+    urls = 'mysite.urls'
     def setUp(self):
         self.superuser = User.objects.create_superuser('admin', 'admin123', 'admin@email.com')
         self.assertTrue(self.superuser.is_staff)
