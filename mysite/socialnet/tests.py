@@ -73,13 +73,13 @@ from .serializers import AuthorSerializer
 
 class CreateUserTest(APITestCase):
     def setUp(self):
-        self.admin = User.objects.create_superuser('admin', 'admin123', 'admin@email.com')
-        self.assertTrue(self.admin.is_staff)
+        self.superuser = User.objects.create_superuser('admin', 'admin123', 'admin@email.com')
+        self.assertTrue(self.supuser.is_staff)
         # self.assertTrue(self.admin.is_admin)
-        self.assertTrue(self.admin.is_superuser)
-        self.admin.save()
+        self.assertTrue(self.superuser.is_superuser)
+        self.superuser.save()
         self.client.login(username = 'admin', password = 'admin123')
         self.data = {'username': 'mike', 'first_name': 'Mike', 'last_name': 'Tyson'}
     def test_can_create_user(self):
-        repsonse = self.client.post(reverse('create'), self.data)
+        repsonse = self.client.post(reverse('user-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
