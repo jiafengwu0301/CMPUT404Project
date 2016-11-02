@@ -1,4 +1,4 @@
-"""mysite URL Configuration
+ """mysite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -22,3 +22,7 @@ urlpatterns = [
 	url(r'^admin/', admin.site.urls),
 	url(r'^socialnet/', include('socialnet.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# added for static -gemma
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT
