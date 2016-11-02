@@ -42,15 +42,15 @@ class PostsTests(TestCase):
         self._plaintext_safe(model)
         self.is_markdown(model)
 
-class AuthorsTest(TestCase):
-    def setUp(self):
-        # create user profile, the format is: username, email, password
-        self.user1 = User.objects.create_user('user1', 'user1@email.com', 'user1')
-        self.user2 = User.objects.create_user('user2', 'user2@email.com', 'user2')
-        self.author1 = Author(user = self.user1)
-        self.author1.save()
-        self.author2 = Author(user = self.user2)
-        self.author2.save()
-
-    def test_create(self):
-        #should create users
+# class AuthorsTest(TestCase):
+#     def setUp(self):
+#         # create user profile, the format is: username, email, password
+#         self.user1 = User.objects.create_user('user1', 'user1@email.com', 'user1')
+#         self.user2 = User.objects.create_user('user2', 'user2@email.com', 'user2')
+#         self.author1 = Author(user = self.user1)
+#         self.author1.save()
+#         self.author2 = Author(user = self.user2)
+#         self.author2.save()
+    #
+    # def test_create(self):
+    #     #should create users
