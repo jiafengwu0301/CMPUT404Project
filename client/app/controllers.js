@@ -1,5 +1,6 @@
-// http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
+// Reference: http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
 
+// the controllers used for getting and receiving JSON data from view and userService
 
 angular
     .module('myApp')
@@ -20,6 +21,7 @@ function loginController($location, authenticationService, FlashService, userSer
         authenticationService.clearCredentials();
     })();
 
+    // perform login and authentication with server, if username and password correct, use setCredentials to save the authdata as cookie
     function login() {
         authenticationService.login(vm.username, vm.password)
             .then(function(response){
@@ -34,9 +36,13 @@ function loginController($location, authenticationService, FlashService, userSer
     }
 }
 
+// Sign Up Controller
 function registerController(userService, $location, $rootScope, FlashService) {
     var vm = this;
+
     vm.register = register;
+
+    // create a new account
     function register() {
         vm.dataLoading = true;
         userService.createUser(vm.user)
@@ -52,8 +58,10 @@ function registerController(userService, $location, $rootScope, FlashService) {
     }
 }
 
+// Home Page Controller
 function homeController(userService, $rootScope, $location, FlashService) {
     var vm = this;
+
     vm.currentAuthor = $rootScope.globals.currentUser.author;
     vm.allPosts = [];
     vm.makePost = makePost;
@@ -67,14 +75,16 @@ function homeController(userService, $rootScope, $location, FlashService) {
         loadAllPosts();
     }
 
+    // load all post current user can see
     function loadAllPosts() {
         userService.getAllPost()
             .then(function (allpost) {
                 vm.allPosts = allpost.results;
+                $location.path('/');
             });
-
     }
 
+    // make a new post
     function makePost(){
         vm.dataLoading = true;
         userService.newPost(vm.post)
@@ -90,6 +100,7 @@ function homeController(userService, $rootScope, $location, FlashService) {
         vm.post.text = "";
     }
 
+    // make comment for posts that current user can see
     function makeComment(id){
         userService.newComment(id, vm.comment)
             .then(function(response){
@@ -100,6 +111,7 @@ function homeController(userService, $rootScope, $location, FlashService) {
     }
 }
 
+// My Posts Controller
 function myPostController(userService, $rootScope, $location) {
     var vm = this;
 
@@ -116,6 +128,7 @@ function myPostController(userService, $rootScope, $location) {
         loadAllMyPost();
     }
 
+    // load all post current user made
     function loadAllMyPost(){
         userService.getPost(vm.currentAuthor.id)
             .then(function (allpost) {
@@ -123,6 +136,7 @@ function myPostController(userService, $rootScope, $location) {
             });
     }
 
+    // delete the post that current user owned
     function deletePost(id){
         userService.deletePost(id)
             .then(function(response){
@@ -132,6 +146,7 @@ function myPostController(userService, $rootScope, $location) {
             });
     }
 
+    // edit a post that current user owned
     function editPost(id){
         userService.editPost(id, vm.edit)
             .then(function(response){
@@ -141,6 +156,7 @@ function myPostController(userService, $rootScope, $location) {
             });
     }
 
+    // delete a comment in a post which current user owned
     function deleteComment(id){
         userService.deleteComment(id)
             .then(function(response){
@@ -149,21 +165,23 @@ function myPostController(userService, $rootScope, $location) {
                 }
             })
     }
-
 }
 
+// My Friend Controller
 function myFriendController(userService, $rootScope) {
     var vm = this;
 
     vm.myFriends = [];
     vm.friend =null;
     vm.currentAuthor = $rootScope.globals.currentUser.author;
+
     initController();
 
     function initController() {
         loadAllMyFriend();
     }
 
+    // load all friends that current user have
     function loadAllMyFriend(){
         userService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
@@ -172,6 +190,7 @@ function myFriendController(userService, $rootScope) {
     }
 }
 
+// Friend Posts Controller
 function friendPostController(userService, $rootScope, $routeParams) {
     var vm = this;
 
@@ -186,12 +205,15 @@ function friendPostController(userService, $rootScope, $routeParams) {
         getFriend();
     }
 
+    // get all posts that current user's friend have
     function getFriendPost(){
         userService.getPost(vm.friend_id)
             .then(function (friendPosts) {
                 vm.friendPosts = friendPosts;
             });
     }
+
+    // get the information of current user's friend
     function getFriend(){
         userService.getAuthorById(vm.friend_id)
             .then(function (friend) {

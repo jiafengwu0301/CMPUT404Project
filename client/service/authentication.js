@@ -1,4 +1,6 @@
-// http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
+// Reference: http://jasonwatmore.com/post/2014/05/26/angularjs-basic-http-authentication-example
+
+// the authenticationService is used for authenticate the username and password with server, if the username and password is correct, using Base64 to encode the username and password as cookies.
 
 ﻿angular
     .module('myApp')
@@ -15,6 +17,7 @@ function authenticationService($http, $cookieStore, $rootScope, $timeout, userSe
 
     return service;
 
+    // make a post request to server with username and password to see if it is authenticate
     function login(username, password) {
         var user = {'username':username, 'password':password};
         return $http.post('http://127.0.0.1:8000/socialnet/auth/', user)
@@ -28,7 +31,7 @@ function authenticationService($http, $cookieStore, $rootScope, $timeout, userSe
     function handleError(error) {
         return { success: false, response: error };
     }
-
+    // save the encoded username and password in cookie
     function setCredentials(username, password, author) {
         var authdata = Base64.encode(username + ':' + password);
         $rootScope.globals = {
@@ -41,6 +44,7 @@ function authenticationService($http, $cookieStore, $rootScope, $timeout, userSe
         $cookieStore.put('globals', $rootScope.globals);
     }
 
+    // after log out, remov the cookie
     function clearCredentials() {
         $rootScope.globals = {};
         $cookieStore.remove('globals');
