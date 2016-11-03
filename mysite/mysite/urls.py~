@@ -26,4 +26,4 @@ urlpatterns = [
 # added for static,
 # a safeguard because only supposed to be use for development -gemma
 if settings.DEBUG:
-	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT

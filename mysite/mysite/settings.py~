@@ -130,7 +130,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn")
 #added for static, where to get the static files -gemma 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-    '/var/www/static/',
+    '/mysite/static/',
 ]
 
 REST_FRAMEWORK = {
