@@ -120,6 +120,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
+# https://www.codingforentrepreneurs.com/projects/try-django-19/setup-static-files-css-javascript-images-django/
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -132,8 +133,7 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
 #added for static, where to get the static files -gemma 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    '/var/www/static/',
+    os.path.join(BASE_DIR, "static")
 ]
 
 REST_FRAMEWORK = {

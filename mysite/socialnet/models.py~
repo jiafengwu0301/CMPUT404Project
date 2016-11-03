@@ -25,7 +25,7 @@ class Post(models.Model):
 	author = models.ForeignKey(Author)
 	text = models.CharField(max_length=255)
 	public = models.BooleanField(default=True)
-	image = models.FileField(null=True, blank=True)
+	image = models.fileField(null=True, blank=True)
 
 	def __str__(self):
 		return self.author.user.username + " on " + str(self.published_date)
