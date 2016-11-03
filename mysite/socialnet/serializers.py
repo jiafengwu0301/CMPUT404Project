@@ -122,6 +122,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
 			'published_date',
 			'text',
 			'public',
+            'image'
 		]
 
 
