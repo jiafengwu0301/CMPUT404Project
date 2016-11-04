@@ -110,7 +110,8 @@ class PostSerializer(serializers.ModelSerializer):
 			'public',
 			'first_name',
 			'last_name',
-			'comments'
+			'comments',
+			'image'
 		]
 
 
@@ -122,6 +123,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
 			'published_date',
 			'text',
 			'public',
+            'image'
 		]
 
 

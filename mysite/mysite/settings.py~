@@ -127,13 +127,14 @@ MEDIA_URL = '/media/'
 
 # static cdn = content delivery network,
 # like artificial server holding our static content
-STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn")
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_cdn")
 # for user uploaded media
-MEDIA_ROOT = os.path.join(BASE_DIR, "media_cdn")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
-#added for static, where to get the static files -gemma
+#added for static, where to get the static files -gemma 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
+    os.path.join(BASE_DIR, "static"),
+    '/var/www/static/',
 ]
 
 REST_FRAMEWORK = {

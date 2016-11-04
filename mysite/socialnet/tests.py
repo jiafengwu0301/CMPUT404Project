@@ -18,13 +18,12 @@ class AuthorApiTest(APITestCase):
             "email": "sdanbv@email.com",
             "first_name": "asdgqwe",
             "last_name": "asdggqw",
-            "github": "asdkjvc@github.com",
-            "avatar": "null"
+            "github": "asdkjvc@github.com"
         }
-        request = factory.post('/socialnet/authors/create/', data)
+        request = factory.post('/socialnet/authors/create/', data, format='json')
         view = AuthorCreateView.as_view()
         response = view(request)
-
+        self.assertEqual(response.status_code,201)
 
 class PostApiTest(APITestCase):
 
