@@ -43,7 +43,7 @@
                     <option value="false">False</option>
                 </select>
 
-                <input type="file" ngf-select="" ng-model="vm.post.image" name="file" ngf-accept="'image/*'" required="" class="ng-pristine ng-invalid ng-invalid-required" accept="image/*">
+                <input type="file" ngf-select="" ng-model="vm.post.image" name="file" ngf-accept="'image/*'" class="ng-pristine ng-invalid ng-invalid-required" accept="image/*">
 
                 <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
             </div>
@@ -52,7 +52,7 @@
         <hr>
         <h2><small>Recent Posts</small></h2>
         <hr>
-        <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-results.published_date'">
+        <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published_date'">
 
             <h3>{{post.first_name}} {{post.last_name}} </h3>
 
@@ -60,11 +60,11 @@
             <p>{{post.text}}</p>
 
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+
             <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
                 <div class="form-group well">
                     <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.text" required></textarea>
-                    <!-- <span><h3>Your Comment: </h3></span>
-                    <input type="text" name="comment" ng-model = "vm.comments.text" class="form-control" placeholder="Leave a comments here..." required> -->
+
                     <button type="submit" class="btn pull-right" ng-disabled="form.$invalid">Submit</button>
                 </div>
             </form>

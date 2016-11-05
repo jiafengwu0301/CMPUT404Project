@@ -82,14 +82,12 @@ function homeController(userService, $rootScope, $location, FlashService) {
         userService.getAllPost()
             .then(function (allpost) {
                 vm.allPosts = allpost.results;
-                alert(JSON.stringify(vm.allPosts));
                 $location.path('/');
             });
     }
 
     // make a new post
     function makePost(){
-        alert(JSON.stringify(vm.post));
         vm.dataLoading = true;
         userService.newPost(vm.post)
             .then(function (response) {

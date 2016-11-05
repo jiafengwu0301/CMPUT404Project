@@ -33,20 +33,20 @@
     <div class="col-md-9">
 
         <hr>
-        <h4><small>My Posts</small></h4>
+        <h2><small>My Posts</small></h2>
         <hr>
         <div class="well" ng-repeat="post in vm.myPosts | orderBy: '-published_date'">
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}} </h5>
             <p>{{post.text}}</p>
 
-            <img ng-show="post.image" ng-src="{{post.image}}"
+            <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+
             <div class="form-group">
+                <button type="button" class="btn btn-info" ng-model="collapsed_comments" ng-click="collapsed_comments=!collapsed_comments">See Comments</button>
 
-            <button type="button" class="btn btn-info" ng-model="collapsed_comments" ng-click="collapsed_comments=!collapsed_comments">See Comments</button>
+                <button type="button" class="btn btn-danger pull-right" ng-click = "vm.deletePost(post.id)">Delete</button>
 
-            <button type="button" class="btn btn-danger pull-right" ng-click = "vm.deletePost(post.id)">Delete</button>
-
-            <button type="button" class="btn btn-warning pull-right" style="margin-right:1em;" ng-model="collapsed_edit" ng-click="collapsed_edit=!collapsed_edit">Edit</button>
+                <button type="button" class="btn btn-warning pull-right" style="margin-right:1em;" ng-model="collapsed_edit" ng-click="collapsed_edit=!collapsed_edit">Edit</button>
             </div>
 
             <div ng-show="collapsed_comments">
