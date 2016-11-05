@@ -51,10 +51,17 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = (
+        'GET',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS'
+    )
 
 CORS_ORIGIN_WHITELIST = (
-	'localhost:3000',
-	# '127.0.0.1:3000',
+
 )
 
 ROOT_URLCONF = 'mysite.urls'
@@ -62,7 +69,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
-		'DIRS': [],
+		'DIRS': [os.path.join(BASE_DIR,'static')],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -138,5 +145,9 @@ STATICFILES_DIRS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20
+    'PAGE_SIZE': 20,
+	'DEFAULT_AUTHENTICATION_CLASSES': (
+         'rest_framework.authentication.BasicAuthentication',
+         'rest_framework.authentication.SessionAuthentication',
+	)
 }

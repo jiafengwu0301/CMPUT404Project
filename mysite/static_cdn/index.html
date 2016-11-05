@@ -1,0 +1,38 @@
+<!-- ng-view will load the view when you access different url -->
+
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+    {% load staticfiles %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- <link type="text/css" rel="stylesheet" href="css/app.css"> -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <title>My blog</title>
+    </head>
+
+    <body>
+
+
+        <div ng-view></div>
+
+        <!-- load dependencies -->
+
+
+        <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="{% static "js/angular.js" %}"></script>
+        <script src="{% static "js/angular-route.js" %}"></script>
+        <script src="{% static "js/angular-cookies.js" %}"></script>
+        <script src="{% static "js/angular-confirm-field.min.js" %}"></script>
+        <script src="{% static "js/ng-file-upload.js" %}"></script>
+
+        <!-- load local file -->
+        <script src="{% static "app/app.js" %}"></script>
+        <script src="{% static "service/authentication.js" %}"></script>
+        <script src="{% static "service/flashservice.js" %}"></script>
+        <script src="{% static "app/controllers.js" %}"></script>
+        <script src="{% static "service/userservice.js" %}"></script>
+    </body>
+</html>
