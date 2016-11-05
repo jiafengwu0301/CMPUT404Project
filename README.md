@@ -15,10 +15,45 @@ Travis Status: ![Travis Status](https://travis-ci.org/CMPUT404F16T06/CMPUT404Pro
 Link to Travis: https://travis-ci.org/CMPUT404F16T06/CMPUT404Project
 
 Installed Libraries:
-- pip install django
-- pip install djangorestframework
-- pip install Pillow (for images loading images on django)
+- pip install -r requirements.txt
+ 
 
 Content served:
 List of posts: http://127.0.0.1:8000/socialnet/posts/?format=json
+
+-----------------------------
+
+[Please see wiki for more info on the project](https://github.com/CMPUT404F16T06/CMPUT404Project/wiki)
+
+
+User login page
+- username:admin
+- password:password123
+
+Admin login page
+- username:admin
+- password:password123
+
+
+To run our project:
+
+    cd mysite/
+
+    python manage.py runserver in terminal
+
+    you go to this links:
+
+    blog login page: 
+
+    127.0.0.1:8000/socialnet/    
+
+    other django links: 
+
+    127.0.0.1:8000/socialnet/posts
+
+    127.0.0.1:8000/socialnet/authors
+
+    127.0.0.1:8000/socialnet/comments
+
+    [for more urls please see the info here](https://github.com/CMPUT404F16T06/CMPUT404Project/wiki/RESTful-API)
 
