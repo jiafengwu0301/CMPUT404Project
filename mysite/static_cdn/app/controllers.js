@@ -9,7 +9,8 @@ angular
     .controller('homeController', homeController)
     .controller('myPostController', myPostController)
     .controller('myFriendController', myFriendController)
-    .controller('friendPostController', friendPostController);
+    .controller('friendPostController', friendPostController)
+    .controller('myInfoController', myInfoController);
 
 // Login Controller
 function loginController($location, authenticationService, FlashService, userService) {
@@ -23,6 +24,7 @@ function loginController($location, authenticationService, FlashService, userSer
 
     // perform login and authentication with server, if username and password correct, use setCredentials to save the authdata as cookie
     function login() {
+        vm.dataLoading = true;
         authenticationService.login(vm.username, vm.password)
             .then(function(response){
                 if (response.status == 200){
@@ -30,6 +32,7 @@ function loginController($location, authenticationService, FlashService, userSer
                     $location.path('/');
                 } else {
                     alert(response.response.data.non_field_errors);
+                    vm.dataLoading = false;
                 }
             }
         );
@@ -47,10 +50,12 @@ function registerController(userService, $location, $rootScope, FlashService) {
         vm.dataLoading = true;
         userService.createUser(vm.user)
             .then(function (response) {
-                if (response) {
+
+                if (response.success) {
                     FlashService.Success('Registration successful', true);
                     $location.path('/login');
                 } else {
+                    alert("Sign Not Success");
                     FlashService.Error(response.message);
                     vm.dataLoading = false;
                 }
@@ -59,7 +64,7 @@ function registerController(userService, $location, $rootScope, FlashService) {
 }
 
 // Home Page Controller
-function homeController(userService, $rootScope, $location, FlashService) {
+function homeController(userService, $route, $rootScope, $location, FlashService) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -92,13 +97,14 @@ function homeController(userService, $rootScope, $location, FlashService) {
             .then(function (response) {
                 if (response) {
                     FlashService.Success('Post successful', true);
-                    $location.path('/main');
+                    $route.reload();
                 } else {
                     FlashService.Error(response.message);
                     vm.dataLoading = false;
                 }
             });
         vm.post.text = "";
+
     }
 
     // make comment for posts that current user can see
@@ -106,14 +112,14 @@ function homeController(userService, $rootScope, $location, FlashService) {
         userService.newComment(id, vm.comment)
             .then(function(response){
                 if (response){
-                    loadAllMyPost();
+                    $route.reload();
                 };
             });
     }
 }
 
 // My Posts Controller
-function myPostController(userService, $rootScope, $location) {
+function myPostController(userService, $route, $rootScope, $location) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -134,6 +140,7 @@ function myPostController(userService, $rootScope, $location) {
         userService.getPost(vm.currentAuthor.id)
             .then(function (allpost) {
                 vm.myPosts = allpost.results;
+                $location.path('/myposts');
             });
     }
 
@@ -142,7 +149,7 @@ function myPostController(userService, $rootScope, $location) {
         userService.deletePost(id)
             .then(function(response){
                 if (response){
-                    loadAllMyPost();
+                    $route.reload();
                 }
             });
     }
@@ -152,19 +159,15 @@ function myPostController(userService, $rootScope, $location) {
         userService.editPost(id, vm.edit)
             .then(function(response){
                 if (response){
-                    loadAllMyPost();
+                    $route.reload();
                 }
             });
     }
 
     // delete a comment in a post which current user owned
     function deleteComment(id){
-        userService.deleteComment(id)
-            .then(function(response){
-                if (response){
-                    loadAllMyPost();
-                }
-            })
+        userService.deleteComment(id);
+        $route.reload();
     }
 }
 
@@ -221,4 +224,16 @@ function friendPostController(userService, $rootScope, $routeParams) {
                 vm.friend = friend;
             });
     }
+}
+
+function myInfoController(userService, $location, $rootScope, FlashService) {
+    var vm = this;
+
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+    vm.updateAuthor = updateAuthor;
+
+    function updateAuthor(){
+
+    }
+
 }

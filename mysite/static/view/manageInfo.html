@@ -50,29 +50,6 @@
                 <span ng-show="form.last_namelast_namelast_name.$dirty && form.last_name.$error.required" class="help-block">Last name is required</span>
             </div>
 
-            <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
-                <label>Username:</label>
-                <input type="text" name="username" id="username" class="form-control" placeholder="Enter Username" ng-model="vm.updateAuthor.username" ng-maxlength="150" required />
-                <p><small>150 characters or fewer. Letters, digits and @ . + - _ only.</small></p>
-                <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
-                <span ng-show ="form.username.$error.maxlength" class="help-block">150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
-                <label>Password:</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" ng-model="vm.updateAuthor.password" ng-minlength="8" required />
-                <p><small>At least 8 characters.</small></p>
-                <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
-                <span ng-show ="form.password.$error.minlength" class="help-block">This password is too short. It must contain at least 8 characters.</span>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error': form.password_confirm.$dirty && form.password_confirm.$error.required }">
-                <label>Confirm Password:</label>
-                <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Confirm Password" ng-confirm-field ng-model="password_confirm" confirm-against="vm.updateAuthor.password" ng-minlength="8"/>
-                <p><small>At least 8 characters.</small></p>
-                <span ng-show="form.password_confirm.$error.noMatch" class="help-block">Fields do not match</span>
-                <span ng-show ="form.password_confirm.$error.minlength" class="help-block">This password is too short. It must contain at least 8 characters.</span>
-            </div>
 
             <div class="form-group" ng-class="{ 'has-error': form.github.$dirty && form.github.$error.required }">
                 <label>Github:</label>

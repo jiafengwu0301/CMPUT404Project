@@ -3,57 +3,58 @@
 // this is the model of the front end, cause Angular is Single Page Application, when you access different url, the model will load different ng-view which is view written in html, and the controller that view needed
 
 angular
-    .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField','ngFileUpload'])
+    .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField','file-model'])
     .config(config)
     .run(run);
+    
 config.$inject = ['$routeProvider', '$locationProvider'];
 function config($routeProvider, $locationProvider) {
 
     // show home page when accessing '/'
     $routeProvider.when('/',{
-        templateUrl: 'view/main.html',
+        templateUrl: 'main.html',
         controller:'homeController',
         controllerAs: 'vm'
     })
 
     // show login page when accessing '/login'
     .when('/login',{
-        templateUrl: 'view/login.html',
+        templateUrl: 'login.html',
         controller: 'loginController',
         controllerAs: 'vm'
     })
 
     // show sign up page when accessing '/sign up'
     .when('/signup',{
-        templateUrl: 'view/signup.html',
+        templateUrl: 'signup.html',
         controller: 'registerController',
         controllerAs: 'vm'
     })
 
     // show current user's posts when accessing '/myposts'
     .when('/myposts',{
-        templateUrl: 'view/myposts.html',
+        templateUrl: 'myposts.html',
         controller: 'myPostController',
         controllerAs: 'vm'
     })
 
     // show currents user's friends list when accessing '/managefriends'
     .when('/managefriends',{
-        templateUrl: 'view/manageFriends.html',
+        templateUrl: 'manageFriends.html',
         controller: 'myFriendController',
         controllerAs: 'vm'
     })
 
     // show current user's information when accessing '/manageinfo'
     .when('/manageinfo',{
-        templateUrl: 'view/manageInfo.html',
-        controller: 'homeController',
+        templateUrl: 'manageInfo.html',
+        controller: 'myInfoController',
         controllerAs: 'vm'
     })
 
     // show friend's post when accessing '/friendPost/id'
     .when('/friendPost/:id',{
-        templateUrl: 'view/friendpost.html',
+        templateUrl: 'friendpost.html',
         controller: 'friendPostController',
         controllerAs: 'vm'
     })
@@ -69,14 +70,12 @@ function run($rootScope, $location, $cookieStore, $http) {
     // keep user logged in after page refresh
     $rootScope.globals = $cookieStore.get('globals') || {};
     if ($rootScope.globals.currentUser) {
-        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
     }
 
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
         // redirect to login page if not logged in and trying to access a restricted page
-        var restrictedPage = $.inArray($location.path(), ['/login', '/signup']) === -1;
-        var loggedIn = $rootScope.globals.currentUser;
-        if (restrictedPage && !loggedIn) {
+        if ($location.path() !== '/login' && !rootScope.globals.currentUser){
             $location.path('/login');
         }
     });

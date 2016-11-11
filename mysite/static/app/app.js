@@ -6,6 +6,7 @@ angular
     .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField','file-model'])
     .config(config)
     .run(run);
+    
 config.$inject = ['$routeProvider', '$locationProvider'];
 function config($routeProvider, $locationProvider) {
 
@@ -69,15 +70,12 @@ function run($rootScope, $location, $cookieStore, $http) {
     // keep user logged in after page refresh
     $rootScope.globals = $cookieStore.get('globals') || {};
     if ($rootScope.globals.currentUser) {
-        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
     }
 
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
         // redirect to login page if not logged in and trying to access a restricted page
-        var restrictedPage = $.inArray($location.path(), ['/login', '/signup']) === -1;
-        // alert(restrictedPage);
-        var loggedIn = $rootScope.globals.currentUser;
-        if (restrictedPage && !loggedIn) {
+        if ($location.path() !== '/login' && !rootScope.globals.currentUser){
             $location.path('/login');
         }
     });

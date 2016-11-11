@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
         <title>My blog</title>
+        <base href='/static/view/'></base>
     </head>
 
     <body>
@@ -18,15 +19,13 @@
         <div ng-view></div>
 
         <!-- load dependencies -->
-
-
         <script src="{% static "js/jquery-3.1.1.min.js" %}"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="{% static "js/angular.js" %}"></script>
         <script src="{% static "js/angular-route.js" %}"></script>
         <script src="{% static "js/angular-cookies.js" %}"></script>
         <script src="{% static "js/angular-confirm-field.min.js" %}"></script>
-        <script src="{% static "js/ng-file-upload.js" %}"></script>
+        <script src="{% static "js/angular-file-model.js" %}"></script>
 
         <!-- load local file -->
         <script src="{% static "app/app.js" %}"></script>

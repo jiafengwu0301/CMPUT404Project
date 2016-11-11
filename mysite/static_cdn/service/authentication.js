@@ -34,6 +34,7 @@ function authenticationService($http, $cookieStore, $rootScope, $timeout, userSe
     // save the encoded username and password in cookie
     function setCredentials(username, password, author) {
         var authdata = Base64.encode(username + ':' + password);
+        alert(authdata);
         $rootScope.globals = {
             currentUser: {
                 username: username,
@@ -41,10 +42,11 @@ function authenticationService($http, $cookieStore, $rootScope, $timeout, userSe
                 authdata: authdata
             }
         };
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
         $cookieStore.put('globals', $rootScope.globals);
     }
 
-    // after log out, remov the cookie
+    // after log out, remove the cookie
     function clearCredentials() {
         $rootScope.globals = {};
         $cookieStore.remove('globals');
