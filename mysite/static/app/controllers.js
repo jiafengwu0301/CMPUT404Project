@@ -9,7 +9,8 @@ angular
     .controller('homeController', homeController)
     .controller('myPostController', myPostController)
     .controller('myFriendController', myFriendController)
-    .controller('friendPostController', friendPostController);
+    .controller('friendPostController', friendPostController)
+    .controller('myInfoController', myInfoController);
 
 // Login Controller
 function loginController($location, authenticationService, FlashService, userService) {
@@ -88,6 +89,7 @@ function homeController(userService, $rootScope, $location, FlashService) {
 
     // make a new post
     function makePost(){
+        alert(JSON.stringify(vm.post));
         vm.dataLoading = true;
         userService.newPost(vm.post)
             .then(function (response) {
@@ -100,6 +102,7 @@ function homeController(userService, $rootScope, $location, FlashService) {
                 }
             });
         vm.post.text = "";
+
     }
 
     // make comment for posts that current user can see
@@ -222,4 +225,16 @@ function friendPostController(userService, $rootScope, $routeParams) {
                 vm.friend = friend;
             });
     }
+}
+
+function myInfoController(userService, $location, $rootScope, FlashService) {
+    var vm = this;
+
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+    vm.updateAuthor = updateAuthor;
+
+    function updateAuthor(){
+
+    }
+
 }

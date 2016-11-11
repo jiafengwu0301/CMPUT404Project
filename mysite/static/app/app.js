@@ -3,7 +3,7 @@
 // this is the model of the front end, cause Angular is Single Page Application, when you access different url, the model will load different ng-view which is view written in html, and the controller that view needed
 
 angular
-    .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField','ngFileUpload'])
+    .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField','file-model'])
     .config(config)
     .run(run);
 config.$inject = ['$routeProvider', '$locationProvider'];
@@ -47,8 +47,8 @@ function config($routeProvider, $locationProvider) {
     // show current user's information when accessing '/manageinfo'
     .when('/manageinfo',{
         templateUrl: 'manageInfo.html',
-        // controller: 'homeController',
-        // controllerAs: 'vm'
+        controller: 'myInfoController',
+        controllerAs: 'vm'
     })
 
     // show friend's post when accessing '/friendPost/id'

@@ -43,7 +43,7 @@
                     <option value="false">False</option>
                 </select>
 
-                <input type="file" ngf-select="" ng-model="vm.post.image" name="file" ngf-accept="'image/*'" class="ng-pristine ng-invalid ng-invalid-required" accept="image/*">
+                <input type="file" file-model="vm.post.image">
 
                 <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
             </div>

@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.password_confirm.$dirty && form.password_confirm.$error.required }">
-                    <h2>Password:</h2>
+                    <h2>Confirm Password:</h2>
                     <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Confirm Password" ng-confirm-field ng-model="password_confirm" confirm-against="vm.user.password" ng-minlength="8"/>
                     <p><small>At least 8 characters.</small></p>
                     <span ng-show="form.password_confirm.$error.noMatch" class="help-block">Fields do not match</span>

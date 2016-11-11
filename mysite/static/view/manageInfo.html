@@ -11,7 +11,7 @@
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="/socialnet/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+            <li><a href="/socialnet/#/manageinfo"><span class="glyphicon glyphicon-updateAuthor"></span> My Profile</a></li>
             <li><a href="/socialnet/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
         </ul>
 
@@ -36,56 +36,66 @@
             <h1>Update My Information:</h1>
         </div>
 
-        <form class="form-horizontal">
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="img">Profile Picture:</label>
-                <div class="col-sm-10">
-                    <input type="file" class="file" id="pro_pic" placeholder="Select a Picture">
-                </div>
+        <form class="form" ng-submit="vm.updateAuthor()" role"form">
+
+            <div class="form-group" ng-class="{ 'has-error': form.first_name.$dirty && form.first_name.$error.required }">
+                <label>First Name: </label>
+                <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter First Name" ng-model="vm.updateAuthor.first_name" required />
+                <span ng-show="form.first_name.$dirty && form.first_name.$error.required" class="help-block">First name is required</span>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.last_namelast_name.$dirty && form.last_name.$error.required }">
+                <label>Last Name: </label>
+                <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter Last Name" ng-model="vm.updateAuthor.last_name" required />
+                <span ng-show="form.last_namelast_namelast_name.$dirty && form.last_name.$error.required" class="help-block">Last name is required</span>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                <label>Username:</label>
+                <input type="text" name="username" id="username" class="form-control" placeholder="Enter Username" ng-model="vm.updateAuthor.username" ng-maxlength="150" required />
+                <p><small>150 characters or fewer. Letters, digits and @ . + - _ only.</small></p>
+                <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+                <span ng-show ="form.username.$error.maxlength" class="help-block">150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+                <label>Password:</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" ng-model="vm.updateAuthor.password" ng-minlength="8" required />
+                <p><small>At least 8 characters.</small></p>
+                <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+                <span ng-show ="form.password.$error.minlength" class="help-block">This password is too short. It must contain at least 8 characters.</span>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.password_confirm.$dirty && form.password_confirm.$error.required }">
+                <label>Confirm Password:</label>
+                <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Confirm Password" ng-confirm-field ng-model="password_confirm" confirm-against="vm.updateAuthor.password" ng-minlength="8"/>
+                <p><small>At least 8 characters.</small></p>
+                <span ng-show="form.password_confirm.$error.noMatch" class="help-block">Fields do not match</span>
+                <span ng-show ="form.password_confirm.$error.minlength" class="help-block">This password is too short. It must contain at least 8 characters.</span>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.github.$dirty && form.github.$error.required }">
+                <label>Github:</label>
+                <input type="text" name="github" id="github" class="form-control" placeholder="Enter Github" ng-model="vm.updateAuthor.github" required />
+                <span ng-show="form.github.$dirty && form.github.$error.required" class="help-block">Github is required</span>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
+                <label>Email:</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" ng-model="vm.updateAuthor.email" required />
+                <span ng-show="form.email.$dirty && form.email.$error.required" class="help-block">Email is required</span>
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="first_name">First Name:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="first_name" placeholder="Enter First Name">
-                </div>
+                <label>Avatar:</label>
+                <input type="file" class="form-control" id="avatar" placeholder="Select a Picture" ng-model="vm.updateAuthor.avatar" ng-init="null" />
             </div>
 
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="last_name">Last Name:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="last_name" placeholder="Enter Last Name">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="github">Github:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="github" placeholder="Enter Nickname">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="email">Email:</label>
-                <div class="col-sm-10">
-                    <input type="email" class="form-control" id="email" placeholder="Enter email">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="pwd">Password:</label>
-                <div class="col-sm-10">
-                    <input type="password" class="form-control" id="pwd" placeholder="Enter password">
-                </div>
-            </div>
-
-            <hr>
             <br><br>
-
-            <div class="form-group">
-                <div class="col-sm-offset-9 col-sm-10">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                    <a href="/socialnet/#/main" class="btn btn-default">Cancel</a>
-                </div>
+            <div class="form-actions col-sm-offset-9 col-sm-10col-sm-offset-9 col-sm-10">
+                <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Update</button>
+                <img ng-if="vm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                <a href="/socialnet/#/main" class="btn btn-default">Cancel</a>
             </div>
         </form>
     </div>
@@ -93,7 +103,7 @@
     <div class="col-sm-3">
         <div class="avatar">
             <img src="https://freeiconshop.com/files/edd/person-outline-filled.png" height="260" width="260">
-            <h2>Anny Pan</h2>
+            <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 
         <ul class="list-group">
