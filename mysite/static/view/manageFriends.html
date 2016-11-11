@@ -44,7 +44,8 @@
 
     <div class="col-sm-3">
         <div class="avatar">
-            <img src="https://freeiconshop.com/files/edd/person-outline-filled.png" height="260" width="260">
+            <img ng-show="vm.currentAuthor.avatar == null" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avator != null" src="vm.currentAuthor.avator" height="260" width="260"/>
             <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 
