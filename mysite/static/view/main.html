@@ -35,8 +35,9 @@
         <form name="form" ng-submit="vm.makePost()" role="form">
             <div class="form-group">
                 <textarea style="resize:none" class="form-control" rows="5" id="post" ng-model="vm.post.text" required></textarea>
-            </div>
-            <div class="form-group">
+                <div class="controls">
+                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
+                </div>
                 <span>Public: </span>
                 <select ng-model="vm.post.public" required>
                     <option value="true" selected>True</option>
@@ -45,7 +46,6 @@
 
                 <input type="file" file-model="vm.post.image">
 
-                <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
             </div>
         </form>
 
@@ -61,19 +61,24 @@
 
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
-            <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
-                <div class="form-group well">
-                    <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.text" required></textarea>
+            <br>
 
-                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid">Submit</button>
-                </div>
-            </form>
-
+            <button type="button" class="btn btn-default" ng-model="collapsed1" ng-click="collapsed1=!collapsed1" style="margin-right:1em;">New Comment</button>
 
             <button type="button" class="btn btn-info" ng-model="collapsed" ng-click="collapsed=!collapsed">See Comments</button>
 
             <div ng-show="collapsed">
-                <p class="well" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}}: {{comment.text}}</p>
+                <br>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}}: {{comment.text}}</li>
+            </div>
+
+            <div ng-show="collapsed1">
+                <br>
+                <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
+                    <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.text" required></textarea>
+
+                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid">Submit</button>
+                </form>
             </div>
         </div>
     </div>
@@ -81,7 +86,7 @@
     <div class="col-sm-3">
         <div class="avatar">
             <img ng-show="vm.currentAuthor.avatar == null" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
-            <img ng-show="vm.currentAuthor.avator != null" src="vm.currentAuthor.avator" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar != null" src="vm.currentAuthor.avatar" height="260" width="260"/>
             <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 

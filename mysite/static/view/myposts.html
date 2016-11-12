@@ -42,6 +42,8 @@
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
             <div class="form-group">
+                <button type="button" class="btn btn-default" ng-model="collapsed_newcomment" ng-click="collapsed_newcomment=!collapsed_newcomment" style="margin-right:1em;">New Comment</button>
+
                 <button type="button" class="btn btn-info" ng-model="collapsed_comments" ng-click="collapsed_comments=!collapsed_comments">See Comments</button>
 
                 <button type="button" class="btn btn-danger pull-right" ng-click = "vm.deletePost(post.id)">Delete</button>
@@ -50,8 +52,15 @@
             </div>
 
             <div ng-show="collapsed_comments">
-                <p class="well" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}}: {{comment.text}}<button type="button" class="btn btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)">Delete</button></p>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}}: {{comment.text}} <button type="button" class="btn btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)">Delete</button></li>
+            </div>
 
+            <div ng-show="collapsed_newcomment">
+                <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
+                    <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.text" required></textarea>
+
+                    <button type="submit" class="btn pull-right" >Submit</button>
+                </form>
             </div>
 
             <div ng-show="collapsed_edit">
@@ -72,7 +81,7 @@
     <div class="col-sm-3">
         <div class="avatar">
             <img ng-show="vm.currentAuthor.avatar == null" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
-            <img ng-show="vm.currentAuthor.avator != null" src="vm.currentAuthor.avator" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar != null" src="vm.currentAuthor.avatar" height="260" width="260"/>
             <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 

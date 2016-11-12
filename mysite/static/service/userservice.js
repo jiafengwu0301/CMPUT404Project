@@ -41,7 +41,6 @@ function userService($http,$rootScope,$location,$cookies) {
 
     // make a new post for current user
     function newPost(post){
-        var a = JSON.stringify(post);
         return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/create/',JSON.parse(a)).then(handleSuccess, handleError('Error'));
     }
 

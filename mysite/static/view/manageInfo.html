@@ -40,32 +40,32 @@
 
             <div class="form-group" ng-class="{ 'has-error': form.first_name.$dirty && form.first_name.$error.required }">
                 <label>First Name: </label>
-                <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter First Name" ng-model="vm.updateAuthor.first_name" required />
+                <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter First Name" ng-model="vm.update.first_name" ng-init="vm.update.first_name=vm.currentAuthor.first_name" />
                 <span ng-show="form.first_name.$dirty && form.first_name.$error.required" class="help-block">First name is required</span>
             </div>
 
             <div class="form-group" ng-class="{ 'has-error': form.last_namelast_name.$dirty && form.last_name.$error.required }">
                 <label>Last Name: </label>
-                <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter Last Name" ng-model="vm.updateAuthor.last_name" required />
+                <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter Last Name" ng-model="vm.update.last_name" ng-init="vm.update.last_name=vm.currentAuthor.last_name" />
                 <span ng-show="form.last_namelast_namelast_name.$dirty && form.last_name.$error.required" class="help-block">Last name is required</span>
             </div>
 
 
             <div class="form-group" ng-class="{ 'has-error': form.github.$dirty && form.github.$error.required }">
                 <label>Github:</label>
-                <input type="text" name="github" id="github" class="form-control" placeholder="Enter Github" ng-model="vm.updateAuthor.github" required />
+                <input type="text" name="github" id="github" class="form-control" placeholder="Enter Github" ng-model="vm.update.github" ng-init="vm.update.github=vm.currentAuthor.github" />
                 <span ng-show="form.github.$dirty && form.github.$error.required" class="help-block">Github is required</span>
             </div>
 
             <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
                 <label>Email:</label>
-                <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" ng-model="vm.updateAuthor.email" required />
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" ng-model="vm.update.email" ng-init="vm.update.email=vm.currentAuthor.email" />
                 <span ng-show="form.email.$dirty && form.email.$error.required" class="help-block">Email is required</span>
             </div>
 
             <div class="form-group">
                 <label>Avatar:</label>
-                <input type="file" class="form-control" id="avatar" placeholder="Select a Picture" ng-model="vm.updateAuthor.avatar" ng-init="null" />
+                <input type="file" class="form-control" id="avatar" placeholder="Select a Picture" ng-model="vm.update.avatar" ng-init="vm.update.avatar=vm.currentAuthor.avatar" />
             </div>
 
             <br><br>
@@ -80,7 +80,7 @@
     <div class="col-sm-3">
         <div class="avatar">
             <img ng-show="vm.currentAuthor.avatar == null" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
-            <img ng-show="vm.currentAuthor.avator != null" src="vm.currentAuthor.avator" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar != null" src="vm.currentAuthor.avatar" height="260" width="260"/>
             <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 

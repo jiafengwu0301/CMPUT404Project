@@ -128,6 +128,8 @@ function myPostController(userService, $route, $rootScope, $location) {
     vm.edit = null;
     vm.editPost = editPost;
     vm.deleteComment=deleteComment;
+    vm.comment=null;
+    vm.makeComment = makeComment;
 
     initController();
 
@@ -161,6 +163,15 @@ function myPostController(userService, $route, $rootScope, $location) {
                 if (response){
                     $route.reload();
                 }
+            });
+    }
+
+    function makeComment(id){
+        userService.newComment(id, vm.comment)
+            .then(function(response){
+                if (response){
+                    $route.reload();
+                };
             });
     }
 
@@ -226,14 +237,16 @@ function friendPostController(userService, $rootScope, $routeParams) {
     }
 }
 
-function myInfoController(userService, $location, $rootScope, FlashService) {
+function myInfoController(userService, $route, $location, $rootScope, FlashService) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
     vm.updateAuthor = updateAuthor;
+    vm.update=null;
 
     function updateAuthor(){
-
+        alert(JSON.stringify(vm.update));
+        $route.reload();
     }
 
 }
