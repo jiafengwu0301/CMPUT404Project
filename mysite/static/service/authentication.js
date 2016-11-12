@@ -47,7 +47,7 @@ function authenticationService($http, $cookies, $rootScope, $timeout, userServic
     // after log out, remove the cookie
     function clearCredentials() {
         $rootScope.globals = {};
-        $cookies.remove('globals');
+        $cookies.remove('globals',{ path: '/'});
     }
 }
 
