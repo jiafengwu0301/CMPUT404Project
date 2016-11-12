@@ -75,7 +75,9 @@ function run($rootScope, $location, $cookies, $http) {
 
     $rootScope.$on('$locationChangeStart', function (event, next, current) {
         // redirect to login page if not logged in and trying to access a restricted page
-        if ($location.path() !== '/login' && !$rootScope.globals.currentUser){
+        var restrictedPage = $.inArray($location.path(), ['/login', '/signup']) === -1;
+        var loggedIn = $rootScope.globals.currentUser;
+        if (restrictedPage && !loggedIn) {
             $location.path('/login');
         }
     });

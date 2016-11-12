@@ -37,9 +37,14 @@
         <hr>
         <div class="well" ng-repeat="post in vm.myPosts | orderBy: '-published_date'">
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}} </h5>
+
+            <hr>
+
             <p>{{post.text}}</p>
 
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+
+            <hr>
 
             <div class="form-group">
                 <button type="button" class="btn btn-default" ng-model="collapsed_newcomment" ng-click="collapsed_newcomment=!collapsed_newcomment" style="margin-right:1em;">New Comment</button>
@@ -52,7 +57,7 @@
             </div>
 
             <div ng-show="collapsed_comments">
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}}: {{comment.text}} <button type="button" class="btn btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)">Delete</button></li>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.text}} <button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)">Delete</button></li>
             </div>
 
             <div ng-show="collapsed_newcomment">

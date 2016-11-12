@@ -43,7 +43,6 @@
                     <option value="true" selected>True</option>
                     <option value="false">False</option>
                 </select>
-
                 <input type="file" file-model="vm.post.image">
 
             </div>
@@ -55,13 +54,15 @@
         <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published_date'">
 
             <h3>{{post.first_name}} {{post.last_name}} </h3>
-
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}}</h5>
+
+            <hr>
+            
             <p>{{post.text}}</p>
 
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
-            <br>
+            <hr>
 
             <button type="button" class="btn btn-default" ng-model="collapsed1" ng-click="collapsed1=!collapsed1" style="margin-right:1em;">New Comment</button>
 
@@ -69,7 +70,7 @@
 
             <div ng-show="collapsed">
                 <br>
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}}: {{comment.text}}</li>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.text}}</li>
             </div>
 
             <div ng-show="collapsed1">
