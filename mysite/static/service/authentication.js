@@ -41,6 +41,7 @@ function authenticationService($http, $cookies, $rootScope, $timeout, userServic
                 authdata: authdata
             }
         };
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
         $cookies.putObject('globals', $rootScope.globals, { path: '/'});
     }
 
