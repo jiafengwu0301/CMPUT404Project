@@ -6,9 +6,9 @@
     .module('myApp')
     .factory('authenticationService', authenticationService);
 
-authenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'userService'];
+authenticationService.$inject = ['$http', '$cookies', '$rootScope', '$timeout', 'userService'];
 
-function authenticationService($http, $cookieStore, $rootScope, $timeout, userService) {
+function authenticationService($http, $cookies, $rootScope, $timeout, userService) {
     var service = {};
 
     service.login = login;
@@ -41,14 +41,13 @@ function authenticationService($http, $cookieStore, $rootScope, $timeout, userSe
                 authdata: authdata
             }
         };
-        $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
-        $cookieStore.put('globals', $rootScope.globals);
+        $cookies.putObject('globals', $rootScope.globals, { path: '/'});
     }
 
     // after log out, remove the cookie
     function clearCredentials() {
         $rootScope.globals = {};
-        $cookieStore.remove('globals');
+        $cookies.remove('globals');
     }
 }
 
