@@ -21,12 +21,17 @@ function userService($http,$rootScope,$location,$cookies) {
     service.getAuthorById=getAuthorById;
     service.newComment = newComment;
     service.deleteComment = deleteComment;
+    service.updateAuthor = updateAuthor;
 
     return service;
 
     // create a user
     function createUser(author){
         return $http.post('http://127.0.0.1:8000/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
+    }
+
+    function updateAuthor(id, update){
+        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/update/'+id+'/', update)
     }
 
     // get all posts that current use has permission

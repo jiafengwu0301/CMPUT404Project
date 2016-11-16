@@ -13,7 +13,7 @@ angular
     .controller('myInfoController', myInfoController);
 
 // Login Controller
-function loginController($location, authenticationService, FlashService, userService) {
+function loginController($route, $location, authenticationService, FlashService, userService) {
     var vm = this;
     vm.errorMessage = "";
     vm.login = login;
@@ -244,8 +244,9 @@ function myInfoController(userService, $route, $location, $rootScope, FlashServi
     vm.update=null;
 
     function updateAuthor(){
-        alert(JSON.stringify(vm.update));
-        $route.reload();
+        userService.updateAuthor(vm.currentAuthor.id, vm.update);
+        alert("You will be logged out, log in again to complete update")
+        $location.path('/login');
     }
 
 }
