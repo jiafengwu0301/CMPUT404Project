@@ -12,3 +12,5 @@ urlpatterns = [
 	url(r'^(?P<pk>\d+)/comments/create/$', viewsposts.CommentCreateView.as_view(), name='comment_create'),
 
 ]
+
+

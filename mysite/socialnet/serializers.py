@@ -60,6 +60,31 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 		]
 
 
+class UpdateUserSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = User
+		fields = [
+			'password',
+			'first_name',
+			'last_name',
+			'email',
+		]
+
+
+class UpdateAuthorSerializer(serializers.ModelSerializer):
+	user = UpdateUserSerializer()
+
+	class Meta:
+		model = Author
+		fields = [
+			'user',
+			'github',
+			'avatar',
+			'date_created',
+		]
+
+
 class CommentAuthorSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
 	last_name = serializers.CharField(source='user.last_name')

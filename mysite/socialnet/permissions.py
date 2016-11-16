@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from .models import Post, Comment
+from .models import Post, Comment, Author
 
 
 class IsOwnerForModifyPost(permissions.BasePermission):
@@ -47,3 +47,11 @@ class IsOwnerForModifyComment(permissions.BasePermission):
 		actualPost = actualComment.post
 		return request.user.author.id == actualComment.author.id or \
 		       request.user.author.id == actualPost.author.id
+
+
+class IsOwnerForModifyAuthor(permissions.BasePermission):
+	message = "You cant modify an author that is not you"
+
+	def has_object_permission(self, request, view, obj):
+		return Author.objects.get(id=request.user.author.id) ==\
+		       Author.objects.get(id=view.kwargs['pk'])
