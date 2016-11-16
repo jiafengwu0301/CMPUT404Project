@@ -59,6 +59,47 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 			'date_created',
 		]
 
+	def create(self, validated_data):
+		user_data = validated_data.pop('user')
+		user = User.objects.create(**user_data)
+		user.set_password(user_data['password'])
+		user.save()
+		author = Author.objects.create(user=user, **validated_data)
+		return author
+
+
+class UpdateAuthorSerializer(serializers.ModelSerializer):
+	email = serializers.CharField(source='user.email')
+	first_name = serializers.CharField(source='user.first_name')
+	last_name = serializers.CharField(source='user.last_name')
+	password = serializers.CharField(source='user.password', style={'input_type': 'password'})
+	uid = serializers.CharField(source='user.id', read_only=True, allow_blank=True)
+
+	class Meta:
+		model = Author
+		fields = [
+			'uid',
+			'password',
+			'email',
+			'first_name',
+			'last_name',
+			'github',
+			'avatar',
+		]
+
+	def update(self, instance, validated_data):
+		user_data = validated_data.pop('user', None)
+		user = User.objects.get(id=instance.user.id)
+		user.email = user_data['email']
+		user.first_name = user_data['first_name']
+		user.last_name = user_data['last_name']
+		user.set_password(user_data['password'])
+		instance.github = validated_data.get('github', instance.github)
+		instance.avatar = validated_data.get('avatar', instance.avatar)
+		user.save()
+		instance.save()
+		return instance
+
 
 class CommentAuthorSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
@@ -123,7 +164,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
 			'published_date',
 			'text',
 			'public',
-            'image'
+			'image'
 		]
 
 

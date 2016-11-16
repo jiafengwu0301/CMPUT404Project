@@ -3,7 +3,7 @@ from rest_framework.decorators import detail_route
 from rest_framework import generics, permissions, response, status, views
 from .models import Author
 from .serializers import AuthorSerializer, FullAuthorSerializer, AuthenticateSerializer, FriendsAuthorSerializer, \
-	FriendRequestsAuthorSerializer
+	FriendRequestsAuthorSerializer, UpdateAuthorSerializer
 from . import permissions as my_permissions
 
 
@@ -19,9 +19,15 @@ class AuthorCreateView(generics.CreateAPIView):
 	permission_classes = [permissions.AllowAny]
 
 
+class AuthorUpdateView(generics.UpdateAPIView):
+	queryset = Author.objects.all()
+	serializer_class = UpdateAuthorSerializer
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForModifyAuthor]
+
+
 class AuthorRetrieveView(generics.RetrieveAPIView):
 	queryset = Author.objects.all()
-	serializer_class = AuthorSerializer
+	serializer_class = FullAuthorSerializer
 	permission_classes = [permissions.IsAuthenticated]
 
 
@@ -44,6 +50,7 @@ class FriendsAuthorView(generics.RetrieveAPIView):
 	permission_classes = [permissions.IsAuthenticated]
 
 
+#todo
 class FriendRequestsAuthorView(viewsets.ModelViewSet):
 	#queryset = Author.objects.all()
 	serializer_class = FriendRequestsAuthorSerializer
@@ -62,7 +69,7 @@ class FriendRequestsAuthorView(viewsets.ModelViewSet):
 			friend_requests.save()
 			return friend_requests
 
-
+#todo
 class SendFriendRequestAuthorView(generics.CreateAPIView):
 	queryset = Author.objects.all()
 	serializer_class = FriendRequestsAuthorSerializer
