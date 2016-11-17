@@ -83,11 +83,13 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 
 
 class UpdateAuthorSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(source='user.email')
-    first_name = serializers.CharField(source='user.first_name')
-    last_name = serializers.CharField(source='user.last_name')
-    password = serializers.CharField(source='user.password', style={'input_type': 'password'})
+    email = serializers.CharField(source='user.email', allow_blank=True, allow_null=True)
+    first_name = serializers.CharField(source='user.first_name', allow_blank=True, allow_null=True )
+    last_name = serializers.CharField(source='user.last_name', allow_blank=True, allow_null=True)
+    password = serializers.CharField(source='user.password', style={'input_type': 'password'},
+                                     allow_blank=True, allow_null=True)
     uid = serializers.CharField(source='user.id', read_only=True, allow_blank=True)
+    github = serializers.CharField(allow_blank=True, allow_null=True)
 
     class Meta:
         model = Author
@@ -104,15 +106,22 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         user = User.objects.get(id=instance.user.id)
-        user.email = user_data['email']
-        user.first_name = user_data['first_name']
-        user.last_name = user_data['last_name']
-        user.set_password(user_data['password'])
-        instance.github = validated_data.get('github', instance.github)
-        instance.avatar = validated_data.get('avatar', instance.avatar)
+        user.email = self.value_or_keep(user.email, user_data['email'])
+        user.first_name = self.value_or_keep(user.first_name, user_data['first_name'])
+        user.last_name = self.value_or_keep(user.last_name, user_data['last_name'])
+        if user_data['password'] != "":
+            user.set_password(user_data['password'])
+        instance.github = self.value_or_keep(instance.github, validated_data.get('github', instance.github))
+        instance.avatar = self.value_or_keep(instance.avatar, validated_data.get('avatar', instance.avatar))
         user.save()
         instance.save()
         return instance
+
+    @staticmethod
+    def value_or_keep(field, value):
+        if value == "":
+            return field
+        return value
 
 
 class CommentAuthorSerializer(serializers.ModelSerializer):

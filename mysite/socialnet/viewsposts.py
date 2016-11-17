@@ -30,8 +30,9 @@ class PostListView(generics.ListAPIView):
 	permission_classes = [permissions.IsAuthenticated]
 
 	def get_queryset(self):
-		result_list = list(chain(Post.objects.filter(public=True),
-		                         Post.objects.filter(author=self.request.user.author, public=False)))
+		public_posts = Post.objects.filter(public=True)
+		my_private_posts = Post.objects.filter(author=self.request.user.author, public=False)
+		result_list = list(chain(public_posts, my_private_posts))
 		return result_list
 
 
