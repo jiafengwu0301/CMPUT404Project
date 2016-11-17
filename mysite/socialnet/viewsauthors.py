@@ -1,17 +1,18 @@
 from django.core import exceptions as django_exceptions
+from rest_framework import generics, permissions, response, status, views
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
-from rest_framework import generics, permissions, response, status, views
-from .models import Author
-from .serializers import AuthorSerializer, FullAuthorSerializer, AuthenticateSerializer, \
-    UpdateAuthorSerializer, AuthorNetworkSerializer
+
 from . import permissions as my_permissions
+from .models import Author
+from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
+    UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorFriendSerializer
 
 
 class AuthorListView(generics.ListAPIView):
     queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = AuthorFriendSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class AuthorCreateView(generics.CreateAPIView):
