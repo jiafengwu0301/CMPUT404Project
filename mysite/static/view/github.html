@@ -1,14 +1,14 @@
-<!-- this view shows the friends list of current author -->
+<!-- this is the home page of blog, it shows all posts and comments that current author allow to see, and make a new post -->
 
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/socialnet/#/main">Bloooooooog</a>
+            <a class="navbar-brand" href="/socialnet/#/">Bloooooooog</a>
         </div>
 
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/socialnet/#/main">Home</a></li>
+            <li class="active"><a href="/socialnet/#/">Home</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -31,26 +31,35 @@
 </nav>
 
 <div class="container">
-
     <div class="col-md-9">
+        <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
+        <form name="form" ng-submit="vm.makePost()" role="form">
+            <div class="form-group">
+                <textarea style="resize:none" class="form-control" rows="5" id="post" ng-model="vm.post.text" required></textarea>
+                <div class="controls">
+                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
+                </div>
+                <span>Public: </span>
+                <select ng-model="vm.post.public" required>
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                </select>
+                <input type="file" file-model="vm.post.image">
 
-        <div class="page-header">
-            <h2>Friends:</h2>
-        </div>
-        <h4>People You Are Following:</h4>
-        <div>
-            <li ng-repeat="friend in vm.myFriends.following | orderBy:first_name" class="list-group-item"><a href="/socialnet/#/friendPost/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
-            <h5 ng-show="!vm.myFriends.following.length" align="center">No Following</h5>
-        </div>
+            </div>
+        </form>
 
         <hr>
+        <h2><small><a href="/socialnet/#/">Recent Posts</a> Github Activity</small></h2>
+        <hr>
+        <div class="well" ng-repeat="activity in vm.github">
+            <h4>Github User: <a href="https://github.com/{{activity.actor.login}}">{{activity.actor.login}}</a></h4>
+            <h5><span class="glyphicon glyphicon-time"></span>{{activity.created_at}}</h5>
+            <hr>
+            <h5>{{activity.type}} at repository <a href="https://github.com/{{activity.repo.name}}">{{activity.repo.name}}</a></h5>
+            <h5 ng-hide="!activity.payload.commits[0].message.length">Commit message: {{activity.payload.commits[0].message}}</h5>
 
-        <h4>Your Follower:</h4>
-        <div>
-            <li ng-repeat="friend in vm.myFriends.followers | orderBy:first_name" class="list-group-item"><a href="/socialnet/#/friendPost/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
         </div>
-
-
     </div>
 
     <div class="col-sm-3">
@@ -66,4 +75,5 @@
             <li class="list-group-item"><a href="/socialnet/#/firendRequest">Friend Request</a></li>
         </ul>
     </div>
+
 </div>

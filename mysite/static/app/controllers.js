@@ -10,7 +10,8 @@ angular
     .controller('myPostController', myPostController)
     .controller('myFriendController', myFriendController)
     .controller('friendPostController', friendPostController)
-    .controller('myInfoController', myInfoController);
+    .controller('myInfoController', myInfoController)
+    .controller('githubController',githubController);
 
 // Login Controller
 function loginController($route, $location, authenticationService, FlashService, userService) {
@@ -50,8 +51,7 @@ function registerController(userService, $location, $rootScope, FlashService) {
         vm.dataLoading = true;
         userService.createUser(vm.user)
             .then(function (response) {
-
-                if (response.success) {
+                if (response) {
                     FlashService.Success('Registration successful', true);
                     $location.path('/login');
                 } else {
@@ -73,19 +73,30 @@ function homeController(userService, $route, $rootScope, $location, FlashService
     vm.post = null;
     vm.comment =null;
     vm.makeComment = makeComment;
+    vm.allAuthor = [];
+    vm.searchArray = null;
+
 
     initController();
 
     function initController() {
         loadAllPosts();
+        loadAllAuthor();
     }
 
     // load all post current user can see
     function loadAllPosts() {
         userService.getAllPost()
             .then(function (allpost) {
-                vm.allPosts = allpost.results;
+                vm.allPosts = allpost;
                 $location.path('/');
+            });
+    }
+
+    function loadAllAuthor(){
+        userService.getAllAuthor()
+            .then(function (allAuthor) {
+                vm.allAuthor = allAuthor.data;
             });
     }
 
@@ -129,19 +140,30 @@ function myPostController(userService, $route, $rootScope, $location) {
     vm.deleteComment=deleteComment;
     vm.comment=null;
     vm.makeComment = makeComment;
+    vm.allAuthor = [];
+    vm.searchArray = null;
 
     initController();
 
     function initController() {
         loadAllMyPost();
+        loadAllAuthor();
+
     }
 
     // load all post current user made
     function loadAllMyPost(){
         userService.getPost(vm.currentAuthor.id)
             .then(function (allpost) {
-                vm.myPosts = allpost.results;
+                vm.myPosts = allpost;
                 $location.path('/myposts');
+            });
+    }
+
+    function loadAllAuthor(){
+        userService.getAllAuthor()
+            .then(function (allAuthor) {
+                vm.allAuthor = allAuthor.data;
             });
     }
 
@@ -188,35 +210,62 @@ function myFriendController(userService, $rootScope) {
     vm.myFriends = [];
     vm.friend =null;
     vm.currentAuthor = $rootScope.globals.currentUser.author;
+    vm.allAuthor = [];
+    vm.searchArray = null;
 
     initController();
 
     function initController() {
         loadAllMyFriend();
+        loadAllAuthor();
     }
 
     // load all friends that current user have
     function loadAllMyFriend(){
         userService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
-                vm.myFriends = myFriends.friends;
+                vm.myFriends = myFriends;
+            });
+    }
+
+    function loadAllAuthor(){
+        userService.getAllAuthor()
+            .then(function (allAuthor) {
+                vm.allAuthor = allAuthor.data;
             });
     }
 }
 
 // Friend Posts Controller
-function friendPostController(userService, $rootScope, $routeParams) {
+function friendPostController(userService,$route, $rootScope, $routeParams) {
     var vm = this;
 
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
     vm.friend_id = $routeParams.id;
     vm.friendPosts=[];
     vm.friend = [];
+    vm.allAuthor = [];
+    vm.searchArray = null;
+    vm.allFriend = [];
+    vm.unFollow = unFollow;
+    vm.follow = follow;
+    vm.comment=null;
+    vm.makeComment = makeComment;
 
     initController();
 
     function initController() {
         getFriendPost();
+        loadAllAuthor();
         getFriend();
+        getAllAuthorFriend();
+    }
+
+    function loadAllAuthor(){
+        userService.getAllAuthor()
+            .then(function (allAuthor) {
+                vm.allAuthor = allAuthor.data;
+            });
     }
 
     // get all posts that current user's friend have
@@ -234,6 +283,32 @@ function friendPostController(userService, $rootScope, $routeParams) {
                 vm.friend = friend;
             });
     }
+
+    function getAllAuthorFriend(){
+        userService.getAllMyFriend(vm.currentAuthor.id)
+            .then(function (myFriends) {
+            vm.allFriend = myFriends;
+        });
+    }
+
+    function makeComment(id){
+        userService.newComment(id, vm.comment)
+            .then(function(response){
+                if (response){
+                    $route.reload();
+                };
+            });
+    }
+
+    function unFollow(id){
+        userService.removeFollowing(id);
+        $route.reload();
+    }
+
+    function follow(id){
+        userService.addFollowing(id);
+        $route.reload();
+    }
 }
 
 function myInfoController(userService, $route, $location, $rootScope, FlashService) {
@@ -242,6 +317,21 @@ function myInfoController(userService, $route, $location, $rootScope, FlashServi
     vm.currentAuthor = $rootScope.globals.currentUser.author;
     vm.updateAuthor = updateAuthor;
     vm.update=null;
+    vm.allAuthor = [];
+    vm.searchArray = null;
+
+    initController();
+
+    function initController() {
+        loadAllAuthor();
+    }
+
+    function loadAllAuthor(){
+        userService.getAllAuthor()
+            .then(function (allAuthor) {
+                vm.allAuthor = allAuthor.data;
+            });
+    }
 
     function updateAuthor(){
         userService.updateAuthor(vm.currentAuthor.id, vm.update);
@@ -249,4 +339,50 @@ function myInfoController(userService, $route, $location, $rootScope, FlashServi
         $location.path('/login');
     }
 
+}
+
+function githubController(userService, $route, $location, $rootScope, FlashService){
+    var vm = this;
+
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+    vm.github = null;
+    vm.makePost = makePost;
+    vm.post = null;
+
+    initController();
+
+    function initController() {
+        loadGitHub();
+    }
+
+    function loadGitHub(){
+        var username = "jiafengwu0301";
+        // var myfriends = [];
+        // userService.getAllMyFriend(vm.currentAuthor.id)
+        //     .then(function (friends){
+        //         myfriends = friends.following;
+        //         alert(JSON.stringify(myfriends));
+        //     })
+
+        userService.getGithub(username)
+            .then(function (activity) {
+                vm.github = activity.data;
+            });
+    }
+
+    // make a new post
+    function makePost(){
+        vm.dataLoading = true;
+        userService.newPost(vm.post)
+            .then(function (response) {
+                if (response) {
+                    FlashService.Success('Post successful', true);
+                    $route.reload();
+                } else {
+                    FlashService.Error(response.message);
+                    vm.dataLoading = false;
+                }
+            });
+        vm.post.text = "";
+    }
 }
