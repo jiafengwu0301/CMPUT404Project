@@ -34,6 +34,7 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.post('http://127.0.0.1:8000/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
     }
 
+    // update author's informations
     function updateAuthor(id, update){
         return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/update/', update)
     }
@@ -105,10 +106,12 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/comments/'+id+'/destroy/').then(handleSuccess, handleError('Error'));
     }
 
+    // cancel following of an author
     function removeFollowing(id){
         return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/unfollow/'+id+'/')
     }
 
+    // following an author
     function addFollowing(id){
         return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/follow/'+id+'/')
     }

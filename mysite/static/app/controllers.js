@@ -93,6 +93,7 @@ function homeController(userService, $route, $rootScope, $location, FlashService
             });
     }
 
+    // load all author
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
@@ -160,6 +161,7 @@ function myPostController(userService, $route, $rootScope, $location) {
             });
     }
 
+    // load all author
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
@@ -187,6 +189,7 @@ function myPostController(userService, $route, $rootScope, $location) {
             });
     }
 
+    // make a commnet for post with id
     function makeComment(id){
         userService.newComment(id, vm.comment)
             .then(function(response){
@@ -228,6 +231,7 @@ function myFriendController(userService, $rootScope) {
             });
     }
 
+    // get all author
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
@@ -284,6 +288,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
             });
     }
 
+    // get all author you are following and author are follering you
     function getAllAuthorFriend(){
         userService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
@@ -291,6 +296,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
         });
     }
 
+    // make comment for post with id
     function makeComment(id){
         userService.newComment(id, vm.comment)
             .then(function(response){
@@ -300,11 +306,13 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
             });
     }
 
+    // cancel following of an author
     function unFollow(id){
         userService.removeFollowing(id);
         $route.reload();
     }
 
+    // to follow an author
     function follow(id){
         userService.addFollowing(id);
         $route.reload();
@@ -326,6 +334,7 @@ function myInfoController(userService, $route, $location, $rootScope, FlashServi
         loadAllAuthor();
     }
 
+    // load all authors
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
@@ -333,6 +342,7 @@ function myInfoController(userService, $route, $location, $rootScope, FlashServi
             });
     }
 
+    // update author's informations
     function updateAuthor(){
         userService.updateAuthor(vm.currentAuthor.id, vm.update);
         alert("You will be logged out, log in again to complete update")
@@ -355,19 +365,24 @@ function githubController(userService, $route, $location, $rootScope, FlashServi
         loadGitHub();
     }
 
+    // load all github activity of authors you following
     function loadGitHub(){
-        var username = "jiafengwu0301";
-        // var myfriends = [];
-        // userService.getAllMyFriend(vm.currentAuthor.id)
-        //     .then(function (friends){
-        //         myfriends = friends.following;
-        //         alert(JSON.stringify(myfriends));
-        //     })
-
-        userService.getGithub(username)
-            .then(function (activity) {
-                vm.github = activity.data;
-            });
+        var git = [];
+        var myfriends = [];
+        userService.getAllMyFriend(vm.currentAuthor.id)
+            .then(function (friends){
+                myfriends = friends.following;
+                for (var i = 0; i < myfriends.length; i++){
+                    userService.getGithub(myfriends[i].github)
+                        .then(function (activity) {
+                            // alert(JSON.stringify(activity.data));
+                            for (var j = 0; j < activity.data.length; j++){
+                                git.push(activity.data[j])
+                            }
+                        });
+                };
+                vm.github=git;
+            })
     }
 
     // make a new post
