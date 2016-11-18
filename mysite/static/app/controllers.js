@@ -10,7 +10,8 @@ angular
     .controller('myPostController', myPostController)
     .controller('myFriendController', myFriendController)
     .controller('friendPostController', friendPostController)
-    .controller('myInfoController', myInfoController);
+    .controller('myInfoController', myInfoController)
+    .controller('githubController',githubController);
 
 // Login Controller
 function loginController($route, $location, authenticationService, FlashService, userService) {
@@ -74,6 +75,7 @@ function homeController(userService, $route, $rootScope, $location, FlashService
     vm.makeComment = makeComment;
     vm.allAuthor = [];
     vm.searchArray = null;
+
 
     initController();
 
@@ -337,4 +339,32 @@ function myInfoController(userService, $route, $location, $rootScope, FlashServi
         $location.path('/login');
     }
 
+}
+
+function githubController(userService, $route, $location, $rootScope, FlashService){
+    var vm = this;
+
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+    vm.github = null;
+
+    initController();
+
+    function initController() {
+        loadGitHub();
+    }
+
+    function loadGitHub(){
+        var username = "jiafengwu0301";
+        // var myfriends = [];
+        // userService.getAllMyFriend(vm.currentAuthor.id)
+        //     .then(function (friends){
+        //         myfriends = friends.following;
+        //         alert(JSON.stringify(myfriends));
+        //     })
+
+        userService.getGithub(username)
+            .then(function (activity) {
+                vm.github = activity.data;
+            });
+    }
 }

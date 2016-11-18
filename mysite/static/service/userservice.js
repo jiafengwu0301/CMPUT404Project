@@ -25,6 +25,7 @@ function userService($http,$rootScope,$location,$cookies) {
     service.getAllAuthor = getAllAuthor;
     service.removeFollowing = removeFollowing;
     service.addFollowing = addFollowing;
+    service.getGithub = getGithub;
 
     return service;
 
@@ -34,7 +35,7 @@ function userService($http,$rootScope,$location,$cookies) {
     }
 
     function updateAuthor(id, update){
-        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/update/'+id+'/', update)
+        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/update/', update)
     }
 
     // get all posts that current use has permission
@@ -42,8 +43,14 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/').then(handleSuccess, handleError('Error'));
     }
 
+    // get all author
     function getAllAuthor(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/')
+    }
+
+    // get Github avtivity
+    function getGithub(username){
+        return $http({method:"GET",url:"https://api.github.com/users/"+username+"/events", headers:{"Authorization":undefined}})
     }
 
     // get post by id

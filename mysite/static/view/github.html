@@ -4,11 +4,11 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/socialnet/#/main">Bloooooooog</a>
+            <a class="navbar-brand" href="/socialnet/#/">Bloooooooog</a>
         </div>
 
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/socialnet/#/main">Home</a></li>
+            <li class="active"><a href="/socialnet/#/">Home</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -50,38 +50,15 @@
         </form>
 
         <hr>
-        <h2><small>Recent Posts <a href="/socialnet/#/githubActivity">Github Activity</a></small></h2>
+        <h2><small><a href="/socialnet/#/">Recent Posts</a> Github Activity</small></h2>
         <hr>
-        <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published_date'">
-
-            <h3>{{post.first_name}} {{post.last_name}} </h3>
-            <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}}</h5>
-
+        <div class="well" ng-repeat="activity in vm.github">
+            <h4>Github User: <a href="https://github.com/{{activity.actor.login}}">{{activity.actor.login}}</a></h4>
+            <h5><span class="glyphicon glyphicon-time"></span>{{activity.created_at}}</h5>
             <hr>
+            <h5>{{activity.type}} at repository <a href="https://github.com/{{activity.repo.name}}">{{activity.repo.name}}</a></h5>
+            <h5 ng-hide="!activity.payload.commits[0].message.length">Commit message: {{activity.payload.commits[0].message}}</h5>
 
-            <p>{{post.text}}</p>
-
-            <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
-
-            <hr>
-
-            <button type="button" class="btn btn-default" ng-model="collapsed1" ng-click="collapsed1=!collapsed1" style="margin-right:1em;">New Comment</button>
-
-            <button type="button" class="btn btn-info" ng-model="collapsed" ng-click="collapsed=!collapsed">See Comments</button>
-
-            <div ng-show="collapsed">
-                <br>
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.text}}</li>
-            </div>
-
-            <div ng-show="collapsed1">
-                <br>
-                <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
-                    <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.text" required></textarea>
-
-                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid">Submit</button>
-                </form>
-            </div>
         </div>
     </div>
 

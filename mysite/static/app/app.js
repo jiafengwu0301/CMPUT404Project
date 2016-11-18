@@ -59,6 +59,13 @@ function config($routeProvider, $locationProvider) {
         controllerAs: 'vm'
     })
 
+    // show github activity
+    .when('/githubActivity',{
+        templateUrl: 'github.html',
+        controller: 'githubController',
+        controllerAs:'vm'
+    })
+
     // if you enter some url other than above, back to home page
     .otherwise({
         redirectTo:'/'
