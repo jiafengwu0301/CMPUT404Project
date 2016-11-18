@@ -346,6 +346,8 @@ function githubController(userService, $route, $location, $rootScope, FlashServi
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
     vm.github = null;
+    vm.makePost = makePost;
+    vm.post = null;
 
     initController();
 
@@ -366,5 +368,21 @@ function githubController(userService, $route, $location, $rootScope, FlashServi
             .then(function (activity) {
                 vm.github = activity.data;
             });
+    }
+
+    // make a new post
+    function makePost(){
+        vm.dataLoading = true;
+        userService.newPost(vm.post)
+            .then(function (response) {
+                if (response) {
+                    FlashService.Success('Post successful', true);
+                    $route.reload();
+                } else {
+                    FlashService.Error(response.message);
+                    vm.dataLoading = false;
+                }
+            });
+        vm.post.text = "";
     }
 }

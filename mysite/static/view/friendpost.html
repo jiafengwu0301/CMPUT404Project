@@ -74,11 +74,10 @@
         </div>
 
         <div>
-            <button type="button" class="btn btn-primary" ng-click="vm.follow(vm.friend.id)">Follow+</button>
+            <button type="button" class="btn btn-primary" ng-if="vm.friend.id !== vm.currentAuthor.id" ng-click="vm.follow(vm.friend.id)">Follow+</button>
 
             <button ng-repeat="following in vm.allFriend.following | filter: {id: vm.friend.id}" type="button" class="btn btn-danger" ng-if="following.length!==0" ng-click="vm.unFollow(vm.friend.id)">UnFollow-</button>
         </div>
-
 
         <br>
 
