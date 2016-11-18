@@ -22,6 +22,9 @@ function userService($http,$rootScope,$location,$cookies) {
     service.newComment = newComment;
     service.deleteComment = deleteComment;
     service.updateAuthor = updateAuthor;
+    service.getAllAuthor = getAllAuthor;
+    service.removeFollowing = removeFollowing;
+    service.addFollowing = addFollowing;
 
     return service;
 
@@ -37,6 +40,10 @@ function userService($http,$rootScope,$location,$cookies) {
     // get all posts that current use has permission
     function getAllPost(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/').then(handleSuccess, handleError('Error'));
+    }
+
+    function getAllAuthor(){
+        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/')
     }
 
     // get post by id
@@ -63,7 +70,7 @@ function userService($http,$rootScope,$location,$cookies) {
 
     // get all friends by author id
     function getAllMyFriend(id){
-        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/friends/').then(handleSuccess, handleError('Error'));
+        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/network/').then(handleSuccess, handleError('Error'));
     }
 
     // get friend's post by friend's id
@@ -89,6 +96,14 @@ function userService($http,$rootScope,$location,$cookies) {
     // delete a comment by its id
     function deleteComment(id){
         return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/comments/'+id+'/destroy/').then(handleSuccess, handleError('Error'));
+    }
+
+    function removeFollowing(id){
+        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/unfollow/'+id+'/')
+    }
+
+    function addFollowing(id){
+        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/follow/'+id+'/')
     }
 
     // if success, return the data
