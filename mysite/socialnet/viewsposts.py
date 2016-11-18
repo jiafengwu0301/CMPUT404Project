@@ -25,7 +25,7 @@ class PostCreateView(generics.CreateAPIView):
 
 # List of posts that are visible for the user
 class PostListView(generics.ListAPIView):
-	queryset = Post.objects.all()
+	# queryset = Post.objects.all()
 	serializer_class = PostSerializer
 	permission_classes = [permissions.IsAuthenticated]
 

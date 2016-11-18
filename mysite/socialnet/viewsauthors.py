@@ -12,7 +12,7 @@ from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
 class AuthorListView(generics.ListAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorFriendSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
 
 
 class AuthorCreateView(generics.CreateAPIView):

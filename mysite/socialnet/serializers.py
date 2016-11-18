@@ -16,6 +16,8 @@ class AuthorFriendSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'avatar',
+            'host',
+            'github',
         ]
 
 
