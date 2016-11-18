@@ -247,6 +247,8 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
     vm.allFriend = [];
     vm.unFollow = unFollow;
     vm.follow = follow;
+    vm.comment=null;
+    vm.makeComment = makeComment;
 
     initController();
 
@@ -285,6 +287,15 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
             .then(function (myFriends) {
             vm.allFriend = myFriends;
         });
+    }
+
+    function makeComment(id){
+        userService.newComment(id, vm.comment)
+            .then(function(response){
+                if (response){
+                    $route.reload();
+                };
+            });
     }
 
     function unFollow(id){

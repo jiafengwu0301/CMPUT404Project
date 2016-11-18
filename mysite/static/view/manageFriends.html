@@ -37,13 +37,17 @@
         <div class="page-header">
             <h2>Friends:</h2>
         </div>
-
-        <div ng-repeat="friend in vm.myFriends.following">
-            <li class="list-group-item"><a href="/socialnet/#/friendPost/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
+        <h4>People You Are Following:</h4>
+        <div>
+            <li ng-repeat="friend in vm.myFriends.following | orderBy:first_name" class="list-group-item"><a href="/socialnet/#/friendPost/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
+            <h5 ng-show="!vm.myFriends.following.length" align="center">No Following</h5>
         </div>
 
-        <div ng-repeat="friend in vm.myFriends.followers">
-            <li class="list-group-item"><a href="/socialnet/#/friendPost/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
+        <hr>
+
+        <h4>Your Follower:</h4>
+        <div>
+            <li ng-repeat="friend in vm.myFriends.followers | orderBy:first_name" class="list-group-item"><a href="/socialnet/#/friendPost/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
         </div>
 
 
