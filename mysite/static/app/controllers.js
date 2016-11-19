@@ -365,7 +365,7 @@ function githubController(userService, $route, $location, $rootScope, FlashServi
         loadGitHub();
     }
 
-    // load all github activity of authors you following
+    // load all github activities for following author and youself
     function loadGitHub(){
         var git = [];
         var myfriends = [];
@@ -378,11 +378,17 @@ function githubController(userService, $route, $location, $rootScope, FlashServi
                             // alert(JSON.stringify(activity.data));
                             for (var j = 0; j < activity.data.length; j++){
                                 git.push(activity.data[j])
-                            }
+                            };
                         });
                 };
-                vm.github=git;
+                userService.getGithub(vm.currentAuthor.github)
+                    .then(function (mygit) {
+                        for (var n = 0; n < mygit.data.length; n++){
+                            git.push(mygit.data[n]);
+                        };
+                    });
             })
+        vm.github=git;
     }
 
     // make a new post
