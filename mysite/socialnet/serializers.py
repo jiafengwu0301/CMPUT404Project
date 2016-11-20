@@ -77,6 +77,8 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 		user.set_password(user_data['password'])
 		user.save()
 		author = Author.objects.create(user=user, **validated_data)
+		author.host = "http://127.0.0.1:8000/socialnet/authors/" + str(author.id) + "/"
+		author.save()
 		return author
 
 
