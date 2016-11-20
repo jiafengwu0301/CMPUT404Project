@@ -27,12 +27,14 @@ class PostCreateView(generics.CreateAPIView):
 class PostListView(generics.ListAPIView):
 	# queryset = Post.objects.all()
 	serializer_class = PostSerializer
-	permission_classes = [permissions.IsAuthenticated]
 
 	def get_queryset(self):
 		public_posts = Post.objects.filter(public=True)
-		my_private_posts = Post.objects.filter(author=self.request.user.author, public=False)
-		result_list = list(chain(public_posts, my_private_posts))
+		try:
+			my_private_posts = Post.objects.filter(author=self.request.user.author, public=False)
+			result_list = list(chain(public_posts, my_private_posts))
+		except AttributeError:
+			result_list = public_posts
 		return result_list
 
 
@@ -44,7 +46,7 @@ class PostByAuthorListView(generics.ListAPIView):
 
 	def get_queryset(self):
 		author = self.kwargs['pk']
-		if int(author) == self.request.user.author.id:
+		if author == self.request.user.author.id:
 			result_list = Post.objects.filter(author=self.request.user.author)
 		else:
 			result_list = Post.objects.filter(author=author, public=True)
@@ -55,7 +57,7 @@ class PostByAuthorListView(generics.ListAPIView):
 class PostRetrieveView(generics.RetrieveAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
-	permission_classes = [permissions.IsAuthenticated, my_permissions.IsPostPublicOrOwner]
+	permission_classes = [my_permissions.IsPostPublicOrOwner]
 
 
 # PUT an Update. Requires authentication (Prove you are the owner by sending object)
