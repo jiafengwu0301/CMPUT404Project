@@ -1,5 +1,6 @@
 from rest_framework import permissions
 from .models import Post, Comment, Author
+from django.core import exceptions as django_exceptions
 
 
 class IsOwnerForModifyPost(permissions.BasePermission):
@@ -27,8 +28,11 @@ class IsPostPublicOrOwner(permissions.BasePermission):
     message = "post not public for you to read it properties."
 
     def has_permission(self, request, view):
-        actualPost = Post.objects.get(id=view.kwargs['pk'])
-        return request.user.author.id == actualPost.author.id or actualPost.public
+        try:
+            actualPost = Post.objects.get(id=view.kwargs['pk'])
+            return request.user.author.id == actualPost.author.id or actualPost.public
+        except django_exceptions.ObjectDoesNotExist:
+            return True
 
 
 class IsCommentFromAPublicPost(permissions.BasePermission):
