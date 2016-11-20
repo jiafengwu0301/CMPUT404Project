@@ -25,8 +25,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
 	last_name = serializers.CharField(source='user.last_name')
 	email = serializers.CharField(source='user.email')
-	following = AuthorFriendSerializer(many=True)
-	followers = AuthorFriendSerializer(many=True)
+	friends = AuthorFriendSerializer(many=True)
 
 	class Meta:
 		model = Author
@@ -36,8 +35,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'last_name',
 			'github',
 			'avatar',
-			'following',
-			'followers',
+			'friends',
 			'email',
 		]
 
