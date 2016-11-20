@@ -36,8 +36,8 @@
         <h2><small>{{vm.friend.first_name}} {{vm.friend.last_name}}'s Posts</small></h2>
         <hr>
 
-        <div class="well" ng-repeat="post in vm.friendPosts | orderBy: '-published_date'">
-            <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}} </h5>
+        <div class="well" ng-repeat="post in vm.friendPosts | orderBy: '-published_time'">
+            <h5><span class="glyphicon glyphicon-time"></span> {{post.published_time}} </h5>
             <hr>
             <p>{{post.text}}</p>
 
