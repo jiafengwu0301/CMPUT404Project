@@ -40,7 +40,7 @@
 
                 <textarea style="resize:none" class="form-control" rows="3" id="post" ng-model="vm.post.content" placeholder="Content" required></textarea>
                 <div class="controls">
-                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
+                    <button type="submit" class="btn pull-right " ng-disabled="form.$invalid" >Submit</button>
                 </div>
                 <span>Public: </span>
                 <select ng-model="vm.post.visibility" required>
@@ -69,8 +69,9 @@
             <h4>Title: {{post.title}}</h4>
             <h5>Description: {{post.description}}</h5>
             <hr>
-            <p>{{post.content}}</p>
+            <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
 
+            <div ng-show="post.content_type==='text/markdown'" btf-markdown="post.content"></div>
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
             <hr>
@@ -81,7 +82,8 @@
 
             <div ng-show="collapsed">
                 <br>
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</li>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
+                </li>
             </div>
 
             <div ng-show="collapsed1">

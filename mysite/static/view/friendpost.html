@@ -43,7 +43,8 @@
             <h4>Title: {{post.title}}</h4>
             <h5>Description: {{post.description}}</h5>
             <hr>
-            <p>{{post.content}}</p>
+            <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
+            <div ng-show="post.content_type==='text/markdown'" btf-markdown="post.content"></div>
 
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
             <hr>
@@ -69,7 +70,8 @@
             </div>
 
             <div ng-show="collapsed_comments">
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.text}}
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
+                </li>
             </div>
 
 
