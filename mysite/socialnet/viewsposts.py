@@ -9,6 +9,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer
 import json
 
+
 # Create your views here.
 
 
@@ -21,25 +22,18 @@ class PostCreateView(viewsets.ModelViewSet):
 	queryset = Post.objects.all()
 	serializer_class = CreatePostSerializer
 	permission_classes = [permissions.IsAuthenticated]
-	'''
-		author = request.user.author
-		try:
-			receiver = Author.objects.get(id=kwargs['pk'])
-		except django_exceptions.ObjectDoesNotExist:
-			return response.Response(status=status.HTTP_404_NOT_FOUND)
-		friendRequest = FriendRequest.objects.create(sender=author, receiver=receiver)
-		friendRequest.save()
-		return response.Response(status=status.HTTP_202_ACCEPTED)
-	'''
-	@detail_route(methods=['post'])
-	def create_post(self, request ):
 
-		print str(json.dumps(request.data)) + "\n\n\n\n\n"
-		request.data.pop('csrfmiddlewaretoken')
-		post = Post.objects.create(author=request.user.author, **json.loads(json.dumps(request.data)))
-		post.host = "http://127.0.0.1:8000/socialnet/posts/" + str(post.id) + "/"
-		post.save()
-		return response.Response(status=status.HTTP_201_CREATED)
+	@detail_route(methods=['post'])
+	def create_post(self, request):
+		data = request.data
+		author = request.user.author
+		serializer = CreatePostSerializer(data=data)
+		if serializer.is_valid(raise_exception=True):
+			post = serializer.save()
+			post.author = author
+			post.save()
+			return response.Response(status=status.HTTP_201_CREATED)
+		return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 # List of posts that are visible for the user

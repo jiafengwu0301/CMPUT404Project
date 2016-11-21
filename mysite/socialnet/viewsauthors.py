@@ -36,7 +36,7 @@ class AuthorAuthenticationView(views.APIView):
 	queryset = Author.objects.all()
 	serializer_class = AuthenticateSerializer
 
-	def post(self, request, *args, **kwargs):
+	def post(self, request):
 		data = request.data
 		serializer = AuthenticateSerializer(data=data)
 		if serializer.is_valid(raise_exception=True):

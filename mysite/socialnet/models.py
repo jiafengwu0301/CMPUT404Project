@@ -38,7 +38,7 @@ class Post(models.Model):
 	description = models.CharField(max_length=40, default="description", blank=True)
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	published = models.DateTimeField(auto_now_add=True)
-	author = models.ForeignKey(Author)
+	author = models.ForeignKey(Author, blank=True, null=True)
 	content = models.CharField(max_length=255)
 	visibility = models.BooleanField(default=False)
 	content_type = (
@@ -49,7 +49,10 @@ class Post(models.Model):
 	content_type = models.CharField(max_length=15, choices=content_type, default="text/plain")
 
 	def __str__(self):
-		return self.author.user.username + " on " + str(self.published)
+		try:
+			return self.author.user.username + " on " + str(self.published)
+		except:
+			return "anonymous on " + str(self.published)
 
 
 class PostVisibility(models.Model):
