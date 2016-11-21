@@ -1,4 +1,7 @@
+from itertools import chain
+
 from django.core import exceptions as django_exceptions
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, response, status, views
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
@@ -6,7 +9,7 @@ from rest_framework.decorators import detail_route
 from . import permissions as my_permissions
 from .models import Author, FriendRequest
 from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
-	UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorFriendSerializer
+	UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorFriendSerializer, FriendRequestSerializer
 
 
 class AuthorListView(generics.ListAPIView):
@@ -50,45 +53,73 @@ class AuthorNetworkView(generics.RetrieveAPIView):
 	serializer_class = AuthorNetworkSerializer
 
 
-class AuthorFriendRequestView(viewsets.ModelViewSet):
+class SendFriendRequestView(viewsets.ModelViewSet):
 	serializer_class = AuthorNetworkSerializer
 	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForAccessAuthor]
 
 	def get_queryset(self):
-		result_list = Author.objects.filter(id=self.request.user.author.id)
+		result_list = FriendRequest.objects.filter(receiver=self.request.user.author)
 		return result_list
 
 	@detail_route(methods=['post'])
 	def send_request(self, request, **kwargs):
 		author = request.user.author
-		try:
-			receiver = Author.objects.get(id=kwargs['pk'])
-		except django_exceptions.ObjectDoesNotExist:
-			return response.Response(status=status.HTTP_404_NOT_FOUND)
+		receiver = get_object_or_404(Author, id=kwargs['pk'])
 		friendRequest = FriendRequest.objects.create(sender=author, receiver=receiver)
 		friendRequest.save()
 		return response.Response(status=status.HTTP_202_ACCEPTED)
 
-	@detail_route(methods=['get'])
-	def list_request(self, request):
-		return response.Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class FriendRequestByAuthorView(generics.ListAPIView):
+	serializer_class = FriendRequestSerializer
+	permission_classes = [permissions.IsAuthenticated]
 
-class AuthorUnfollowView(viewsets.ModelViewSet):
+	def get_queryset(self):
+		result_list = FriendRequest.objects.filter(receiver=self.request.user.author)
+		result_list = list(chain(result_list, FriendRequest.objects.filter(sender=self.request.user.author)))
+		return result_list
+
+class AcceptFriendRequestView(viewsets.ModelViewSet):
 	serializer_class = AuthorNetworkSerializer
 	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForAccessAuthor]
 
 	def get_queryset(self):
-		result_list = Author.objects.filter(id=self.request.user.author.id)
+		result_list = FriendRequest.objects.filter(receiver=self.request.user.author)
 		return result_list
 
-	@detail_route(methods=['put'])
-	def unfollow(self, request, **kwargs):
-		author = request.user.author
-		try:
-			to_be_unfollowed = Author.objects.get(id=kwargs['pk'])
-		except django_exceptions.ObjectDoesNotExist:
-			return response.Response(status=status.HTTP_404_NOT_FOUND)
-		author.following.remove(to_be_unfollowed)
-		to_be_unfollowed.followers.remove(author)
+	@detail_route(methods=['post'])
+	def accept_request(self, request, **kwargs):
+		receiver = request.user.author
+		sender = get_object_or_404(Author, id=kwargs['pk'])
+		friend_req = get_object_or_404(FriendRequest, sender=sender)
+		friend_req.delete()
+		receiver.friends.add(sender)
+		return response.Response(status=status.HTTP_202_ACCEPTED)
+
+	@detail_route(methods=['delete'])
+	def reject_request(self, request, **kwargs):
+		receiver = request.user.author
+		sender = get_object_or_404(Author, id=kwargs['pk'])
+		friend_req = get_object_or_404(FriendRequest, sender=sender)
+		friend_req.delete()
+		return response.Response(status=status.HTTP_202_ACCEPTED)
+		#unfriender = request.user.author
+		#unfriended = get_object_or_404(Author, id=kwargs['pk'])
+		#unfriender.friends.remove(unfriended)
+		#return response.Response(status=status.HTTP_202_ACCEPTED)
+
+
+class UnfriendView(viewsets.ModelViewSet):
+	serializer_class = AuthorNetworkSerializer
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsOwnerForAccessAuthor]
+
+	def get_queryset(self):
+		result_list = FriendRequest.objects.filter(receiver=self.request.user.author)
+		return result_list
+
+	@detail_route(methods=['delete'])
+	def unfriend(self, request, **kwargs):
+		unfriender = request.user.author
+		unfriended = get_object_or_404(Author, id=kwargs['pk'])
+		unfriender.friends.remove(unfriended)
 		return response.Response(status=status.HTTP_202_ACCEPTED)
