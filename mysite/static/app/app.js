@@ -66,6 +66,12 @@ function config($routeProvider, $locationProvider) {
         controllerAs:'vm'
     })
 
+    .when('/firendRequest',{
+        templateUrl: 'friendRequest.html',
+        controller: 'friendRequestController',
+        controllerAs: "vm"
+    })
+
     // if you enter some url other than above, back to home page
     .otherwise({
         redirectTo:'/'

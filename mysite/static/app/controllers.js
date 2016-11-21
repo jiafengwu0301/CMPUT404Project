@@ -11,7 +11,8 @@ angular
     .controller('myFriendController', myFriendController)
     .controller('friendPostController', friendPostController)
     .controller('myInfoController', myInfoController)
-    .controller('githubController',githubController);
+    .controller('githubController',githubController)
+    .controller('friendRequestController',friendRequestController);
 
 // Login Controller
 function loginController($route, $location, authenticationService, FlashService, userService) {
@@ -112,7 +113,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     function loadAllPosts() {
         userService.getAllPost()
             .then(function (allpost) {
-                vm.allPosts = allpost;
+                vm.allPosts = allpost.results;
                 $location.path('/');
             });
     }
@@ -121,7 +122,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
-                vm.allAuthor = allAuthor.data;
+                vm.allAuthor = allAuthor.data.results;
             });
     }
 
@@ -192,7 +193,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
     function loadAllMyPost(){
         userService.getPost(vm.currentAuthor.id)
             .then(function (allpost) {
-                vm.myPosts = allpost;
+                vm.myPosts = allpost.results;
                 $location.path('/myposts');
             });
     }
@@ -201,7 +202,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
-                vm.allAuthor = allAuthor.data;
+                vm.allAuthor = allAuthor.data.results;
             });
     }
 
@@ -286,7 +287,7 @@ function myFriendController(userService, $rootScope) {
     function loadAllMyFriend(){
         userService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
-                vm.myFriends = myFriends;
+                vm.myFriends = myFriends.friends;
             });
     }
 
@@ -294,7 +295,7 @@ function myFriendController(userService, $rootScope) {
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
-                vm.allAuthor = allAuthor.data;
+                vm.allAuthor = allAuthor.data.results;
             });
     }
 }
@@ -309,9 +310,9 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
     vm.friend = [];
     vm.allAuthor = [];
     vm.searchArray = null;
-    vm.allFriend = [];
-    vm.unFollow = unFollow;
-    vm.follow = follow;
+    vm.allFriend = null;
+    vm.deleteFriend = deleteFriend;
+    vm.friendRequest = friendRequest;
     vm.comment=null;
     vm.makeComment = makeComment;
 
@@ -327,7 +328,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
-                vm.allAuthor = allAuthor.data;
+                vm.allAuthor = allAuthor.data.results;
             });
     }
 
@@ -335,7 +336,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
     function getFriendPost(){
         userService.getPost(vm.friend_id)
             .then(function (friendPosts) {
-                vm.friendPosts = friendPosts;
+                vm.friendPosts = friendPosts.results;
             });
     }
 
@@ -347,11 +348,11 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
             });
     }
 
-    // get all author you are following and author are follering you
+    // get all friend
     function getAllAuthorFriend(){
         userService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
-            vm.allFriend = myFriends;
+            vm.allFriend = myFriends.friends;
         });
     }
 
@@ -365,15 +366,15 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
             });
     }
 
-    // cancel following of an author
-    function unFollow(id){
-        userService.removeFollowing(id);
+    // unfriend with an author
+    function deleteFriend(id){
+        userService.removeFriend(id);
         $route.reload();
     }
 
-    // to follow an author
-    function follow(id){
-        userService.addFollowing(id);
+    // to be friend with an author
+    function friendRequest(id){
+        userService.sendFriendRequest(id);
         $route.reload();
     }
 }
@@ -397,7 +398,7 @@ function myInfoController(userService, $q, $route, $location, $rootScope, FlashS
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
-                vm.allAuthor = allAuthor.data;
+                vm.allAuthor = allAuthor.data.results;
             });
     }
 
@@ -436,11 +437,22 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
     vm.github = null;
     vm.makePost = makePost;
     vm.post = null;
+    vm.allAuthor = [];
+    vm.searchArray = null;
 
     initController();
 
     function initController() {
         loadGitHub();
+        loadAllAuthor();
+    }
+
+    // load all authors
+    function loadAllAuthor(){
+        userService.getAllAuthor()
+            .then(function (allAuthor) {
+                vm.allAuthor = allAuthor.data.results;
+            });
     }
 
     // load all github activities for following author and youself
@@ -496,5 +508,36 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
         vm.post.text = "";
         vm.post.public = vm.post.public || "true";
         vm.post.content_type = vm.post.content_type || "text/plain";
+    }
+}
+
+function friendRequestController(userService, $route, $rootScope) {
+    var vm = this;
+
+    vm.currentAuthor = $rootScope.globals.currentUser.author;
+    vm.allAuthor = [];
+    vm.searchArray = null;
+    vm.sendRequest= null;
+
+    initController();
+
+    function initController() {
+        loadAllAuthor();
+        loadAllSendRequest();
+    }
+
+    // load all authors
+    function loadAllAuthor(){
+        userService.getAllAuthor()
+            .then(function (allAuthor) {
+                vm.allAuthor = allAuthor.data.results;
+            });
+    }
+
+    function loadAllSendRequest(){
+        userService.requestSend()
+            .then(function(response){
+                vm.sendRequest = response.data.results;
+            })
     }
 }

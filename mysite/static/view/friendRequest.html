@@ -35,11 +35,14 @@
     <div class="col-md-9">
 
         <div class="page-header">
-            <h2>Friends:</h2>
+            <h2>Friend Requests:</h2>
         </div>
+        <h4>Request Receive:</h4>
+        <hr>
+        <h4>Request Send:</h4>
         <div>
-            <li ng-repeat="friend in vm.myFriends | orderBy:first_name" class="list-group-item"><a href="/socialnet/#/friendPost/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
-            <h5 ng-show="!vm.myFriends.length" align="center">No Friends</h5>
+            <li ng-repeat="request in vm.sendRequest" class="list-group-item"><a href="/socialnet/#/friendPost/{{request.receiver.id}}">{{request.receiver.first_name}} {{request.receiver.last_name}}</a></li>
+            <h5 ng-show="!vm.sendRequest.length" align="center">No Request</h5>
         </div>
 
 
