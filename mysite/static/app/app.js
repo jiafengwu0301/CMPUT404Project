@@ -3,7 +3,7 @@
 // this is the model of the front end, cause Angular is Single Page Application, when you access different url, the model will load different ng-view which is view written in html, and the controller that view needed
 
 angular
-    .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField','ngFileUpload'])
+    .module('myApp', ['ngRoute', 'ngCookies','ng.confirmField','ngFileUpload','btford.markdown'])
     .config(config)
     .run(run);
 

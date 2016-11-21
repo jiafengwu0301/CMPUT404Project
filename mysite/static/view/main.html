@@ -34,12 +34,16 @@
     <div class="col-md-9">
         <form name="form" ng-submit="vm.makePost()" role="form">
             <div class="form-group">
-                <textarea style="resize:none" class="form-control" rows="5" id="post" ng-model="vm.post.text" required></textarea>
+                <input type="text" id="title" class="form-control" ng-model="vm.post.title" placeholder="Title" required>
+
+                <input type="text" id="title" class="form-control" ng-model="vm.post.description" placeholder="Description" required>
+
+                <textarea style="resize:none" class="form-control" rows="3" id="post" ng-model="vm.post.content" placeholder="Content" required></textarea>
                 <div class="controls">
-                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
+                    <button type="submit" class="btn pull-right " ng-disabled="form.$invalid" >Submit</button>
                 </div>
                 <span>Public: </span>
-                <select ng-model="vm.post.public" required>
+                <select ng-model="vm.post.visibility" required>
                     <option value="true">True</option>
                     <option value="false">False</option>
                 </select>
@@ -57,15 +61,17 @@
         <hr>
         <h2><small>Recent Posts <a href="/socialnet/#/githubActivity">Github Activity</a></small></h2>
         <hr>
-        <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published_time'">
-
-            <h3>{{post.first_name}} {{post.last_name}} </h3>
-            <h5><span class="glyphicon glyphicon-time"></span> {{post.published_time}}</h5>
+        <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published'">
+            <h3>{{post.author.first_name}} {{post.author.last_name}} </h3>
+            <h5><span class="glyphicon glyphicon-time"></span> {{post.published}}</h5>
 
             <hr>
+            <h4>Title: {{post.title}}</h4>
+            <h5>Description: {{post.description}}</h5>
+            <hr>
+            <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
 
-            <p>{{post.text}}</p>
-
+            <div ng-show="post.content_type==='text/markdown'" btf-markdown="post.content"></div>
             <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
             <hr>
@@ -76,13 +82,20 @@
 
             <div ng-show="collapsed">
                 <br>
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'>{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.text}}</li>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
+                </li>
             </div>
 
             <div ng-show="collapsed1">
                 <br>
                 <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
-                    <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.text" required></textarea>
+                    <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.comment" required></textarea>
+
+                    <span>Content Type: </span>
+                    <select ng-model="vm.comment.content_type" required>
+                        <option value="text/plain">Plain</option>
+                        <option value="text/markdown">Markdown</option>
+                    </select>
 
                     <button type="submit" class="btn pull-right" ng-disabled="form.$invalid">Submit</button>
                 </form>
@@ -92,8 +105,8 @@
 
     <div class="col-sm-3">
         <div class="avatar">
-            <img ng-show="vm.currentAuthor.avatar == null" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
-            <img ng-show="vm.currentAuthor.avatar != null" src="vm.currentAuthor.avatar" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar == ''" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar != ''" src="{{vm.currentAuthor.avatar}}" height="260" width="260"/>
             <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 

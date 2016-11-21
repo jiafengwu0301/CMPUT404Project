@@ -142,24 +142,12 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             }).success(function(data){
                 deferred.resolve(data);
                 vm.post.image = deferred.promise.$$state.value.url;
-                userService.newPost(vm.post)
-                    .then(function (response) {
-                        if (response) {
-                            $route.reload();
-                        } else {
-                            vm.dataLoading = false;
-                        };
-                    });
+                userService.newPost(vm.post);
+                $route.reload();
             });
         } else {
-            userService.newPost(vm.post)
-                .then(function (response) {
-                    if (response) {
-                        $route.reload();
-                    } else {
-                        vm.dataLoading = false;
-                    };
-                });
+            userService.newPost(vm.post);
+            $route.reload();
         };
         vm.post.text = "";
         vm.post.public = vm.post.public || "true";
@@ -178,7 +166,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
 }
 
 // My Posts Controller
-function myPostController(userService, $route, $rootScope, $location) {
+function myPostController(userService, $q, $route, $rootScope, $location,Upload) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -229,12 +217,35 @@ function myPostController(userService, $route, $rootScope, $location) {
 
     // edit a post that current user owned
     function editPost(id){
-        userService.editPost(id, vm.edit)
-            .then(function(response){
-                if (response){
-                    $route.reload();
+        var deferred = $q.defer();
+        if (vm.image) {
+            Upload.upload({
+                url: "https://api.cloudinary.com/v1_1/dbodiislg/upload",
+                data: {
+                    upload_preset: "b1gyt5ss",
+                    file: vm.image
+                },
+                headers:{
+                    "Authorization": undefined
                 }
+            }).success(function(data){
+                deferred.resolve(data);
+                vm.edit.image = deferred.promise.$$state.value.url;
+                userService.editPost(id, vm.edit)
+                    .then(function(response){
+                        if (response){
+                            $route.reload();
+                        }
+                    });
             });
+        } else {
+            userService.editPost(id, vm.edit)
+                .then(function(response){
+                    if (response){
+                        $route.reload();
+                    }
+                });
+        }
     }
 
     // make a commnet for post with id
@@ -475,24 +486,12 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
             }).success(function(data){
                 deferred.resolve(data);
                 vm.post.image = deferred.promise.$$state.value.url;
-                userService.newPost(vm.post)
-                    .then(function (response) {
-                        if (response) {
-                            $route.reload();
-                        } else {
-                            vm.dataLoading = false;
-                        };
-                    });
+                userService.newPost(vm.post);
+                $route.reload();
             });
         } else {
-            userService.newPost(vm.post)
-                .then(function (response) {
-                    if (response) {
-                        $route.reload();
-                    } else {
-                        vm.dataLoading = false;
-                    };
-                });
+            userService.newPost(vm.post);
+            $route.reload();
         };
         vm.post.text = "";
         vm.post.public = vm.post.public || "true";
