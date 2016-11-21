@@ -4,6 +4,8 @@ from rest_framework.exceptions import ValidationError
 from .models import Post, Author, Comment
 from django.contrib.auth.models import User
 
+from pagedown.widgets import PagedownWidget
+
 
 class AuthorFriendSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name')
@@ -182,6 +184,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
+    content = forms.CharField(widget=PagedownWidget)
     class Meta:
         model = Post
         fields = [

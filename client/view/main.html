@@ -1,4 +1,4 @@
-<!-- this is the home page of blog, it shows all posts and comments that current author allow to see, and make a new post -->
+<!-- this is the home page of the blog, it shows all posts and comments that the current author is allowed to see, and makes new posts -->
 
 
 <nav class="navbar navbar-default">
@@ -32,8 +32,14 @@
 <div class="container">
     <div class="col-md-9">
         <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
-        <form name="form" ng-submit="vm.makePost()" role="form">
+        <!-- beginning of post making form -->
+        <form name="form" ng-submit="vm.makePost()" role="form" class= "content-markdown">
             <div class="form-group">
+                <!--for markdown editor -->
+                {% block head_extra %} 
+                    <!-- markdown widget pushes the media through -->
+                    {{form.media}}
+                {% endblock head_extra %}
                 <textarea style="resize:none" class="form-control" rows="5" id="post" ng-model="vm.post.text" required></textarea>
             </div>
             <div class="form-group">
@@ -49,7 +55,8 @@
         <hr>
         <h2><small>Recent Posts</small></h2>
         <hr>
-        <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-results.published_date'">
+        <!-- beginning of all post section -->
+        <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-results.published_date'" class = 'content-markdown'>
 
             <h3>{{post.first_name}} {{post.last_name}} </h3>
 

@@ -35,7 +35,7 @@
         <hr>
         <h4><small>My Posts</small></h4>
         <hr>
-        <div class="well" ng-repeat="post in vm.myPosts | orderBy: '-published_date'">
+        <div class="well" ng-repeat="post in vm.myPosts | orderBy: '-published_date'" class='content-markdown'>
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}} </h5>
             <p>{{post.text}}</p>
 

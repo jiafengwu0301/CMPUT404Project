@@ -9,6 +9,10 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
         <title>My blog</title>
+
+        <!--for markdown editor -->
+        {% block head_extra %} {% endblock head_extra %}
+
     </head>
 
     <body>
@@ -29,5 +33,31 @@
         <script src="service/flashservice.js"></script>
         <script src="app/controllers.js"></script>
         <script src="service/userservice.js"></script>
+
+        <!-- for markup -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+
+        <!-- do this jquery as angular 
+        <script>
+            $(document).ready(function(){
+                $(".content-markdown").each(function(){
+                    var content = $("this").text()
+                    var markedContent = marked(content)
+                    $(this).html(markedContent)
+                })
+
+                $(".content-markdown img").each(function(){
+                    $(this).addClass("img-responsive")
+                })
+
+            })
+
+
+
+
+        </script>
+        -->
+
+
     </body>
 </html>

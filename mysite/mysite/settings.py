@@ -35,6 +35,8 @@ INSTALLED_APPS = [
 	'socialnet',
 	'rest_framework',
 	'corsheaders',
+	# third party
+	'pagedown',
 ]
 
 MIDDLEWARE = [
