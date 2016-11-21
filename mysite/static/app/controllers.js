@@ -41,30 +41,54 @@ function loginController($route, $location, authenticationService, FlashService,
 }
 
 // Sign Up Controller
-function registerController(userService, $location, $rootScope, FlashService) {
-    var vm = this;
+function registerController(userService, $location, $rootScope, FlashService, Upload) {
+    var vm = this;``
 
     vm.register = register;
 
     // create a new account
     function register() {
         vm.dataLoading = true;
-        userService.createUser(vm.user)
-            .then(function (response) {
-                if (response) {
-                    FlashService.Success('Registration successful', true);
-                    $location.path('/login');
-                } else {
-                    alert("Sign Not Success");
-                    FlashService.Error(response.message);
-                    vm.dataLoading = false;
+        var deferred = $q.defer();
+        if (vm.avatar) {
+            Upload.upload({
+                url: "https://api.cloudinary.com/v1_1/dbodiislg/upload",
+                data: {
+                    upload_preset: "b1gyt5ss",
+                    file: vm.avatar
+                },
+                headers:{
+                    "Authorization": undefined
                 }
-            });
+            }).success(function(data){
+                deferred.resolve(data);
+                vm.user.avatar = deferred.promise.$$state.value.url;
+                userService.createUser(vm.user)
+                    .then(function (response) {
+                        if (response) {
+                            $location.path('/login');
+                        } else {
+                            alert("Sign Not Success");
+                            vm.dataLoading = false;
+                        }
+                    });
+                })
+        } else {
+            userService.createUser(vm.user)
+                .then(function (response) {
+                    if (response) {
+                        $location.path('/login');
+                    } else {
+                        alert("Sign Not Success");
+                        vm.dataLoading = false;
+                    }
+                });
+        }
     }
 }
 
 // Home Page Controller
-function homeController(userService, $route, $rootScope, $location, FlashService) {
+function homeController(userService, $q, $route, $rootScope, $location, FlashService, Upload) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -104,18 +128,42 @@ function homeController(userService, $route, $rootScope, $location, FlashService
     // make a new post
     function makePost(){
         vm.dataLoading = true;
-        userService.newPost(vm.post)
-            .then(function (response) {
-                if (response) {
-                    FlashService.Success('Post successful', true);
-                    $route.reload();
-                } else {
-                    FlashService.Error(response.message);
-                    vm.dataLoading = false;
+        var deferred = $q.defer();
+        if (vm.image) {
+            Upload.upload({
+                url: "https://api.cloudinary.com/v1_1/dbodiislg/upload",
+                data: {
+                    upload_preset: "b1gyt5ss",
+                    file: vm.image
+                },
+                headers:{
+                    "Authorization": undefined
                 }
+            }).success(function(data){
+                deferred.resolve(data);
+                vm.post.image = deferred.promise.$$state.value.url;
+                userService.newPost(vm.post)
+                    .then(function (response) {
+                        if (response) {
+                            $route.reload();
+                        } else {
+                            vm.dataLoading = false;
+                        };
+                    });
             });
+        } else {
+            userService.newPost(vm.post)
+                .then(function (response) {
+                    if (response) {
+                        $route.reload();
+                    } else {
+                        vm.dataLoading = false;
+                    };
+                });
+        };
         vm.post.text = "";
-
+        vm.post.public = vm.post.public || "true";
+        vm.post.content_type = vm.post.content_type || "text/plain";
     }
 
     // make comment for posts that current user can see
@@ -319,7 +367,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
     }
 }
 
-function myInfoController(userService, $route, $location, $rootScope, FlashService) {
+function myInfoController(userService, $q, $route, $location, $rootScope, FlashService, Upload) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -344,14 +392,33 @@ function myInfoController(userService, $route, $location, $rootScope, FlashServi
 
     // update author's informations
     function updateAuthor(){
-        userService.updateAuthor(vm.currentAuthor.id, vm.update);
-        alert("You will be logged out, log in again to complete update")
-        $location.path('/login');
+        var deferred = $q.defer();
+        if (vm.avatar) {
+            Upload.upload({
+                url: "https://api.cloudinary.com/v1_1/dbodiislg/upload",
+                data: {
+                    upload_preset: "b1gyt5ss",
+                    file: vm.avatar
+                },
+                headers:{
+                    "Authorization": undefined
+                }
+            }).success(function(data){
+                deferred.resolve(data);
+                vm.update.avatar = deferred.promise.$$state.value.url;
+                userService.updateAuthor(vm.currentAuthor.id, vm.update);
+                alert("You will be logged out, log in again to complete update");
+                $location.path('/login');
+            })
+        } else {
+            userService.updateAuthor(vm.currentAuthor.id, vm.update);
+            alert("You will be logged out, log in again to complete update");
+            $location.path('/login');
+        }
     }
-
 }
 
-function githubController(userService, $route, $location, $rootScope, FlashService){
+function githubController(userService, $q, $route, $location, $rootScope, FlashService, Upload){
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -375,35 +442,60 @@ function githubController(userService, $route, $location, $rootScope, FlashServi
                 for (var i = 0; i < myfriends.length; i++){
                     userService.getGithub(myfriends[i].github)
                         .then(function (activity) {
-                            // alert(JSON.stringify(activity.data));
                             for (var j = 0; j < activity.data.length; j++){
                                 git.push(activity.data[j])
                             };
                         });
                 };
-                userService.getGithub(vm.currentAuthor.github)
-                    .then(function (mygit) {
-                        for (var n = 0; n < mygit.data.length; n++){
-                            git.push(mygit.data[n]);
-                        };
-                    });
             })
+
+        userService.getGithub(vm.currentAuthor.github)
+            .then(function (mygit) {
+                for (var n = 0; n < mygit.data.length; n++){
+                    git.push(mygit.data[n]);
+                };
+            });
         vm.github=git;
     }
 
     // make a new post
     function makePost(){
         vm.dataLoading = true;
-        userService.newPost(vm.post)
-            .then(function (response) {
-                if (response) {
-                    FlashService.Success('Post successful', true);
-                    $route.reload();
-                } else {
-                    FlashService.Error(response.message);
-                    vm.dataLoading = false;
+        var deferred = $q.defer();
+        if (vm.image) {
+            Upload.upload({
+                url: "https://api.cloudinary.com/v1_1/dbodiislg/upload",
+                data: {
+                    upload_preset: "b1gyt5ss",
+                    file: vm.image
+                },
+                headers:{
+                    "Authorization": undefined
                 }
+            }).success(function(data){
+                deferred.resolve(data);
+                vm.post.image = deferred.promise.$$state.value.url;
+                userService.newPost(vm.post)
+                    .then(function (response) {
+                        if (response) {
+                            $route.reload();
+                        } else {
+                            vm.dataLoading = false;
+                        };
+                    });
             });
+        } else {
+            userService.newPost(vm.post)
+                .then(function (response) {
+                    if (response) {
+                        $route.reload();
+                    } else {
+                        vm.dataLoading = false;
+                    };
+                });
+        };
         vm.post.text = "";
+        vm.post.public = vm.post.public || "true";
+        vm.post.content_type = vm.post.content_type || "text/plain";
     }
 }

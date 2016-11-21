@@ -60,7 +60,7 @@
 
                 <div class="form-group">
                     <h2>Avatar:</h2>
-                    <input type="file" class="form-control" id="avatar" placeholder="Select a Picture" ng-model="vm.user.avatar" ng-init="null" />
+                    <input type="file" ngf-select ng-model="vm.avatar" name="file" accept="image/*" ngf-max-size="10MB" ng-multiple="false">
                 </div>
 
                 <br><br>
