@@ -31,6 +31,7 @@ class PostCreateView(viewsets.ModelViewSet):
 		if serializer.is_valid(raise_exception=True):
 			post = serializer.save()
 			post.author = author
+			post.host = "http://127.0.0.1:8000/socialnet/posts/" + post.id + "/"
 			post.save()
 			return response.Response(status=status.HTTP_201_CREATED)
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
@@ -62,7 +63,7 @@ class PostByAuthorListView(generics.ListAPIView):
 		if author == self.request.user.author.id:
 			result_list = Post.objects.filter(author=self.request.user.author)
 		else:
-			result_list = Post.objects.filter(author=author, public=True)
+			result_list = Post.objects.filter(author=author, visibility=True)
 		return result_list
 
 
