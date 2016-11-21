@@ -65,6 +65,11 @@ class SendFriendRequestView(viewsets.ModelViewSet):
 	def send_request(self, request, **kwargs):
 		author = request.user.author
 		receiver = get_object_or_404(Author, id=kwargs['pk'])
+		try:
+			existFriendRequest = FriendRequest.objects.get(sender=author, receiver=receiver)
+			return response.Response(status=status.HTTP_400_BAD_REQUEST)
+		except django_exceptions.ObjectDoesNotExist:
+			pass
 		friendRequest = FriendRequest.objects.create(sender=author, receiver=receiver)
 		friendRequest.save()
 		return response.Response(status=status.HTTP_202_ACCEPTED)
@@ -78,6 +83,7 @@ class FriendRequestByAuthorView(generics.ListAPIView):
 		result_list = FriendRequest.objects.filter(receiver=self.request.user.author)
 		result_list = list(chain(result_list, FriendRequest.objects.filter(sender=self.request.user.author)))
 		return result_list
+
 
 class AcceptFriendRequestView(viewsets.ModelViewSet):
 	serializer_class = AuthorNetworkSerializer
@@ -103,10 +109,6 @@ class AcceptFriendRequestView(viewsets.ModelViewSet):
 		friend_req = get_object_or_404(FriendRequest, sender=sender)
 		friend_req.delete()
 		return response.Response(status=status.HTTP_202_ACCEPTED)
-		#unfriender = request.user.author
-		#unfriended = get_object_or_404(Author, id=kwargs['pk'])
-		#unfriender.friends.remove(unfriended)
-		#return response.Response(status=status.HTTP_202_ACCEPTED)
 
 
 class UnfriendView(viewsets.ModelViewSet):
