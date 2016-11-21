@@ -59,11 +59,12 @@ class PostByAuthorListView(generics.ListAPIView):
 	permission_classes = [permissions.IsAuthenticated]
 
 	def get_queryset(self):
-		author = self.kwargs['pk']
-		if author == self.request.user.author.id:
+		author_id = self.kwargs['pk']
+		if author_id == str(self.request.user.author.id):
 			result_list = Post.objects.filter(author=self.request.user.author)
 		else:
-			result_list = Post.objects.filter(author=author, visibility=True)
+			result_list = Post.objects.filter(author=author_id, visibility=True)
+
 		return result_list
 
 
