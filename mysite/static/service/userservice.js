@@ -23,9 +23,10 @@ function userService($http,$rootScope,$location,$cookies) {
     service.deleteComment = deleteComment;
     service.updateAuthor = updateAuthor;
     service.getAllAuthor = getAllAuthor;
-    service.removeFollowing = removeFollowing;
-    service.addFollowing = addFollowing;
+    service.removeFriend = removeFriend;
+    service.sendFriendRequest = sendFriendRequest;
     service.getGithub = getGithub;
+    service.requestSend=requestSend;
 
     return service;
 
@@ -107,13 +108,17 @@ function userService($http,$rootScope,$location,$cookies) {
     }
 
     // cancel following of an author
-    function removeFollowing(id){
-        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/unfollow/'+id+'/')
+    function removeFriend(id){
+        return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friends/unfriend/'+id+'/')
     }
 
     // following an author
-    function addFollowing(id){
-        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/follow/'+id+'/')
+    function sendFriendRequest(id){
+        return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/'+id+'/')
+    }
+
+    function requestSend(){
+        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friends/friend_requests/')
     }
 
     // if success, return the data
