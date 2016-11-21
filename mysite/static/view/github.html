@@ -34,12 +34,16 @@
     <div class="col-md-9">
         <form name="form" ng-submit="vm.makePost()" role="form">
             <div class="form-group">
-                <textarea style="resize:none" class="form-control" rows="5" id="post" ng-model="vm.post.text" required></textarea>
+                <input type="text" id="title" class="form-control" ng-model="vm.post.title" placeholder="Title" required>
+
+                <input type="text" id="title" class="form-control" ng-model="vm.post.description" placeholder="Description" required>
+
+                <textarea style="resize:none" class="form-control" rows="3" id="post" ng-model="vm.post.content" placeholder="Content" required></textarea>
                 <div class="controls">
                     <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
                 </div>
                 <span>Public: </span>
-                <select ng-model="vm.post.public" required>
+                <select ng-model="vm.post.visibility" required>
                     <option value="true" selected>True</option>
                     <option value="false">False</option>
                 </select>
@@ -69,8 +73,8 @@
 
     <div class="col-sm-3">
         <div class="avatar">
-            <img ng-show="vm.currentAuthor.avatar == null" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
-            <img ng-show="vm.currentAuthor.avatar != null" src="vm.currentAuthor.avatar" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar == ''" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar != ''" src="{{vm.currentAuthor.avatar}}" height="260" width="260"/>
             <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
 
