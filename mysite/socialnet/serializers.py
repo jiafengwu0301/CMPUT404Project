@@ -18,6 +18,7 @@ class AuthorFriendSerializer(serializers.ModelSerializer):
 			'avatar',
 			'host',
 			'github',
+
 		]
 
 
@@ -34,6 +35,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'first_name',
 			'last_name',
 			'github',
+			'host',
 			'avatar',
 			'friends',
 			'email',
@@ -69,9 +71,11 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 			'github',
 			'avatar',
 			'date_created',
+			'avatar',
+			'host',
 		]
 
-	def create(self, validated_data):
+	def create(self, author, validated_data):
 		user_data = validated_data.pop('user')
 		user = User.objects.create(**user_data)
 		user.set_password(user_data['password'])
@@ -131,6 +135,8 @@ class CommentAuthorSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Author
 		fields = [
+			'id',
+			'host',
 			'first_name',
 			'last_name',
 			'avatar',
@@ -144,8 +150,10 @@ class CommentSerializer(serializers.ModelSerializer):
 		model = Comment
 		fields = [
 			'author',
-			'text',
+			'comment',
+			'pubdate',
 			'id',
+			'content_type',
 		]
 
 
@@ -154,26 +162,29 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 		model = Comment
 		fields = [
 			'id',
-			'text',
+			'comment',
+			'content_type'
 		]
 
 
 class PostSerializer(serializers.ModelSerializer):
-	first_name = serializers.CharField(source='author.user.first_name')
-	last_name = serializers.CharField(source='author.user.last_name')
 	comments = CommentSerializer(many=True)
+	author = AuthorFriendSerializer()
 
 	class Meta:
 		model = Post
 		fields = [
 			'id',
-			'published_time',
+			'published',
+			'title',
+			'description',
+			'content_type',
+			'content',
+			'host',
 			'author',
-			'text',
-			'public',
-			'first_name',
-			'last_name',
 			'comments',
+			'visibility',
+			'image'
 		]
 
 
@@ -181,9 +192,13 @@ class CreatePostSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Post
 		fields = [
-			'text',
-			'public',
-			'content_type'
+			'id',
+			'title',
+			'description',
+			'content_type',
+			'content',
+			'image',
+			'visibility'
 		]
 
 
