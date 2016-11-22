@@ -36,7 +36,6 @@ class PostCreateView(viewsets.ModelViewSet):
 			return response.Response(status=status.HTTP_201_CREATED)
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
-
 # List of posts that are visible for the user
 class PostListView(generics.ListAPIView):
 	# queryset = Post.objects.all()
