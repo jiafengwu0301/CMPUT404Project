@@ -3,22 +3,23 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Bloooooooog</a>
+            <a class="navbar-brand" href="/socialnet/#/">Bloooooooog</a>
         </div>
 
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#main">Home</a></li>
+            <li class="active"><a href="/socialnet/#/">Home</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
-            <li><a href="#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+            <li><a href="/socialnet/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+            <li><a href="/socialnet/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
         </ul>
 
-        <div class="col-md-4">
-            <form class="navbar-form" ng-submit = "vm.search" role="search">
+        <div class="col-md-6">
+            <form class="navbar-form" role="search">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="q">
+                    <input type="text" class="form-control" placeholder="Search Author" ng-model="vm.searchArray">
+                    <li class="list-group-item" ng-repeat="author in vm.allAuthor | filter:{first_name: vm.searchArray}" ng-hide='vm.searchArray.length===0'><a href="/socialnet/#/friendPost/{{author.id}}">{{author.first_name}} {{author.last_name}}</a></li>
                     <div class="input-group-btn">
                         <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
@@ -35,18 +36,42 @@
         <h2><small>{{vm.friend.first_name}} {{vm.friend.last_name}}'s Posts</small></h2>
         <hr>
 
-        <div class="well" ng-repeat="post in vm.friendPosts | orderBy: '-published_date'">
-            <h5><span class="glyphicon glyphicon-time"></span> {{post.published_date}} </h5>
-            <p>{{post.text}}</p>
+        <div class="well" ng-repeat="post in vm.friendPosts | orderBy: '-published'">
+            <h5><span class="glyphicon glyphicon-time"></span> {{post.published}} </h5>
+
+            <hr>
+            <h4>Title: {{post.title}}</h4>
+            <h5>Description: {{post.description}}</h5>
+            <hr>
+            <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
+            <div ng-show="post.content_type==='text/markdown'" btf-markdown="post.content"></div>
+
+            <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+            <hr>
 
             <div class="form-group">
+                <button type="button" class="btn btn-default" ng-model="collapsed_newcomment" ng-click="collapsed_newcomment=!collapsed_newcomment" style="margin-right:1em;">New Comment</button>
 
-            <button type="button" class="btn btn-info" ng-model="collapsed_comments" ng-click="collapsed_comments=!collapsed_comments">See Comments</button>
+                <button type="button" class="btn btn-info" ng-model="collapsed_comments" ng-click="collapsed_comments=!collapsed_comments">See Comments</button>
+            </div>
 
+            <div ng-show="collapsed_newcomment">
+                <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
+                    <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.comment" required></textarea>
+
+                    <span>Content Type: </span>
+                    <select ng-model="vm.comment.content_type" required>
+                        <option value="text/plain">Plain</option>
+                        <option value="text/markdown">Markdown</option>
+                    </select>
+
+                    <button type="submit" class="btn pull-right" >Submit</button>
+                </form>
             </div>
 
             <div ng-show="collapsed_comments">
-                <p class="well">{{post.comments.author}}: {{post.comments.text}}</p>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
+                </li>
             </div>
 
 
@@ -55,14 +80,25 @@
 
     <div class="col-sm-3">
         <div class="avatar">
-            <img src="https://freeiconshop.com/files/edd/person-outline-filled.png" height="260" width="260">
+            <img ng-show="vm.friend.avatar == ''" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
+            <img ng-show="vm.friend.avatar != ''" src="{{vm.friend.avatar}}" height="260" width="260"/>
             <h2>{{vm.friend.first_name}} {{vm.friend.last_name}}</h2>
         </div>
 
+        <div>
+            <button type="button" class="btn btn-primary" ng-repeat="friend in vm.allFriend" ng-hide="vm.friend.id===friend.id"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
+
+            <button type="button" class="btn btn-primary" ng-show="vm.allFriend.length===0"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
+
+            <button ng-repeat="friend in vm.allFriend | filter: {id: vm.friend.id}" type="button" class="btn btn-danger" ng-if="friend.length!==0" ng-click="vm.deleteFriend(vm.friend.id)">UnFriend</button>
+        </div>
+
+        <br>
+
         <ul class="list-group">
-            <li class="list-group-item"><a href="#managefriends">Manage Friends</a></li>
-            <li class="list-group-item"><a href="#myposts">Manage MyPosts</a></li>
-            <li class="list-group-item"><a href="#firendRequest">Friend Request</a></li>
+            <li class="list-group-item"><a href="/socialnet/#/managefriends">Manage My Friends</a></li>
+            <li class="list-group-item"><a href="/socialnet/#/myposts">Manage My Posts</a></li>
+            <li class="list-group-item"><a href="/socialnet/#/firendRequest">Friend Request</a></li>
         </ul>
     </div>
 

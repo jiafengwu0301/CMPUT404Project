@@ -26,7 +26,9 @@ function userService($http,$rootScope,$location,$cookies) {
     service.removeFriend = removeFriend;
     service.sendFriendRequest = sendFriendRequest;
     service.getGithub = getGithub;
-    service.requestSend=requestSend;
+    service.request = request;
+    service.acceptRequest = acceptRequest;
+    service.rejectRequest = rejectRequest;
 
     return service;
 
@@ -117,8 +119,19 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/'+id+'/')
     }
 
-    function requestSend(){
+    // get all request
+    function request(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friends/friend_requests/')
+    }
+
+    // accept friend request
+    function acceptRequest(id){
+        return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/accept/'+id+'/')
+    }
+
+    // reject friend request
+    function rejectRequest(id){
+        return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/reject/'+id+'/')
     }
 
     // if success, return the data

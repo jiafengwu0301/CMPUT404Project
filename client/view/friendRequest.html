@@ -1,4 +1,4 @@
-<!-- this is the home page of blog, it shows all posts and comments that current author allow to see, and make a new post -->
+<!-- this view shows the friends list of current author -->
 
 
 <nav class="navbar navbar-default">
@@ -31,44 +31,26 @@
 </nav>
 
 <div class="container">
+
     <div class="col-md-9">
-        <form name="form" ng-submit="vm.makePost()" role="form">
-            <div class="form-group">
-                <input type="text" id="title" class="form-control" ng-model="vm.post.title" placeholder="Title" required>
 
-                <input type="text" id="title" class="form-control" ng-model="vm.post.description" placeholder="Description" required>
-
-                <textarea style="resize:none" class="form-control" rows="3" id="post" ng-model="vm.post.content" placeholder="Content" required></textarea>
-                <div class="controls">
-                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
-                </div>
-                <span>Public: </span>
-                <select ng-model="vm.post.visibility" required>
-                    <option value="true" selected>True</option>
-                    <option value="false">False</option>
-                </select>
-
-                <span>Content Type: </span>
-                <select ng-model="vm.post.content_type" required>
-                    <option value="text/plain">Plain</option>
-                    <option value="text/markdown">Markdown</option>
-                </select>
-
-                <input type="file" ngf-select ng-model="vm.image" name="file" accept="image/*" ngf-max-size="10MB" ng-multiple="false">
-
-            </div>
-        </form>
-
-        <hr>
-        <h2><small><a href="/socialnet/#/">Recent Posts</a> My Github Activity</small></h2>
-        <hr>
-        <div class="well" ng-repeat="activity in vm.github | orderBy:'-created_at' track by $index">
-            <h4>Github User: <a href="https://github.com/{{activity.actor.login}}">{{activity.actor.login}}</a></h4>
-            <h5><span class="glyphicon glyphicon-time"></span>{{activity.created_at | date: 'medium'}}</h5>
-            <hr>
-            <h5>{{activity.type}} at repository <a href="https://github.com/{{activity.repo.name}}">{{activity.repo.name}}</a></h5>
-            <h5 ng-hide="!activity.payload.commits[0].message.length">Commit message: {{activity.payload.commits[0].message}}</h5>
+        <div class="page-header">
+            <h2>Friend Requests:</h2>
         </div>
+        <h4>Request Receive:</h4>
+        <div>
+            <li ng-repeat="request in vm.sendRequest" class="list-group-item" ng-hide="request.receiver.id!==vm.currentAuthor.id"><a  href="/socialnet/#/friendPost/{{request.sender.id}}">{{request.sender.first_name}} {{request.sender.last_name}}</a><button type="button" class="btn btn-danger pull-right btn-xs" ng-click="vm.reject(request.sender.id)">Reject</button><button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.accept(request.sender.id)">Accept</button></li>
+            <h5 ng-show="!vm.sendRequest.length" align="center">No Request</h5>
+        </div>
+
+        <hr>
+        <h4>Request Send:</h4>
+        <div>
+            <li ng-repeat="request in vm.sendRequest" class="list-group-item" ng-show="request.receiver.id!==vm.currentAuthor.id"><a  href="/socialnet/#/friendPost/{{request.receiver.id}}">{{request.receiver.first_name}} {{request.receiver.last_name}}</a></li>
+            <h5 ng-show="!vm.sendRequest.length" align="center">No Request</h5>
+        </div>
+
+
     </div>
 
     <div class="col-sm-3">
@@ -84,5 +66,4 @@
             <li class="list-group-item"><a href="/socialnet/#/firendRequest">Friend Request</a></li>
         </ul>
     </div>
-
 </div>

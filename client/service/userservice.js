@@ -21,6 +21,14 @@ function userService($http,$rootScope,$location,$cookies) {
     service.getAuthorById=getAuthorById;
     service.newComment = newComment;
     service.deleteComment = deleteComment;
+    service.updateAuthor = updateAuthor;
+    service.getAllAuthor = getAllAuthor;
+    service.removeFriend = removeFriend;
+    service.sendFriendRequest = sendFriendRequest;
+    service.getGithub = getGithub;
+    service.requestSend=requestSend;
+    service.acceptRequest = acceptRequest;
+    service.rejectRequest = rejectRequest;
 
     return service;
 
@@ -29,9 +37,24 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.post('http://127.0.0.1:8000/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
     }
 
+    // update author's informations
+    function updateAuthor(id, update){
+        return $http.put('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/update/', update)
+    }
+
     // get all posts that current use has permission
     function getAllPost(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/posts/').then(handleSuccess, handleError('Error'));
+    }
+
+    // get all author
+    function getAllAuthor(){
+        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/')
+    }
+
+    // get Github avtivity
+    function getGithub(username){
+        return $http({method:"GET",url:"https://api.github.com/users/"+username+"/events", headers:{"Authorization":undefined}})
     }
 
     // get post by id
@@ -58,7 +81,7 @@ function userService($http,$rootScope,$location,$cookies) {
 
     // get all friends by author id
     function getAllMyFriend(id){
-        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/friends/').then(handleSuccess, handleError('Error'));
+        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/'+id+'/network/').then(handleSuccess, handleError('Error'));
     }
 
     // get friend's post by friend's id
@@ -84,6 +107,28 @@ function userService($http,$rootScope,$location,$cookies) {
     // delete a comment by its id
     function deleteComment(id){
         return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/comments/'+id+'/destroy/').then(handleSuccess, handleError('Error'));
+    }
+
+    // cancel following of an author
+    function removeFriend(id){
+        return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friends/unfriend/'+id+'/')
+    }
+
+    // following an author
+    function sendFriendRequest(id){
+        return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/'+id+'/')
+    }
+
+    function requestSend(){
+        return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friends/friend_requests/')
+    }
+
+    function acceptRequest(id){
+        return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/accept/'+id+'/')
+    }
+
+    function rejectRequest(id){
+        return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/reject/'+id+'/')
     }
 
     // if success, return the data

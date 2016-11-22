@@ -37,7 +37,7 @@
         <hr>
 
         <div class="well" ng-repeat="post in vm.friendPosts | orderBy: '-published'">
-            <h5><span class="glyphicon glyphicon-time"></span> {{post.published}} </h5>
+            <h5><span class="glyphicon glyphicon-time"></span> {{post.published | date: 'medium'}} </h5>
 
             <hr>
             <h4>Title: {{post.title}}</h4>
@@ -86,9 +86,9 @@
         </div>
 
         <div>
-            <button type="button" class="btn btn-primary" ng-repeat="friend in vm.allFriend" ng-hide="vm.friend.id===friend.id && vm.friend.id !== vm.currentAuthor.id"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
+            <button type="button" class="btn btn-primary" ng-repeat="friend in vm.allFriend" ng-hide="vm.friend.id===friend.id"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
 
-            <button type="button" class="btn btn-primary" ng-show="vm.allFriend.length===0 && vm.friend.id !== vm.currentAuthor.id"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
+            <button type="button" class="btn btn-primary" ng-show="vm.allFriend.length===0"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
 
             <button ng-repeat="friend in vm.allFriend | filter: {id: vm.friend.id}" type="button" class="btn btn-danger" ng-if="friend.length!==0" ng-click="vm.deleteFriend(vm.friend.id)">UnFriend</button>
         </div>

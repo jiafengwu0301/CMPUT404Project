@@ -42,7 +42,7 @@ function loginController($route, $location, authenticationService, FlashService,
 }
 
 // Sign Up Controller
-function registerController(userService, $location, $rootScope, FlashService, Upload) {
+function registerController(userService,$q, $location, $rootScope, FlashService, Upload) {
     var vm = this;``
 
     vm.register = register;
@@ -301,7 +301,7 @@ function myFriendController(userService, $rootScope) {
 }
 
 // Friend Posts Controller
-function friendPostController(userService,$route, $rootScope, $routeParams) {
+function friendPostController(userService,$route, $rootScope, $routeParams, $location) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -325,6 +325,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
         getAllAuthorFriend();
     }
 
+    // load all authors
     function loadAllAuthor(){
         userService.getAllAuthor()
             .then(function (allAuthor) {
@@ -334,10 +335,14 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
 
     // get all posts that current user's friend have
     function getFriendPost(){
-        userService.getPost(vm.friend_id)
-            .then(function (friendPosts) {
-                vm.friendPosts = friendPosts.results;
-            });
+        if (vm.friend_id===vm.currentAuthor.id){
+            $location.path('/myposts');
+        } else {
+            userService.getPost(vm.friend_id)
+                .then(function (friendPosts) {
+                    vm.friendPosts = friendPosts.results;
+                });
+        }
     }
 
     // get the information of current user's friend
@@ -457,30 +462,12 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
 
     // load all github activities for following author and youself
     function loadGitHub(){
-        var git = [];
-        var myfriends = [];
-        userService.getAllMyFriend(vm.currentAuthor.id)
-            .then(function (friends){
-                myfriends = friends.following;
-                for (var i = 0; i < myfriends.length; i++){
-                    userService.getGithub(myfriends[i].github)
-                        .then(function (activity) {
-                            for (var j = 0; j < activity.data.length; j++){
-                                git.push(activity.data[j])
-                            };
-                        });
-                };
-            })
-
         userService.getGithub(vm.currentAuthor.github)
             .then(function (mygit) {
-                for (var n = 0; n < mygit.data.length; n++){
-                    git.push(mygit.data[n]);
-                };
+                vm.github=mygit.data;
             });
-        vm.github=git;
-    }
 
+    }
     // make a new post
     function makePost(){
         vm.dataLoading = true;
@@ -509,6 +496,8 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
         vm.post.public = vm.post.public || "true";
         vm.post.content_type = vm.post.content_type || "text/plain";
     }
+
+
 }
 
 function friendRequestController(userService, $route, $rootScope) {
@@ -518,12 +507,14 @@ function friendRequestController(userService, $route, $rootScope) {
     vm.allAuthor = [];
     vm.searchArray = null;
     vm.sendRequest= null;
+    vm.accept = accept;
+    vm.reject = reject;
 
     initController();
 
     function initController() {
         loadAllAuthor();
-        loadAllSendRequest();
+        loadAllRequest();
     }
 
     // load all authors
@@ -534,10 +525,23 @@ function friendRequestController(userService, $route, $rootScope) {
             });
     }
 
-    function loadAllSendRequest(){
-        userService.requestSend()
+    // load all request
+    function loadAllRequest(){
+        userService.request()
             .then(function(response){
                 vm.sendRequest = response.data.results;
             })
+    }
+
+    // accept the friend request
+    function accept(id){
+        userService.acceptRequest(id);
+        $route.reload();
+    }
+
+    // reject friend request
+    function reject(id){
+        userService.rejectRequest(id);
+        $route.reload();
     }
 }
