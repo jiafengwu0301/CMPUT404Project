@@ -89,13 +89,13 @@
                     <button type="submit" class="btn btn-info pull-right" ng-disabled="form.$invalid">Submit</button>
                     <div class="form-group">
                         <span>Public: </span>
-                        <select name="privacyLevel" ng-model="vm.edit.visibility" required>
+                        <select name="privacyLevel" ng-model="vm.edit.visibility" ng-init="vm.edit.visibility='true'" required>
                             <option value="true">True</option>
                             <option value="false">False</option>
                         </select>
 
                         <span>Content Type: </span>
-                        <select ng-model="vm.edit.content_type" required>
+                        <select ng-model="vm.edit.content_type" ng-init="vm.edit.content_type='text/plain'" required>
                             <option value="text/plain">Plain</option>
                             <option value="text/markdown">Markdown</option>
                         </select>

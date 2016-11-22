@@ -60,7 +60,7 @@
                     <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.comment" required></textarea>
 
                     <span>Content Type: </span>
-                    <select ng-model="vm.comment.content_type" required>
+                    <select ng-model="vm.comment.content_type" ng-init="vm.comment.content_type='text/plain'" required>
                         <option value="text/plain">Plain</option>
                         <option value="text/markdown">Markdown</option>
                     </select>
