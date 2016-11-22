@@ -37,7 +37,7 @@
         <hr>
 
         <div class="well" ng-repeat="post in vm.friendPosts | orderBy: '-published'">
-            <h5><span class="glyphicon glyphicon-time"></span> {{post.published}} </h5>
+            <h5><span class="glyphicon glyphicon-time"></span> {{post.published | date: 'medium'}} </h5>
 
             <hr>
             <h4>Title: {{post.title}}</h4>

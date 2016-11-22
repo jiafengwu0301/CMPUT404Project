@@ -59,11 +59,11 @@
         </form>
 
         <hr>
-        <h2><small>Recent Posts <a href="/socialnet/#/githubActivity">Github Activity</a></small></h2>
+        <h2><small>Recent Posts <a href="/socialnet/#/githubActivity">My Github Activity</a></small></h2>
         <hr>
         <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published'">
             <h3>{{post.author.first_name}} {{post.author.last_name}} </h3>
-            <h5><span class="glyphicon glyphicon-time"></span> {{post.published}}</h5>
+            <h5><span class="glyphicon glyphicon-time"></span> {{post.published | date: 'medium'}}</h5>
 
             <hr>
             <h4>Title: {{post.title}}</h4>
