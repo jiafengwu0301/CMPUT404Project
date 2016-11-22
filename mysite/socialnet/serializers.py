@@ -216,6 +216,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
 			'content',
 			'image',
 			'visibility'
+			'private_visibility'
 		]
 
 

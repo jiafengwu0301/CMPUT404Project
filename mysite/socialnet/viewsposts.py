@@ -27,6 +27,7 @@ class PostCreateView(viewsets.ModelViewSet):
 	def create_post(self, request):
 		data = request.data
 		author = request.user.author
+		private_visibility = PostVisibility.author.post(user)
 		serializer = CreatePostSerializer(data=data)
 		if serializer.is_valid(raise_exception=True):
 			post = serializer.save()

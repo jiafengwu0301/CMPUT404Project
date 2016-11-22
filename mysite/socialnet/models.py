@@ -40,6 +40,8 @@ class Post(models.Model):
 	published = models.DateTimeField(auto_now_add=True)
 	author = models.ForeignKey(Author, blank=True, null=True)
 	content = models.CharField(max_length=255)
+	users = ()
+	private_visibility = models.CharField(max_length=20, choices=users, default=null)
 	visibility = models.BooleanField(default=False)
 	content_type = (
 		("text/plain", 'text/plain'),
