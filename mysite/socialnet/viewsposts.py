@@ -5,7 +5,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 
 from . import permissions as my_permissions
-from .models import Post, Comment
+from .models import Post, Comment, PostVisibility
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer
 import json
 
@@ -46,7 +46,8 @@ class PostListView(generics.ListAPIView):
 		public_posts = Post.objects.filter(visibility=True)
 		try:
 			my_private_posts = Post.objects.filter(author=self.request.user.author, visibility=False)
-			result_list = list(chain(public_posts, my_private_posts))
+			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author)
+			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see))
 		except AttributeError:
 			result_list = public_posts
 		return result_list
@@ -64,7 +65,6 @@ class PostByAuthorListView(generics.ListAPIView):
 			result_list = Post.objects.filter(author=self.request.user.author)
 		else:
 			result_list = Post.objects.filter(author=author_id, visibility=True)
-
 		return result_list
 
 

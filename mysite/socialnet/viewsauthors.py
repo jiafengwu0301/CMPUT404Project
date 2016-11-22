@@ -66,7 +66,7 @@ class SendFriendRequestView(viewsets.ModelViewSet):
 		author = request.user.author
 		receiver = get_object_or_404(Author, id=kwargs['pk'])
 		try:
-			existFriendRequest = FriendRequest.objects.get(sender=author, receiver=receiver)
+			FriendRequest.objects.get(sender=author, receiver=receiver)
 			return response.Response(status=status.HTTP_400_BAD_REQUEST)
 		except django_exceptions.ObjectDoesNotExist:
 			pass
