@@ -38,12 +38,16 @@
             <h2>Friend Requests:</h2>
         </div>
         <h4>Request Receive:</h4>
+        <div>
+            <li ng-repeat="request in vm.sendRequest" class="list-group-item" ng-hide="request.receiver.id!==vm.currentAuthor.id"><a  href="/socialnet/#/friendPost/{{request.sender.id}}">{{request.sender.first_name}} {{request.sender.last_name}}</a><button type="button" class="btn btn-danger pull-right btn-xs" ng-click="vm.reject(request.sender.id)">Reject</button><button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.accept(request.sender.id)">Accept</button></li>
+        </div>
+
         <hr>
         <h4>Request Send:</h4>
         <div>
-            <li ng-repeat="request in vm.sendRequest" class="list-group-item"><a href="/socialnet/#/friendPost/{{request.receiver.id}}">{{request.receiver.first_name}} {{request.receiver.last_name}}</a></li>
-            <h5 ng-show="!vm.sendRequest.length" align="center">No Request</h5>
+            <li ng-repeat="request1 in vm.sendRequest" class="list-group-item" ng-show="request1.receiver.id!==vm.currentAuthor.id"><a  href="/socialnet/#/friendPost/{{request1.receiver.id}}">{{request1.receiver.first_name}} {{request1.receiver.last_name}}</a></li>
         </div>
+        <hr>
 
 
     </div>

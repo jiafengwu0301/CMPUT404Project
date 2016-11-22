@@ -42,7 +42,7 @@ function loginController($route, $location, authenticationService, FlashService,
 }
 
 // Sign Up Controller
-function registerController(userService, $location, $rootScope, FlashService, Upload) {
+function registerController(userService,$q, $location, $rootScope, FlashService, Upload) {
     var vm = this;``
 
     vm.register = register;
@@ -301,7 +301,7 @@ function myFriendController(userService, $rootScope) {
 }
 
 // Friend Posts Controller
-function friendPostController(userService,$route, $rootScope, $routeParams) {
+function friendPostController(userService,$route, $rootScope, $routeParams, $location) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -334,10 +334,14 @@ function friendPostController(userService,$route, $rootScope, $routeParams) {
 
     // get all posts that current user's friend have
     function getFriendPost(){
-        userService.getPost(vm.friend_id)
-            .then(function (friendPosts) {
-                vm.friendPosts = friendPosts.results;
-            });
+        if (vm.friend_id===vm.currentAuthor.id){
+            $location.path('/myposts');
+        } else {
+            userService.getPost(vm.friend_id)
+                .then(function (friendPosts) {
+                    vm.friendPosts = friendPosts.results;
+                });
+        }
     }
 
     // get the information of current user's friend
@@ -518,6 +522,8 @@ function friendRequestController(userService, $route, $rootScope) {
     vm.allAuthor = [];
     vm.searchArray = null;
     vm.sendRequest= null;
+    vm.accept = accept;
+    vm.reject = reject;
 
     initController();
 
@@ -539,5 +545,15 @@ function friendRequestController(userService, $route, $rootScope) {
             .then(function(response){
                 vm.sendRequest = response.data.results;
             })
+    }
+
+    function accept(id){
+        userService.acceptRequest(id);
+        $route.reload();
+    }
+
+    function reject(id){
+        userService.rejectRequest(id);
+        $route.reload();
     }
 }
