@@ -109,27 +109,27 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/comments/'+id+'/destroy/').then(handleSuccess, handleError('Error'));
     }
 
-    // cancel following of an author
+    // unfriend with an author
     function removeFriend(id){
         return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friends/unfriend/'+id+'/')
     }
 
-    // following an author
+    // send a friend request to an author
     function sendFriendRequest(id){
         return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/'+id+'/')
     }
 
-    // get all request
+    // get all request you send and receive
     function request(){
         return $http.get('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friends/friend_requests/')
     }
 
-    // accept friend request
+    // accept a friend request
     function acceptRequest(id){
         return $http.post('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/accept/'+id+'/')
     }
 
-    // reject friend request
+    // reject a friend request
     function rejectRequest(id){
         return $http.delete('http://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@127.0.0.1:8000/socialnet/authors/friend_request/reject/'+id+'/')
     }
