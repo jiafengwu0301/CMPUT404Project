@@ -32,8 +32,8 @@ function userService($http,$rootScope,$location,$cookies) {
 
     return service;
 
-    var host_heroku = "socialnets404.herokuapp.com";
-    var host_heroku_local = "127.0.0.1:8000";
+    host_heroku = "socialnets404.herokuapp.com";
+    host_heroku_local = "127.0.0.1:8000";
 
     // create a user
     function createUser(author){
