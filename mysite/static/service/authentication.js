@@ -22,7 +22,7 @@ function authenticationService($http, $cookies, $rootScope, $timeout, userServic
         var user = {'username':username, 'password':password};
         var host_heroku = "socialnets404.herokuapp.com";
         var host_heroku_local = "127.0.0.1:8000";
-        return $http.post('http://'+host_heroku+'/socialnet/auth/', user)
+        return $http.post('https://'+host_heroku+'/socialnet/auth/', user)
             .then(handleSuccess, handleError);
     }
 
