@@ -24,7 +24,7 @@ class FriendSerializer(serializers.ModelSerializer):
 class AuthorFriendSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
 	last_name = serializers.CharField(source='user.last_name')
-	#friends = FriendSerializer(many=True)
+	local = serializers.BooleanField(source='is_local')
 
 	class Meta:
 		model = Author
@@ -35,7 +35,7 @@ class AuthorFriendSerializer(serializers.ModelSerializer):
 			'avatar',
 			'host',
 			'github',
-
+			'local',
 		]
 
 

@@ -60,11 +60,6 @@ class AuthorNetworkView(generics.RetrieveAPIView):
 class SendFriendRequestView(viewsets.ModelViewSet):
 	serializer_class = AuthorNetworkSerializer
 
-	def get_author_info(self, request, key_name):
-		res = dict()
-		node = request.data[key_name]["host"]
-		return node
-
 	def get_queryset(self):
 		result_list = FriendRequest.objects.filter(receiver=self.request.user.author)
 		return result_list
@@ -95,6 +90,7 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 		return r
 
 	def makeAuthor(self, data, node_url):
+		print "Making author"
 		id = data['id']
 		username = data['displayname'].split(" ")[0]
 		first_name = username
@@ -113,32 +109,36 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 	@detail_route(methods=['post'])
 	def send_request(self, request):
 		try:
-			print request.data['author.host']
-			print request.data['friend.host']
 			node_author = Node.objects.get(node_url=str(request.data['author.host']))
 			node_friend = Node.objects.get(node_url=str(request.data['friend.host']))
+			print request.data['author.id']
+			print request.data['friend.id']
 		except django_exceptions.ObjectDoesNotExist:
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
 		serializer = RemoteRequestSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
 			data = serializer.data
 			try:
-				author = Author.objects.get(id=request.data['author.id'])
+				author = Author.objects.get(id=data['author']['id'])
 			except django_exceptions.ObjectDoesNotExist:
 				author = self.makeAuthor(data['author'], node_author.node_url)
 			try:
-				friend = Author.objects.get(id=request.data['friend.id'])
+				friend = Author.objects.get(id=data['friend']['id'])
 			except django_exceptions.ObjectDoesNotExist:
 				friend = self.makeAuthor(data['friend'], node_friend.node_url)
-			print str(author.id) + "\n\n\n"
-			print str(friend.id) + "\n\n\n"
+
 			try:
-				friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
+				try:
+					friendRequest = FriendRequest.objects.get(sender=author, receiver=friend)
+					friendRequest.delete()
+					author.friends.add(friend)
+				except django_exceptions.ObjectDoesNotExist:
+					friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
 			except:
 				pass
 			#res = self.send_to_remote(node_author.node_url+'friendrequest/', request.data)
 			#print str(res)
-			#return response.Response(status=status.HTTP_200_OK)
+			return response.Response(status=status.HTTP_200_OK)
 
 
 class FriendRequestByAuthorView(generics.ListAPIView):

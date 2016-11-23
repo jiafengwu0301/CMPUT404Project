@@ -33,7 +33,10 @@ class Author(models.Model):
 		return self.user.username
 
 	def is_local(self):
-		return str(self.host.split("/")[3]) == "socialnet"
+		try:
+			return str(self.host.split("/")[3]) == "socialnet"
+		except IndexError:
+			return False
 
 
 class FriendRequest(models.Model):
