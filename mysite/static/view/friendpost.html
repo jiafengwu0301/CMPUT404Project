@@ -70,11 +70,9 @@
             </div>
 
             <div ng-show="collapsed_comments">
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'><button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
                 </li>
             </div>
-
-
         </div>
     </div>
 
