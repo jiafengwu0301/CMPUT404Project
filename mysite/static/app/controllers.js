@@ -67,6 +67,7 @@ function registerController(userService,$q, $location, $rootScope, FlashService,
                 userService.createUser(vm.user)
                     .then(function (response) {
                         if (response) {
+                            alert("Success Register");
                             $location.path('/login');
                         } else {
                             alert("Sign Not Success");
@@ -78,6 +79,7 @@ function registerController(userService,$q, $location, $rootScope, FlashService,
             userService.createUser(vm.user)
                 .then(function (response) {
                     if (response) {
+                        alert("Success Register");
                         $location.path('/login');
                     } else {
                         alert("Sign Not Success");
@@ -150,9 +152,6 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             userService.newPost(vm.post);
             $route.reload();
         };
-        vm.post.text = "";
-        vm.post.public = vm.post.public || "true";
-        vm.post.content_type = vm.post.content_type || "text/plain";
     }
 
     // make comment for posts that current user can see
@@ -249,7 +248,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
         }
     }
 
-    // make a commnet for post with id
+    // make a comment for post with id
     function makeComment(id){
         userService.newComment(id, vm.comment)
             .then(function(response){
@@ -492,9 +491,6 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
             userService.newPost(vm.post);
             $route.reload();
         };
-        vm.post.text = "";
-        vm.post.public = vm.post.public || "true";
-        vm.post.content_type = vm.post.content_type || "text/plain";
     }
 
 

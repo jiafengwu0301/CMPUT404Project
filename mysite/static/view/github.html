@@ -43,13 +43,13 @@
                     <button type="submit" class="btn pull-right" ng-disabled="form.$invalid" >Submit</button>
                 </div>
                 <span>Public: </span>
-                <select ng-model="vm.post.visibility" required>
+                <select ng-model="vm.post.visibility" ng-init="vm.post.visibility='true'" required>
                     <option value="true" selected>True</option>
                     <option value="false">False</option>
                 </select>
 
                 <span>Content Type: </span>
-                <select ng-model="vm.post.content_type" required>
+                <select ng-model="vm.post.content_type" ng-init="vm.post.content_type='text/plain'" required>
                     <option value="text/plain">Plain</option>
                     <option value="text/markdown">Markdown</option>
                 </select>
