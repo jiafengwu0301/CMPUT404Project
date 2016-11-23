@@ -34,12 +34,26 @@ Admin login page
 - username:admin
 - password:password123
 
+--------------------------------------------------------
+
+To run our project in heroku:
+
+**socialnets404.herokuapp.com/**
+
+- The heroku host our project in cloud.
+- use the RESTful API url followed by this link to do all the web services.
+
+**socialnets404.herokuapp.com/socialnet/**
+
+- This is the url to access our project to the main page.
+
+----------------------------------------------------------
 
 To run our project:
 
     cd mysite/
 
-    python manage.py runserver in terminal
+    python manage.py runserver 
 
     you go to this links:
 
