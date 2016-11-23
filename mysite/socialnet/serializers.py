@@ -69,6 +69,59 @@ class AuthorNetworkSerializer(serializers.ModelSerializer):
 		]
 
 
+'''
+	"author": {
+	    # UUID
+		"id":"de305d54-75b4-431b-adb2-eb6b9e546013",
+		"host":"http://127.0.0.1:5454/",
+		"displayName":"Greg Johnson"
+	},
+	"friend": {
+	    # UUID
+		"id":"de305d54-75b4-431b-adb2-eb6b9e637281",
+		"host":"http://127.0.0.1:5454/",
+		"displayName":"Lara Croft",
+		"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
+	}
+
+'''
+
+
+class AuthorFriendRequestSerializer(serializers.ModelSerializer):
+	id = serializers.CharField()
+	class Meta:
+		model = Author
+		fields = [
+			'id',
+			'host',
+			'displayname'
+		]
+
+
+class FriendFriendRequestSerializer(serializers.ModelSerializer):
+	id = serializers.CharField()
+	class Meta:
+		model = Author
+		fields = [
+			'id',
+			'host',
+			'displayname',
+			'url'
+		]
+
+
+class RemoteRequestSerializer(serializers.ModelSerializer):
+	author = AuthorFriendRequestSerializer(source='sender')
+	friend = FriendFriendRequestSerializer(source='receiver')
+
+	class Meta:
+		model = FriendRequest
+		fields = [
+			'author',
+			'friend'
+		]
+
+
 class FullAuthorSerializer(serializers.ModelSerializer):
 	username = serializers.CharField(source='user.username')
 	email = serializers.CharField(source='user.email')
@@ -98,7 +151,7 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 		user.set_password(user_data['password'])
 		user.save()
 		author = Author.objects.create(user=user, **validated_data)
-		author.host = "http://127.0.0.1:8000/socialnet/authors/" + str(author.id) + "/"
+		author.url = "http://127.0.0.1:8000/socialnet/authors/" + str(author.id) + "/"
 		author.save()
 		return author
 

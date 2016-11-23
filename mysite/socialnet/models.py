@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 import uuid
+import unicodedata
 
 # Create your models here.
 
@@ -13,8 +14,12 @@ class Node(models.Model):
 	access_to_posts = models.BooleanField()
 	access_to_images = models.BooleanField()
 
+	def __str__(self):
+		return str(self.node_url)
+
 
 class Author(models.Model):
+	displayname = models.CharField(blank=True, null=True, max_length=255)
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	github = models.CharField(max_length=255)
@@ -22,9 +27,13 @@ class Author(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True)
 	friends = models.ManyToManyField("self", blank=True, related_name='friends')
 	host = models.URLField(default="http://127.0.0.1:8000/socialnet/")
+	url = models.URLField(default="http://127.0.0.1:8000/socialnet/")
 
 	def __str__(self):
 		return self.user.username
+
+	def is_local(self):
+		return str(self.host.split("/")[3]) == "socialnet"
 
 
 class FriendRequest(models.Model):
