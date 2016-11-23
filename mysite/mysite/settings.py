@@ -64,6 +64,8 @@ CORS_ORIGIN_WHITELIST = (
 
 )
 
+
+
 ROOT_URLCONF = 'mysite.urls'
 
 TEMPLATES = [
