@@ -89,6 +89,7 @@ class AuthorNetworkSerializer(serializers.ModelSerializer):
 
 class AuthorFriendRequestSerializer(serializers.ModelSerializer):
 	id = serializers.CharField()
+
 	class Meta:
 		model = Author
 		fields = [
@@ -100,6 +101,7 @@ class AuthorFriendRequestSerializer(serializers.ModelSerializer):
 
 class FriendFriendRequestSerializer(serializers.ModelSerializer):
 	id = serializers.CharField()
+
 	class Meta:
 		model = Author
 		fields = [
@@ -256,6 +258,91 @@ class PostSerializer(serializers.ModelSerializer):
 			'visibility',
 			'image'
 		]
+
+
+class RemotePostAuthorSerializer(serializers.ModelSerializer):
+	github = serializers.CharField(required=False, allow_null=True)
+	host = serializers.CharField(required=False)
+	id = serializers.CharField(required=False)
+	displayname = serializers.CharField(required=False)
+	url = serializers.CharField(required=False)
+	class Meta:
+		model = Author
+		fields = [
+			'id',
+			'host',
+			'displayname',
+			'url',
+			'github',
+		]
+
+
+class RemotePostCommentSerializer(serializers.ModelSerializer):
+	pass
+
+
+class RemotePostSerializer(serializers.ModelSerializer):
+	count = serializers.IntegerField(required=False, allow_null=True)
+	origin = serializers.CharField(required=False, allow_null=True)
+	contentType = serializers.CharField(required=False, allow_null=True)
+	description = serializers.CharField(allow_blank= True,required=False, allow_null=True)
+	author = RemotePostAuthorSerializer(required=False, allow_null=True)
+	title = serializers.CharField(required=False, allow_null=True)
+	comments = RemotePostCommentSerializer(required=False, many=True, allow_null=True)
+	next = serializers.CharField(required=False, allow_null=True)
+	content = serializers.CharField(required=False, allow_null=True)
+	source = serializers.CharField(required=False, allow_null=True)
+	visibility = serializers.CharField(required=False, allow_null=True)
+	published = serializers.CharField(required=False, allow_null=True)
+	id = serializers.UUIDField(required=False, allow_null=True)
+	categories = serializers.Field(required=False, allow_null=True)
+	previous = serializers.CharField(required=False, allow_null=True)
+
+	class Meta:
+		model = Post
+		fields = [
+			'count',
+			'origin',
+			'contentType',
+			'description',
+			'author',
+			'title',
+			'comments',
+			'next',
+			'content',
+			'source',
+			'visibility',
+			'published',
+			'id',
+			'categories',
+			'previous'
+		]
+
+
+'''	{
+	u'count': 0,
+	u'origin': u'http://ssrapp.herokuapp.com/posts/9e57f33a-9dbf-4afe-bda1-3a065a2a69ad',
+	u'contentType': u'text/plain',
+	u'description': u'',
+	u'author': {
+				u'url': u'http://ssrapp.herokuapp.com/author/5d50bfad-58e7-4ea7-9c22-0bada2673530',
+	            u'host': u'http://ssrapp.herokuapp.com/',
+	            u'github': None,
+	            u'displayName': u'admin',
+	            u'id': u'5d50bfad-58e7-4ea7-9c22-0bada2673530'
+	           },
+	u'title': u'ssr post',
+	u'comments': [],
+	u'next': u'http://ssrapp.herokuapp.com/posts/9e57f33a-9dbf-4afe-bda1-3a065a2a69ad/comments/',
+	u'content': u'ssrpost',
+	u'source': u'http://ssrapp.herokuapp.com/posts/9e57f33a-9dbf-4afe-bda1-3a065a2a69ad',
+	u'visibility': u'PUBLIC',
+	u'published': u'2016-11-23T02:39:25.452646',
+	u'id': u'9e57f33a-9dbf-4afe-bda1-3a065a2a69ad',
+	u'categories': None,
+	u'previous': None
+	}
+'''
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
