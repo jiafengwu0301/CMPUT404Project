@@ -112,8 +112,15 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 	def send_request(self, request):
 		# check if node is allowed. if not, 403
 		try:
-			node_author = Node.objects.get(node_url=str(request.data['author.host']))
-			node_friend = Node.objects.get(node_url=str(request.data['friend.host']))
+			author_host = str(request.data['author.host'])
+			friend_host = str(request.data['friend.host'])
+			try:
+				author_host = author_host.split("/", 2)[2]
+				friend_host = friend_host.split("/", 2)[2]
+			except:
+				pass
+			node_author = Node.objects.get(node_url="http://"+author_host)
+			node_friend = Node.objects.get(node_url="http://"+friend_host)
 		except django_exceptions.ObjectDoesNotExist:
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
 		# check if json is ok. if yes, get authors that are trying to be friends
@@ -140,6 +147,7 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 				data['query'] = 'friendrequest'
 				res = self.send_to_remote(node_author.node_url+'/friendrequest', data)
 				return response.Response(res, status=status.HTTP_200_OK)
+
 			except:
 				return response.Response("REMOTE SERVER ERROR", status=status.HTTP_504_GATEWAY_TIMEOUT)
 
