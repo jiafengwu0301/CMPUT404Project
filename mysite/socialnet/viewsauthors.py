@@ -1,3 +1,4 @@
+import json
 from itertools import chain
 import requests
 from django.contrib.auth.models import User
@@ -113,6 +114,10 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 		# check if node is allowed. if not, 403
 		try:
 			print request.data
+			try:
+				request.data = json.loads(request.data)
+			except:
+				pass
 			author_host = str(request.data['author.host'])
 			friend_host = str(request.data['friend.host'])
 			try:
