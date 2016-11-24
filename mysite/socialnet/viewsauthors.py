@@ -116,6 +116,7 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 		try:
 			try :
 				data = json.loads(json.dumps(request.data))
+				print data
 				author_host = data.author.host
 				#print author_host
 				friend_host = data.friend.host
