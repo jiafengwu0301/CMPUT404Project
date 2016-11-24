@@ -110,14 +110,13 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 
 	@detail_route(methods=['post'])
 	def send_request(self, request):
+		# check if node is allowed. if not, 403
 		try:
 			node_author = Node.objects.get(node_url=str(request.data['author.host']))
-			print request.data['author.id']
-			print request.data['friend.host']
 			node_friend = Node.objects.get(node_url=str(request.data['friend.host']))
-			print request.data['friend.id']
 		except django_exceptions.ObjectDoesNotExist:
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
+		# check if json is ok. if yes, get authors that are trying to be friends
 		serializer = RemoteRequestSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
 			data = serializer.data
@@ -129,20 +128,17 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 				friend = Author.objects.get(id=data['friend']['id'])
 			except django_exceptions.ObjectDoesNotExist:
 				friend = self.makeAuthor(data['friend'], node_friend.node_url)
-
+			#check if there its for accept or not. if not, add the friend request
 			try:
-				try:
-					friendRequest = FriendRequest.objects.get(sender=author, receiver=friend)
-					friendRequest.delete()
-					author.friends.add(friend)
-				except django_exceptions.ObjectDoesNotExist:
-					friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
-			except:
-				pass
-			data['query'] = 'friendrequest'
-			#data['url'] = node_author.node_url+'/friendrequest/'
+				friendRequest = FriendRequest.objects.get(sender=author, receiver=friend)
+				friendRequest.delete()
+				author.friends.add(friend)
+				return response.Response(status=status.HTTP_202_ACCEPTED)
+			except django_exceptions.ObjectDoesNotExist:
+				friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
 			try:
-				res = self.send_to_remote(node_author.node_url+'/friendrequest/', data)
+				data['query'] = 'friendrequest'
+				res = self.send_to_remote(node_author.node_url+'/friendrequest', data)
 				return response.Response(res, status=status.HTTP_200_OK)
 			except:
 				return response.Response("REMOTE SERVER ERROR", status=status.HTTP_504_GATEWAY_TIMEOUT)

@@ -60,6 +60,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'friends',
 			'email',
 			'displayName',
+			'url',
 		]
 
 
