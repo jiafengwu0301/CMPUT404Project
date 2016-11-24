@@ -29,6 +29,7 @@ function userService($http,$rootScope,$location,$cookies) {
     service.request = request;
     service.acceptRequest = acceptRequest;
     service.rejectRequest = rejectRequest;
+    service.getRemotePosts = getRemotePosts;
 
     return service;
 
@@ -135,6 +136,11 @@ function userService($http,$rootScope,$location,$cookies) {
     // reject a friend request
     function rejectRequest(id){
         return $http.delete('https://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+"socialnets404.herokuapp.com"+'/socialnet/authors/friend_request/reject/'+id+'/')
+    }
+
+    // get remote posts
+    function getRemotePosts(){
+        return $http.get('https://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+"socialnets404.herokuapp.com"+'/socialnet/posts/remote/')
     }
 
     // if success, return the data
