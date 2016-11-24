@@ -76,6 +76,10 @@ class RemotePostListView(viewsets.ViewSet):
 		nodes = Node.objects.all()
 		remote_json_posts = {}
 		for url in nodes:
+			print str(url)
+			print LOCALHOST
+			print REMOTEHOST
+			print str(url) != LOCALHOST and str(url) != REMOTEHOST
 			if str(url) != LOCALHOST and str(url) != REMOTEHOST:
 				r = requests.get(str(url) + "/posts", auth=("admin", "password123"))
 				remote_json_posts[str(url)] = r.json()

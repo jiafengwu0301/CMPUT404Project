@@ -8,7 +8,7 @@ import unicodedata
 
 # Create your models here.
 
-LOCALHOST = "http://127.0.0.1:8000"
+LOCALHOST = "http://127.0.0.1:8000/socialnet"
 REMOTEHOST = "http://socialnets404.herokuapp.com/socialnet"
 
 
