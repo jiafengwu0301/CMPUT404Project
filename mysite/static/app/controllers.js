@@ -119,7 +119,18 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     function loadAllPosts() {
         userService.getAllPost()
             .then(function (allpost) {
-                vm.allPosts = allpost.results;
+                vm.allPosts = allpost.posts;
+                userService.getRemotePosts()
+                    .then(function(remotePosts){
+                        // var posts = remotePosts.posts;
+                        for (var i = 0; i < Object.keys(remotePosts.data).length; i++){
+                            for (var j = 0; j < Object.values(remotePosts.data)[i].posts.length; j++){
+                                alert(JSON.stringify(Object.values(remotePosts.data)[i].posts[j]));
+                                vm.allPosts.push(Object.values(remotePosts.data)[i].posts[j]);
+                            }
+                        }
+
+                    })
                 $location.path('/');
             });
     }
