@@ -116,9 +116,9 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 		try:
 			try :
 				data = json.loads(json.dumps(request.data))
-				author_host = request.data.author.host
-				print author_host
-				friend_host = request.data.friend.host
+				author_host = data.author.host
+				#print author_host
+				friend_host = data.friend.host
 				print friend_host
 				is_json = True
 			except:
