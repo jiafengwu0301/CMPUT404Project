@@ -3,6 +3,7 @@ from itertools import chain
 import requests
 from django.contrib.auth.models import User
 from django.core import exceptions as django_exceptions
+from django.http import QueryDict
 from django.shortcuts import get_object_or_404
 from requests.auth import HTTPBasicAuth
 from rest_framework import generics, permissions, response, status, views
@@ -115,7 +116,10 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 		try:
 			print request.data
 			try:
-				request.data = json.loads(request.data)
+				data = QueryDict('', mutable=True)
+				data.update(request.data)
+				request.data = data
+				print "hahaha"
 			except:
 				pass
 			author_host = str(request.data['author.host'])
