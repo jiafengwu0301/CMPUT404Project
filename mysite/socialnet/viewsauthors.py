@@ -48,6 +48,7 @@ class AuthorAuthenticationView(views.APIView):
 		serializer = AuthenticateSerializer(data=data)
 		if serializer.is_valid(raise_exception=True):
 			new_data = serializer.data
+			print
 			return response.Response(new_data, status=status.HTTP_200_OK)
 		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -66,7 +67,7 @@ class SendFriendRequestView(viewsets.ModelViewSet):
 
 	@detail_route(methods=['post'])
 	def send_request(self, request, **kwargs):
-		try :
+		try:
 			author = request.user.author
 			receiver = get_object_or_404(Author, id=kwargs['pk'])
 			try:
@@ -92,8 +93,8 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 	def makeAuthor(self, data, node_url):
 		print "Making author"
 		id = data['id']
-		displaynamesplit = data['displayname'].split(" ")
-		username = displaynamesplit[0] + id[0:7]
+		displayNamesplit = data['displayName'].split(" ")
+		username = displayNamesplit[0] + id[0:7]
 		first_name = username
 		last_name = username
 		email = username + "@nousageemail.com"
@@ -103,7 +104,7 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 		except:
 			return User.objects.get(username=username)
 		author = Author.objects.create(user=user, id=uuid.UUID(id),
-		                               displayname=str(data['displayname']), github="noGitHUB",
+		                               displayName=str(data['displayName']), github="noGitHUB",
 		                               host=node_url, url=node_url+"/author/"+id)
 		return author
 
@@ -138,10 +139,13 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 					friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
 			except:
 				pass
-			res = self.send_to_remote(node_author.node_url+'friendrequest/', request.data)
-			print str(res)
-			return response.Response(status=status.HTTP_200_OK)
-
+			data['query'] = 'friendrequest'
+			#data['url'] = node_author.node_url+'/friendrequest/'
+			try:
+				res = self.send_to_remote(node_author.node_url+'/friendrequest/', data)
+				return response.Response(res, status=status.HTTP_200_OK)
+			except:
+				return response.Response("REMOTE SERVER ERROR", status=status.HTTP_504_GATEWAY_TIMEOUT)
 
 class FriendRequestByAuthorView(generics.ListAPIView):
 	serializer_class = FriendRequestSerializer

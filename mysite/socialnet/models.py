@@ -58,7 +58,7 @@ class Post(models.Model):
 	published = models.DateTimeField(auto_now_add=True)
 	author = models.ForeignKey(Author, blank=True, null=True)
 	content = models.CharField(max_length=255)
-	visibility = models.BooleanField(default=False)
+	visibility = models.CharField(default='PUBLIC', max_length=10)
 	contentType = (
 		("text/plain", 'text/plain'),
 		("text/markdown", 'text/markdown')

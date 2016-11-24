@@ -59,6 +59,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'avatar',
 			'friends',
 			'email',
+			'displayName',
 		]
 
 

@@ -30,11 +30,11 @@ class IsPostPublicOrOwner(permissions.BasePermission):
 	def has_permission(self, request, view):
 		try:
 			actualPost = Post.objects.get(id=view.kwargs['pk'])
-			return request.user.author.id == actualPost.author.id or actualPost.visibility
+			return request.user.author.id == actualPost.author.id or actualPost.visibility == 'PUBLIC'
 		except django_exceptions.ObjectDoesNotExist:
 			return True
 		except AttributeError:
-			return actualPost.visibility
+			return actualPost.visibility == 'PUBLIC'
 
 
 class IsCommentFromAPublicPost(permissions.BasePermission):
@@ -42,7 +42,7 @@ class IsCommentFromAPublicPost(permissions.BasePermission):
 
 	def has_permission(self, request, view):
 		actualPost = Post.objects.get(id=Comment.objects.get(id=view.kwargs['pk']).post.id)
-		return request.user.author.id == actualPost.author.id or actualPost.visibility
+		return request.user.author.id == actualPost.author.id or actualPost.visibility == 'PUBLIC'
 
 
 class IsOwnerForModifyComment(permissions.BasePermission):

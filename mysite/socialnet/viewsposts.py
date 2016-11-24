@@ -57,9 +57,9 @@ class PostListView(generics.ListAPIView):
 	pagination_class = PostPagination
 
 	def get_queryset(self):
-		public_posts = Post.objects.filter(visibility=True)
+		public_posts = Post.objects.filter(visibility="PUBLIC")
 		try:
-			my_private_posts = Post.objects.filter(author=self.request.user.author, visibility=False)
+			my_private_posts = Post.objects.filter(author=self.request.user.author, visibility="PRIVATE")
 			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author)
 			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see))
 		except AttributeError:
@@ -93,7 +93,7 @@ class PostByAuthorListView(generics.ListAPIView):
 		if author_id == str(self.request.user.author.id):
 			result_list = Post.objects.filter(author=self.request.user.author)
 		else:
-			result_list = Post.objects.filter(author=author_id, visibility=True)
+			result_list = Post.objects.filter(author=author_id, visibility="PUBLIC")
 		return result_list
 
 
