@@ -10,7 +10,7 @@ from rest_framework import generics, permissions, response, status, views
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 import uuid
-
+from rest_framework.parsers import MultiPartParser
 from . import permissions as my_permissions
 from .models import Author, FriendRequest, Node
 from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
@@ -87,6 +87,7 @@ class SendFriendRequestView(viewsets.ModelViewSet):
 class SendRemoteFriendRequestView(viewsets.ViewSet):
 	serializer_class = RemoteRequestSerializer
 	queryset = FriendRequest.objects.all()
+	parser_classes = (MultiPartParser,)
 
 	def send_to_remote(self, url, data):
 		r = requests.post(url, json=data, auth=("admin", "password123"))
