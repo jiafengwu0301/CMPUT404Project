@@ -119,19 +119,22 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 				print data
 				author_host = data['author']['host']
 				friend_host = data['friend']['host']
-				print author_host
-				print friend_host
 				is_json = True
 			except:
 				author_host = str(request.data['author.host'])
 				friend_host = str(request.data['friend.host'])
 			try:
-				author_host = author_host.split("/", 2)[2]
-				friend_host = friend_host.split("/", 2)[2]
+				author_host = author_host.split("/", 3)[2]
+				friend_host = friend_host.split("/", 3)[2]
+				print author_host
+				print friend_host
 			except:
 				pass
 			node_author = Node.objects.get(node_url="http://"+author_host)
-			node_friend = Node.objects.get(node_url="http://"+friend_host)
+			try:
+				node_friend = Node.objects.get(node_url="http://"+friend_host+"/socialnet")
+			except:
+				node_friend = Node.objects.get(node_url="http://"+friend_host)
 		except django_exceptions.ObjectDoesNotExist:
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
 		# check if json is ok. if yes, get authors that are trying to be friends
