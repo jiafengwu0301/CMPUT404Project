@@ -20,6 +20,7 @@ class AuthorApiTest(APITestCase):
     def test_create_user(self):
         factory = APIRequestFactory()
         data = {
+            "displayName": "fijiwater",
             "username": "testUser1",
             "password": "testUser123",
             "email": "testUser1@email.com",
@@ -61,7 +62,7 @@ class PostApiTest(APITestCase):
         #test get posts
         response = self.client.get('/socialnet/posts/', {}, format='json')
         self.assertEqual(response.status_code, 200)
-        request_msg = response.data['results']
+        request_msg = response.data['posts']
         self.post_id = request_msg[0]['id']
         # print self.post_id
 
@@ -118,7 +119,7 @@ class CommentsAndFriendsApiTest(APITestCase):
                         "content": "this is my first post for test"
         })
         response = self.client.get('/socialnet/posts/', {}, format='json')
-        request_msg = response.data['results']
+        request_msg = response.data['posts']
         self.post_id = request_msg[0]['id']
 
     def test_create_comment(self):
@@ -154,7 +155,7 @@ class CommentsAndFriendsApiTest(APITestCase):
         #test to send a friend request
         response = self.client.post('/socialnet/authors/friend_request/%s/' % self.uid2, {}, format = 'json')
         self.assertEqual(response.status_code, 202)
-        
+
     def test_get_friend_requests(self):
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser2:testUser000'))
