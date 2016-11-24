@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Post, Author, Comment, FriendRequest
+from .models import Post, Author, Comment, FriendRequest, REMOTEHOST
 from django.contrib.auth.models import User
 
 
@@ -153,7 +153,7 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 		user.set_password(user_data['password'])
 		user.save()
 		author = Author.objects.create(user=user, **validated_data)
-		author.url = "http://127.0.0.1:8000/socialnet/authors/" + str(author.id) + "/"
+		author.url = REMOTEHOST + "/authors/" + str(author.id) + "/"
 		author.save()
 		return author
 

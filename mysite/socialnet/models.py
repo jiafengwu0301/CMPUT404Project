@@ -8,6 +8,9 @@ import unicodedata
 
 # Create your models here.
 
+LOCALHOST = "http://127.0.0.1:8000"
+REMOTEHOST = "http://socialnets404.herokuapp.com/socialnet"
+
 
 class Node(models.Model):
 	node_url = models.URLField()
@@ -26,15 +29,16 @@ class Author(models.Model):
 	avatar = models.URLField(blank=True)
 	date_created = models.DateTimeField(auto_now_add=True)
 	friends = models.ManyToManyField("self", blank=True, related_name='friends')
-	host = models.URLField(default="http://127.0.0.1:8000/socialnet/")
-	url = models.URLField(default="http://127.0.0.1:8000/socialnet/")
+	host = models.URLField(default="http://127.0.0.1:8000/socialnet")
+	url = models.URLField(default="http://127.0.0.1:8000/socialnet")
 
 	def __str__(self):
 		return self.user.username
 
 	def is_local(self):
 		try:
-			return str(self.host.split("/")[3]) == "socialnet"
+			return str(self.host.split("/")[2]) == LOCALHOST.split("/")[2] or\
+			        str(self.host.split("/")[2]) == REMOTEHOST.split("/")[2]
 		except IndexError:
 			return False
 

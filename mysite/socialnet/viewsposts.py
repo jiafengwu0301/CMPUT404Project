@@ -3,15 +3,25 @@ import requests
 from django.core import serializers
 from django.http import HttpResponse
 from rest_framework import generics, permissions, views, response, status
+from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 
 from . import permissions as my_permissions
-from .models import Post, Comment, PostVisibility, Node
+from .models import Post, Comment, PostVisibility, Node, REMOTEHOST
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer, \
 	RemotePostSerializer
 import json
 
+
+class PostPagination(pagination.PageNumberPagination):
+	def get_paginated_response(self, data):
+		return response.Response({
+			'count': self.page.paginator.count,
+			'next': self.get_next_link(),
+			'previous': self.get_previous_link(),
+			'posts': data
+		})
 
 # Create your views here.
 
@@ -26,6 +36,7 @@ class PostCreateView(viewsets.ModelViewSet):
 	serializer_class = CreatePostSerializer
 	permission_classes = [permissions.IsAuthenticated]
 
+
 	@detail_route(methods=['post'])
 	def create_post(self, request):
 		data = request.data
@@ -34,7 +45,7 @@ class PostCreateView(viewsets.ModelViewSet):
 		if serializer.is_valid(raise_exception=True):
 			post = serializer.save()
 			post.author = author
-			post.host = "http://127.0.0.1:8000/socialnet/posts/" + str(post.id) + "/"
+			post.host =  REMOTEHOST + "/posts/" + str(post.id) + "/"
 			post.save()
 			return response.Response(status=status.HTTP_201_CREATED)
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
@@ -42,13 +53,12 @@ class PostCreateView(viewsets.ModelViewSet):
 
 # List of posts that are visible for the user
 class PostListView(generics.ListAPIView):
-	# queryset = Post.objects.all()
 	serializer_class = PostSerializer
+	pagination_class = PostPagination
 
 	def get_queryset(self):
 		public_posts = Post.objects.filter(visibility=True)
 		try:
-			nodes = Node.objects.all()
 			my_private_posts = Post.objects.filter(author=self.request.user.author, visibility=False)
 			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author)
 			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see))
@@ -60,22 +70,14 @@ class PostListView(generics.ListAPIView):
 
 class RemotePostListView(viewsets.ViewSet):
 	serializer_class = RemotePostSerializer
+	pagination_class = PostPagination
 
 	def list(self, request):
 		nodes = Node.objects.all()
 		remote_json_posts = {}
 		for url in nodes:
-			r = requests.get(str(url) + "/posts", auth=("haha", "haha"))
+			r = requests.get(str(url) + "/posts", auth=("admin", "password123"))
 			remote_json_posts[str(url)] = r.json()
-
-		public_posts = Post.objects.filter(visibility=True)
-		my_private_posts = Post.objects.filter(author=request.user.author, visibility=False)
-		posts_i_can_see = Post.objects.filter(postvisibility__author=request.user.author)
-		result_list = list(chain(public_posts, my_private_posts, posts_i_can_see))
-		serializer = PostSerializer(result_list, many=True)
-		myapiposts = serializer.data
-		remote_json_posts["local"] = myapiposts
-
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)
 
 
