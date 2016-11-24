@@ -62,7 +62,7 @@
         <h2><small>Recent Posts <a href="/socialnet/#/githubActivity">My Github Activity</a></small></h2>
         <hr>
         <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published'">
-            <h3>{{post.author.displayName}}</h3>
+            <h3>{{post.author.displayName}}<h5 ng-show="post.author.local===undefined">This author is from another server</h5></h3>
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published | date: 'medium'}}</h5>
             <hr>
             <h4>Title: {{post.title}}</h4>
@@ -82,6 +82,8 @@
             <button type="button" class="btn btn-danger pull-right" ng-click = "vm.deletePost(post.id)" ng-show="post.author.id===vm.currentAuthor.id">Delete</button>
 
             <button type="button" class="btn btn-warning pull-right" style="margin-right:1em;" ng-model="collapsed_edit" ng-click="collapsed_edit=!collapsed_edit" ng-show="post.author.id===vm.currentAuthor.id">Edit</button>
+
+            <button type="button" class="btn btn-primary pull-right" ng-show="post.author.local===undefined" ng-click="vm.sendRemoteRequest(post.author)">Send Friend Request</button>
 
             <div ng-show="collapsed_comments">
                 <br>

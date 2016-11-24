@@ -43,7 +43,7 @@ function loginController($route, $location, authenticationService, FlashService,
 
 // Sign Up Controller
 function registerController(userService,$q, $location, $rootScope, FlashService, Upload) {
-    var vm = this;``
+    var vm = this;
 
     vm.register = register;
 
@@ -106,6 +106,8 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     vm.editPost = editPost;
     vm.deletePost=deletePost;
     vm.deleteComment=deleteComment;
+    vm.sendRemoteRequest = sendRemoteRequest;
+    vm.request= null;
 
 
     initController();
@@ -224,6 +226,23 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     function deleteComment(id){
         userService.deleteComment(id);
         $route.reload();
+    }
+
+    function sendRemoteRequest(remotefriend){
+        var request = {
+            "author": {
+                "id": remotefriend.id,
+                "host": remotefriend.host,
+                "displayName": remotefriend.displayName,
+            },
+            "friend": {
+                "id": vm.currentAuthor.id,
+                "host": vm.currentAuthor.host,
+                "displayName": vm.currentAuthor.displayName,
+                "url": vm.currentAuthor.url,
+            }
+        };
+        userService.sendRemoteFriendRequest(request);
     }
 }
 
