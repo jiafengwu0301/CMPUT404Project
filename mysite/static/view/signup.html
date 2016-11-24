@@ -10,6 +10,12 @@
         <form name="form" ng-submit="vm.register()" role="form">
             <div class="well">
 
+                <div class="form-group" ng-class="{ 'has-error': form.displayName.$dirty && form.displayName.$error.required }">
+                    <h2>First Name: </h2>
+                    <input type="text" name="displayName" id="displayName" class="form-control" placeholder="Enter First Name" ng-model="vm.user.displayName" required />
+                    <span ng-show="form.displayName.$dirty && form.displayName.$error.required" class="help-block">First name is required</span>
+                </div>
+
                 <div class="form-group" ng-class="{ 'has-error': form.first_name.$dirty && form.first_name.$error.required }">
                     <h2>First Name: </h2>
                     <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter First Name" ng-model="vm.user.first_name" required />
