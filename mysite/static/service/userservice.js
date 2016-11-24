@@ -30,6 +30,7 @@ function userService($http,$rootScope,$location,$cookies) {
     service.acceptRequest = acceptRequest;
     service.rejectRequest = rejectRequest;
     service.getRemotePosts = getRemotePosts;
+    service.sendRemoteFriendRequest = sendRemoteFriendRequest;
 
     return service;
 
@@ -141,6 +142,19 @@ function userService($http,$rootScope,$location,$cookies) {
     // get remote posts
     function getRemotePosts(){
         return $http.get('https://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+"socialnets404.herokuapp.com"+'/socialnet/posts/remote/')
+    }
+
+    function sendRemoteFriendRequest(request){
+        return $http.post('https://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+"socialnets404.herokuapp.com"+'/socialnet/authors/remote/friendrequest/',request)
+
+        // return $http({
+        //     method: 'POST',
+        //     url: 'https://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+"socialnets404.herokuapp.com"+'/socialnet/authors/remote/friendrequest/',
+        //     headers:{
+        //         'Content-Type': 'application/json'
+        //     },
+        //     data: request
+        // });
     }
 
     // if success, return the data
