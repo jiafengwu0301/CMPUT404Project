@@ -3,6 +3,7 @@ import requests
 from django.core import serializers
 from django.http import HttpResponse
 from rest_framework import generics, permissions, views, response, status
+from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 
@@ -12,6 +13,15 @@ from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer
 	RemotePostSerializer
 import json
 
+
+class PostPagination(pagination.PageNumberPagination):
+	def get_paginated_response(self, data):
+		return response.Response({
+			'count': self.page.paginator.count,
+			'next': self.get_next_link(),
+			'previous': self.get_previous_link(),
+			'posts': data
+		})
 
 # Create your views here.
 
@@ -25,6 +35,7 @@ class PostCreateView(viewsets.ModelViewSet):
 	queryset = Post.objects.all()
 	serializer_class = CreatePostSerializer
 	permission_classes = [permissions.IsAuthenticated]
+
 
 	@detail_route(methods=['post'])
 	def create_post(self, request):
@@ -42,8 +53,8 @@ class PostCreateView(viewsets.ModelViewSet):
 
 # List of posts that are visible for the user
 class PostListView(generics.ListAPIView):
-	# queryset = Post.objects.all()
 	serializer_class = PostSerializer
+	pagination_class = PostPagination
 
 	def get_queryset(self):
 		public_posts = Post.objects.filter(visibility=True)
@@ -59,6 +70,7 @@ class PostListView(generics.ListAPIView):
 
 class RemotePostListView(viewsets.ViewSet):
 	serializer_class = RemotePostSerializer
+	pagination_class = PostPagination
 
 	def list(self, request):
 		nodes = Node.objects.all()
