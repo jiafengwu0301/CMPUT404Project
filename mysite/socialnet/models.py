@@ -22,7 +22,7 @@ class Node(models.Model):
 
 
 class Author(models.Model):
-	displayname = models.CharField(blank=True, null=True, max_length=255)
+	displayName = models.CharField(blank=True, null=True, max_length=255)
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	github = models.CharField(max_length=255)
@@ -49,20 +49,22 @@ class FriendRequest(models.Model):
 
 
 class Post(models.Model):
+
 	title = models.CharField(max_length=40, default="Title", blank=True)
-	host = models.URLField(default="http://127.0.0.1:8000/socialnet/")
+	source = models.URLField(default=REMOTEHOST)
+	origin = models.URLField(default=REMOTEHOST)
 	description = models.CharField(max_length=40, default="description", blank=True)
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	published = models.DateTimeField(auto_now_add=True)
 	author = models.ForeignKey(Author, blank=True, null=True)
 	content = models.CharField(max_length=255)
 	visibility = models.BooleanField(default=False)
-	content_type = (
+	contentType = (
 		("text/plain", 'text/plain'),
 		("text/markdown", 'text/markdown')
 	)
 	image = models.URLField(blank=True)
-	content_type = models.CharField(max_length=15, choices=content_type, default="text/plain")
+	contentType = models.CharField(max_length=15, choices=contentType, default="text/plain")
 
 	def __str__(self):
 		try:
@@ -83,11 +85,11 @@ class Comment(models.Model):
 	post = models.ForeignKey(Post, related_name='comments')
 	comment = models.CharField(max_length=255)
 	pubdate = models.DateTimeField(auto_now_add=True)
-	content_type = (
+	contentType = (
 		("text/plain", 'text/plain'),
 		("text/markdown", 'text/markdown')
 	)
-	content_type = models.CharField(max_length=15, choices=content_type, default="text/plain")
+	contentType = models.CharField(max_length=15, choices=contentType, default="text/plain")
 
 	def __str__(self):
 		return self.author.user.username + " on post from " + self.post.author.user.username

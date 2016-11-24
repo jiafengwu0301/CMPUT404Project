@@ -1,3 +1,5 @@
+from rest_framework import pagination
+from rest_framework import response
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -29,6 +31,7 @@ class AuthorFriendSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Author
 		fields = [
+			'displayName',
 			'id',
 			'first_name',
 			'last_name',
@@ -95,7 +98,7 @@ class AuthorFriendRequestSerializer(serializers.ModelSerializer):
 		fields = [
 			'id',
 			'host',
-			'displayname'
+			'displayName'
 		]
 
 
@@ -107,7 +110,7 @@ class FriendFriendRequestSerializer(serializers.ModelSerializer):
 		fields = [
 			'id',
 			'host',
-			'displayname',
+			'displayName',
 			'url'
 		]
 
@@ -135,6 +138,7 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 		model = Author
 		fields = [
 			'id',
+			'displayName',
 			'username',
 			'password',
 			'email',
@@ -207,6 +211,7 @@ class CommentAuthorSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Author
 		fields = [
+			'displayName',
 			'id',
 			'host',
 			'first_name',
@@ -225,7 +230,7 @@ class CommentSerializer(serializers.ModelSerializer):
 			'comment',
 			'pubdate',
 			'id',
-			'content_type',
+			'contentType',
 		]
 
 
@@ -235,7 +240,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 		fields = [
 			'id',
 			'comment',
-			'content_type'
+			'contentType'
 		]
 
 
@@ -250,9 +255,10 @@ class PostSerializer(serializers.ModelSerializer):
 			'published',
 			'title',
 			'description',
-			'content_type',
+			'contentType',
 			'content',
-			'host',
+			'source',
+			'origin',
 			'author',
 			'comments',
 			'visibility',
@@ -264,14 +270,14 @@ class RemotePostAuthorSerializer(serializers.ModelSerializer):
 	github = serializers.CharField(required=False, allow_null=True)
 	host = serializers.CharField(required=False)
 	id = serializers.CharField(required=False)
-	displayname = serializers.CharField(required=False)
+	displayName = serializers.CharField(required=False)
 	url = serializers.CharField(required=False)
 	class Meta:
 		model = Author
 		fields = [
 			'id',
 			'host',
-			'displayname',
+			'displayName',
 			'url',
 			'github',
 		]
@@ -352,7 +358,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
 			'id',
 			'title',
 			'description',
-			'content_type',
+			'contentType',
 			'content',
 			'image',
 			'visibility'

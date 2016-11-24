@@ -86,13 +86,14 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 	queryset = FriendRequest.objects.all()
 
 	def send_to_remote(self, url, data):
-		r = requests.post(url, json=data, auth=("haha", "haha"))
+		r = requests.post(url, json=data, auth=("admin", "password123"))
 		return r
 
 	def makeAuthor(self, data, node_url):
 		print "Making author"
 		id = data['id']
-		username = data['displayname'].split(" ")[0]
+		displaynamesplit = data['displayname'].split(" ")
+		username = displaynamesplit[0] + id[0:7]
 		first_name = username
 		last_name = username
 		email = username + "@nousageemail.com"
@@ -110,8 +111,9 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 	def send_request(self, request):
 		try:
 			node_author = Node.objects.get(node_url=str(request.data['author.host']))
-			node_friend = Node.objects.get(node_url=str(request.data['friend.host']))
 			print request.data['author.id']
+			print request.data['friend.host']
+			node_friend = Node.objects.get(node_url=str(request.data['friend.host']))
 			print request.data['friend.id']
 		except django_exceptions.ObjectDoesNotExist:
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
@@ -136,8 +138,8 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 					friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
 			except:
 				pass
-			#res = self.send_to_remote(node_author.node_url+'friendrequest/', request.data)
-			#print str(res)
+			res = self.send_to_remote(node_author.node_url+'friendrequest/', request.data)
+			print str(res)
 			return response.Response(status=status.HTTP_200_OK)
 
 
