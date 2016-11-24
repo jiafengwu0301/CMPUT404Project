@@ -84,7 +84,7 @@ class SendFriendRequestView(viewsets.ModelViewSet):
 			return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class SendRemoteFriendRequestView(viewsets.ModelViewSet):
+class SendRemoteFriendRequestView(viewsets.ViewSet):
 	serializer_class = RemoteRequestSerializer
 	queryset = FriendRequest.objects.all()
 
