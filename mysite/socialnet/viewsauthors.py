@@ -112,6 +112,7 @@ class SendRemoteFriendRequestView(viewsets.ModelViewSet):
 	def send_request(self, request):
 		# check if node is allowed. if not, 403
 		try:
+			print request.data
 			author_host = str(request.data['author.host'])
 			friend_host = str(request.data['friend.host'])
 			try:
