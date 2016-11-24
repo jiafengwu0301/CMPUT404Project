@@ -243,6 +243,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             }
         };
         userService.sendRemoteFriendRequest(request);
+        alert("Remote Friend Request Send");
     }
 }
 
