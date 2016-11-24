@@ -8,7 +8,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 
 from . import permissions as my_permissions
-from .models import Post, Comment, PostVisibility, Node, REMOTEHOST
+from .models import Post, Comment, PostVisibility, Node, REMOTEHOST, LOCALHOST
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer, \
 	RemotePostSerializer
 import json
@@ -76,11 +76,9 @@ class RemotePostListView(viewsets.ViewSet):
 		nodes = Node.objects.all()
 		remote_json_posts = {}
 		for url in nodes:
-			try:
+			if str(url) != LOCALHOST and str(url) != REMOTEHOST:
 				r = requests.get(str(url) + "/posts", auth=("admin", "password123"))
 				remote_json_posts[str(url)] = r.json()
-			except:
-				pass
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)
 
 
