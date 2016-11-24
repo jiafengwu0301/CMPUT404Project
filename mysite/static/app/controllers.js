@@ -102,6 +102,10 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     vm.makeComment = makeComment;
     vm.allAuthor = [];
     vm.searchArray = null;
+    vm.edit = null;
+    vm.editPost = editPost;
+    vm.deletePost=deletePost;
+    vm.deleteComment=deleteComment;
 
 
     initController();
@@ -154,6 +158,49 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
         };
     }
 
+    // edit a post that current user owned
+    function editPost(id){
+        var deferred = $q.defer();
+        if (vm.image) {
+            Upload.upload({
+                url: "https://api.cloudinary.com/v1_1/dbodiislg/upload",
+                data: {
+                    upload_preset: "b1gyt5ss",
+                    file: vm.image
+                },
+                headers:{
+                    "Authorization": undefined
+                }
+            }).success(function(data){
+                deferred.resolve(data);
+                vm.edit.image = deferred.promise.$$state.value.url;
+                userService.editPost(id, vm.edit)
+                    .then(function(response){
+                        if (response){
+                            $route.reload();
+                        }
+                    });
+            });
+        } else {
+            userService.editPost(id, vm.edit)
+                .then(function(response){
+                    if (response){
+                        $route.reload();
+                    }
+                });
+        }
+    }
+
+    // delete the post that current user owned
+    function deletePost(id){
+        userService.deletePost(id)
+            .then(function(response){
+                if (response){
+                    $route.reload();
+                }
+            });
+    }
+
     // make comment for posts that current user can see
     function makeComment(id){
         userService.newComment(id, vm.comment)
@@ -162,6 +209,11 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
                     $route.reload();
                 };
             });
+    }
+    // delete a comment in a post which current user owned
+    function deleteComment(id){
+        userService.deleteComment(id);
+        $route.reload();
     }
 }
 
@@ -314,6 +366,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     vm.friendRequest = friendRequest;
     vm.comment=null;
     vm.makeComment = makeComment;
+    vm.deleteComment = deleteComment;
 
     initController();
 
@@ -379,6 +432,12 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     // to be friend with an author
     function friendRequest(id){
         userService.sendFriendRequest(id);
+        $route.reload();
+    }
+
+    // delete a comment in a post which current user owned
+    function deleteComment(id){
+        userService.deleteComment(id);
         $route.reload();
     }
 }

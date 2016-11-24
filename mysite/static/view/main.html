@@ -64,7 +64,6 @@
         <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published'">
             <h3>{{post.author.first_name}} {{post.author.last_name}} </h3>
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published | date: 'medium'}}</h5>
-
             <hr>
             <h4>Title: {{post.title}}</h4>
             <h5>Description: {{post.description}}</h5>
@@ -76,17 +75,21 @@
 
             <hr>
 
-            <button type="button" class="btn btn-default" ng-model="collapsed1" ng-click="collapsed1=!collapsed1" style="margin-right:1em;">New Comment</button>
+            <button type="button" class="btn btn-default" ng-model="collapsed_newcomment" ng-click="collapsed_newcomment=!collapsed_newcomment" style="margin-right:1em;">New Comment</button>
 
-            <button type="button" class="btn btn-info" ng-model="collapsed" ng-click="collapsed=!collapsed">See Comments</button>
+            <button type="button" class="btn btn-info" ng-model="collapsed_comments" ng-click="collapsed_comments=!collapsed_comments">See Comments</button>
 
-            <div ng-show="collapsed">
+            <button type="button" class="btn btn-danger pull-right" ng-click = "vm.deletePost(post.id)" ng-show="post.author.id===vm.currentAuthor.id">Delete</button>
+
+            <button type="button" class="btn btn-warning pull-right" style="margin-right:1em;" ng-model="collapsed_edit" ng-click="collapsed_edit=!collapsed_edit" ng-show="post.author.id===vm.currentAuthor.id">Edit</button>
+
+            <div ng-show="collapsed_comments">
                 <br>
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'><button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.content_type==='text/plain'">{{comment.author.first_name}} {{comment.author.last_name}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.first_name}} {{comment.author.last_name}}:<span btf-markdown="comment.comment"></span></span>
                 </li>
             </div>
 
-            <div ng-show="collapsed1">
+            <div ng-show="collapsed_newcomment">
                 <br>
                 <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
                     <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.comment" required></textarea>
@@ -97,7 +100,33 @@
                         <option value="text/markdown">Markdown</option>
                     </select>
 
-                    <button type="submit" class="btn pull-right" ng-disabled="form.$invalid">Submit</button>
+                    <button type="submit" class="btn pull-right">Submit</button>
+                </form>
+            </div>
+
+            <div ng-show="collapsed_edit">
+                <form name="form" ng-submit="vm.editPost(post.id)" role="form">
+                    <input type="text" id="title" class="form-control" ng-model="vm.edit.title" placeholder="Title" required>
+
+                    <input type="text" id="title" class="form-control" ng-model="vm.edit.description" placeholder="Description" required>
+
+                    <textarea style="resize:none" class="form-control" rows="2" id="edit" placeholder="Edit your post here..." ng-model="vm.edit.content" required></textarea>
+                    <button type="submit" class="btn btn-info pull-right" ng-disabled="form.$invalid">Submit</button>
+                    <div class="form-group">
+                        <span>Public: </span>
+                        <select name="privacyLevel" ng-model="vm.edit.visibility" ng-init="vm.edit.visibility='true'" required>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+
+                        <span>Content Type: </span>
+                        <select ng-model="vm.edit.content_type" ng-init="vm.edit.content_type='text/plain'" required>
+                            <option value="text/plain">Plain</option>
+                            <option value="text/markdown">Markdown</option>
+                        </select>
+
+                        <input type="file" ngf-select ng-model="vm.image" name="file" accept="image/*" ngf-max-size="10MB" ng-multiple="false">
+                    </div>
                 </form>
             </div>
         </div>
@@ -105,7 +134,7 @@
 
     <div class="col-sm-3">
         <div class="avatar">
-            <img ng-show="vm.currentAuthor.avatar == ''" src="http://127.0.0.1:8000/static/std-avatar.png" height="260" width="260"/>
+            <img ng-show="vm.currentAuthor.avatar == ''" src="https://socialnets404.herokuapp.com/static/std-avatar.png" height="260" width="260"/>
             <img ng-show="vm.currentAuthor.avatar != ''" src="{{vm.currentAuthor.avatar}}" height="260" width="260"/>
             <h2>{{vm.currentAuthor.first_name}} {{vm.currentAuthor.last_name}}</h2>
         </div>
