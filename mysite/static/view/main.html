@@ -62,7 +62,7 @@
         <h2><small>Recent Posts <a href="/socialnet/#/githubActivity">My Github Activity</a></small></h2>
         <hr>
         <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published'">
-            <h3>{{post.author.displayName}}<h5 ng-show="post.author.local===undefined">This author is from another server</h5></h3>
+            <h3>{{post.author.displayName}}<h5 ng-show="post.author.local===undefined">(This author is from another server)</h5></h3>
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published | date: 'medium'}}</h5>
             <hr>
             <h4>Title: {{post.title}}</h4>
@@ -71,7 +71,8 @@
             <p ng-show="post.contentType==='text/plain'">{{post.content}}</p>
 
             <div ng-show="post.contentType==='text/markdown'" btf-markdown="post.content"></div>
-            <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+
+            <img ng-show="post.image" ng-if="post.contentType!=='text/markdown'" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
             <hr>
 

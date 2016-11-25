@@ -43,10 +43,10 @@
             <h4>Title: {{post.title}}</h4>
             <h5>Description: {{post.description}}</h5>
             <hr>
-            <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
-            <div ng-show="post.content_type==='text/markdown'" btf-markdown="post.content"></div>
+            <p ng-show="post.contentType==='text/plain'">{{post.content}}</p>
+            <div ng-show="post.contentType==='text/markdown'" btf-markdown="post.content"></div>
 
-            <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+            <img ng-show="post.image" ng-if="post.contentType!=='text/markdown'" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
             <hr>
 
@@ -61,8 +61,8 @@
             </div>
 
             <div ng-show="collapsed_comments">
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'><button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)">Delete</button><span ng-show="comment.content_type==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span>
-                <span ng-show="comment.content_type==='text/markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span></li>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'><button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)">Delete</button><span ng-show="comment.contentType==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span>
+                <span ng-show="comment.contentType==='text/markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span></li>
             </div>
 
             <div ng-show="collapsed_newcomment">
@@ -70,7 +70,7 @@
                     <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.comment" required></textarea>
 
                     <span>Content Type: </span>
-                    <select ng-model="vm.comment.content_type" required>
+                    <select ng-model="vm.comment.contentType" required>
                         <option value="text/plain">Plain</option>
                         <option value="text/markdown">Markdown</option>
                     </select>
@@ -95,7 +95,7 @@
                         </select>
 
                         <span>Content Type: </span>
-                        <select ng-model="vm.edit.content_type" ng-init="vm.edit.content_type='text/plain'" required>
+                        <select ng-model="vm.edit.contentType" ng-init="vm.edit.contentType='text/plain'" required>
                             <option value="text/plain">Plain</option>
                             <option value="text/markdown">Markdown</option>
                         </select>

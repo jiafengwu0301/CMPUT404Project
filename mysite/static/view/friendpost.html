@@ -46,7 +46,7 @@
             <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
             <div ng-show="post.content_type==='text/markdown'" btf-markdown="post.content"></div>
 
-            <img ng-show="post.image" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+            <img ng-show="post.image" ng-if="post.contentType!=='text/markdown'" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
             <hr>
 
             <div class="form-group">

@@ -146,15 +146,6 @@ function userService($http,$rootScope,$location,$cookies) {
 
     function sendRemoteFriendRequest(request){
         return $http.post('https://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+"socialnets404.herokuapp.com"+'/socialnet/authors/remote/friendrequest/',request)
-
-        // return $http({
-        //     method: 'POST',
-        //     url: 'https://'+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+"socialnets404.herokuapp.com"+'/socialnet/authors/remote/friendrequest/',
-        //     headers:{
-        //         'Content-Type': 'application/json'
-        //     },
-        //     data: request
-        // });
     }
 
     // if success, return the data

@@ -161,6 +161,9 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             }).success(function(data){
                 deferred.resolve(data);
                 vm.post.image = deferred.promise.$$state.value.url;
+                if (vm.post.contentType === 'text/markdown'){
+                    vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
+                }
                 userService.newPost(vm.post);
                 $route.reload();
             });
@@ -186,6 +189,9 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             }).success(function(data){
                 deferred.resolve(data);
                 vm.edit.image = deferred.promise.$$state.value.url;
+                if (vm.edit.contentType === 'text/markdown'){
+                    vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
+                }
                 userService.editPost(id, vm.edit)
                     .then(function(response){
                         if (response){
@@ -313,6 +319,9 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
             }).success(function(data){
                 deferred.resolve(data);
                 vm.edit.image = deferred.promise.$$state.value.url;
+                if (vm.edit.contentType === 'text/markdown'){
+                    vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
+                }
                 userService.editPost(id, vm.edit)
                     .then(function(response){
                         if (response){
@@ -573,6 +582,9 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
             }).success(function(data){
                 deferred.resolve(data);
                 vm.post.image = deferred.promise.$$state.value.url;
+                if (vm.post.contentType === 'text/markdown'){
+                    vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
+                }
                 userService.newPost(vm.post);
                 $route.reload();
             });
@@ -594,6 +606,7 @@ function friendRequestController(userService, $route, $rootScope) {
     vm.sendRequest= null;
     vm.accept = accept;
     vm.reject = reject;
+    vm.acceptRemote = acceptRemote;
 
     initController();
 
@@ -627,6 +640,26 @@ function friendRequestController(userService, $route, $rootScope) {
     // reject friend request
     function reject(id){
         userService.rejectRequest(id);
+        $route.reload();
+    }
+
+    // accept remote friend request
+    function acceptRemote(remotefriend){
+        var request = {
+            "author": {
+                "id": remotefriend.id,
+                "host": remotefriend.host,
+                "displayName": remotefriend.displayName,
+            },
+            "friend": {
+                "id": vm.currentAuthor.id,
+                "host": vm.currentAuthor.host,
+                "displayName": vm.currentAuthor.displayName,
+                "url": vm.currentAuthor.url,
+            }
+        };
+        userService.sendRemoteFriendRequest(request);
+        alert("Remote Friend Request Accpeted");
         $route.reload();
     }
 }
