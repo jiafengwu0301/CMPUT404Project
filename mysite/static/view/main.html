@@ -1,6 +1,5 @@
 <!-- this is the home page of blog, it shows all posts and comments that current author allow to see, and make a new post -->
 
-
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -20,7 +19,11 @@
             <form class="navbar-form" role="search">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search Author" ng-model="vm.searchArray">
-                    <li class="list-group-item" ng-repeat="author in vm.allAuthor | filter:{displayName: vm.searchArray}" ng-hide='vm.searchArray.length===0'><a href="/socialnet/#/friendPost/{{author.id}}">{{author.displayName}}</a></li>
+
+                    <li class="list-group-item" ng-repeat="author in vm.allAuthor | filter:{displayName: vm.searchArray}" ng-hide='vm.searchArray.length===0'>
+                        <a href="/socialnet/#/friendPost/{{author.id}}">{{author.displayName}}</a>
+                    </li>
+
                     <div class="input-group-btn">
                         <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                     </div>
@@ -39,9 +42,11 @@
                 <input type="text" id="title" class="form-control" ng-model="vm.post.description" placeholder="Description" required>
 
                 <textarea style="resize:none" class="form-control" rows="3" id="post" ng-model="vm.post.content" placeholder="Content" required></textarea>
+
                 <div class="controls">
                     <button type="submit" class="btn pull-right " ng-disabled="form.$invalid" >Submit</button>
                 </div>
+
                 <span>Public: </span>
                 <select ng-model="vm.post.visibility" ng-init="vm.post.visibility='PUBLIC'" required>
                     <option value="PUBLIC">Public</option>
@@ -59,15 +64,24 @@
         </form>
 
         <hr>
+
         <h2><small>Recent Posts <a href="/socialnet/#/githubActivity">My Github Activity</a></small></h2>
+
         <hr>
+
         <div class="well" ng-repeat="post in vm.allPosts | orderBy: '-published'">
             <h3>{{post.author.displayName}}<h5 ng-show="post.author.local===undefined">(This author is from another server)</h5></h3>
+
             <h5><span class="glyphicon glyphicon-time"></span> {{post.published | date: 'medium'}}</h5>
+
             <hr>
+
             <h4>Title: {{post.title}}</h4>
+
             <h5>Description: {{post.description}}</h5>
+
             <hr>
+
             <p ng-show="post.contentType==='text/plain'">{{post.content}}</p>
 
             <div ng-show="post.contentType==='text/markdown'" btf-markdown="post.content"></div>
@@ -88,7 +102,8 @@
 
             <div ng-show="collapsed_comments">
                 <br>
-                <li class="list-group-item" ng-repeat = 'comment in post.comments'><button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.contentType==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span><span ng-show="comment.contentType==='text/markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span>
+                <li class="list-group-item" ng-repeat = 'comment in post.comments'>
+                    <button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.contentType==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span><span ng-show="comment.contentType==='text/markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span>
                 </li>
             </div>
 
@@ -114,7 +129,9 @@
                     <input type="text" id="title" class="form-control" ng-model="vm.edit.description" placeholder="Description" required>
 
                     <textarea style="resize:none" class="form-control" rows="2" id="edit" placeholder="Edit your post here..." ng-model="vm.edit.content" required></textarea>
+
                     <button type="submit" class="btn btn-info pull-right" ng-disabled="form.$invalid">Submit</button>
+
                     <div class="form-group">
                         <span>Public: </span>
                         <select name="privacyLevel" ng-model="vm.edit.visibility" ng-init="vm.edit.visibility='true'" required>
