@@ -91,7 +91,7 @@ function registerController(userService,$q, $location, $rootScope, FlashService,
 }
 
 // Home Page Controller
-function homeController(userService, $q, $route, $rootScope, $location, FlashService, Upload) {
+function homeController(userService, $q, $route, $rootScope, $location, FlashService, Upload, $interval) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -124,7 +124,6 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
                 vm.allPosts = allpost.posts;
                 userService.getRemotePosts()
                     .then(function(remotePosts){
-                        // var posts = remotePosts.posts;
                         for (var i = 0; i < Object.keys(remotePosts.data).length; i++){
                             for (var j = 0; j < Object.values(remotePosts.data)[i].posts.length; j++){
                                 vm.allPosts.push(Object.values(remotePosts.data)[i].posts[j]);
@@ -133,6 +132,26 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
 
                     })
                 $location.path('/');
+            });
+    }
+
+    $interval(checkUpdate,1000);
+    function checkUpdate(){
+        userService.getAllPost()
+            .then(function (allpost) {
+                var newposts = allpost.posts;
+                userService.getRemotePosts()
+                    .then(function(remotePosts){
+                        for (var i = 0; i < Object.keys(remotePosts.data).length; i++){
+                            for (var j = 0; j < Object.values(remotePosts.data)[i].posts.length; j++){
+                                newposts.push(Object.values(remotePosts.data)[i].posts[j]);
+                            }
+                        }
+                        var res =angular.equals(newposts,vm.allPosts);
+                        if (!res){
+                            vm.allPosts = newposts;
+                        }
+                    })
             });
     }
 
@@ -165,12 +184,11 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
                     vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
                 }
                 userService.newPost(vm.post);
-                $route.reload();
             });
         } else {
             userService.newPost(vm.post);
-            $route.reload();
         };
+        vm.post=null;
     }
 
     // edit a post that current user owned
@@ -192,46 +210,27 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
                 if (vm.edit.contentType === 'text/markdown'){
                     vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
                 }
-                userService.editPost(id, vm.edit)
-                    .then(function(response){
-                        if (response){
-                            $route.reload();
-                        }
-                    });
+                userService.editPost(id, vm.edit);
             });
         } else {
-            userService.editPost(id, vm.edit)
-                .then(function(response){
-                    if (response){
-                        $route.reload();
-                    }
-                });
+            userService.editPost(id, vm.edit);
         }
+        vm.edit=null;
     }
 
     // delete the post that current user owned
     function deletePost(id){
-        userService.deletePost(id)
-            .then(function(response){
-                if (response){
-                    $route.reload();
-                }
-            });
+        userService.deletePost(id);
     }
 
     // make comment for posts that current user can see
     function makeComment(id){
-        userService.newComment(id, vm.comment)
-            .then(function(response){
-                if (response){
-                    $route.reload();
-                };
-            });
+        userService.newComment(id, vm.comment);
+        vm.comment=null
     }
     // delete a comment in a post which current user owned
     function deleteComment(id){
         userService.deleteComment(id);
-        $route.reload();
     }
 
     function sendRemoteRequest(remotefriend){
@@ -254,7 +253,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
 }
 
 // My Posts Controller
-function myPostController(userService, $q, $route, $rootScope, $location,Upload) {
+function myPostController(userService, $q, $route, $rootScope, $location,Upload, $interval) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -273,7 +272,6 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
     function initController() {
         loadAllMyPost();
         loadAllAuthor();
-
     }
 
     // load all post current user made
@@ -282,6 +280,18 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
             .then(function (allpost) {
                 vm.myPosts = allpost.results;
                 $location.path('/myposts');
+            });
+    }
+
+    $interval(checkUpdate,1000);
+    function checkUpdate(){
+        userService.getPost(vm.currentAuthor.id)
+            .then(function (allpost) {
+                var newposts = allpost.results;
+                var res = angular.equals(newposts,vm.myPosts);
+                if (!res){
+                    vm.myPosts = newposts;
+                };
             });
     }
 
@@ -295,12 +305,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
 
     // delete the post that current user owned
     function deletePost(id){
-        userService.deletePost(id)
-            .then(function(response){
-                if (response){
-                    $route.reload();
-                }
-            });
+        userService.deletePost(id);
     }
 
     // edit a post that current user owned
@@ -322,37 +327,23 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload)
                 if (vm.edit.contentType === 'text/markdown'){
                     vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
                 }
-                userService.editPost(id, vm.edit)
-                    .then(function(response){
-                        if (response){
-                            $route.reload();
-                        }
-                    });
+                userService.editPost(id, vm.edit);
             });
         } else {
-            userService.editPost(id, vm.edit)
-                .then(function(response){
-                    if (response){
-                        $route.reload();
-                    }
-                });
+            userService.editPost(id, vm.edit);
         }
+        vm.edit=null;
     }
 
     // make a comment for post with id
     function makeComment(id){
-        userService.newComment(id, vm.comment)
-            .then(function(response){
-                if (response){
-                    $route.reload();
-                };
-            });
+        userService.newComment(id, vm.comment);
+        vm.comment=null;
     }
 
     // delete a comment in a post which current user owned
     function deleteComment(id){
         userService.deleteComment(id);
-        $route.reload();
     }
 }
 
@@ -391,7 +382,7 @@ function myFriendController(userService, $rootScope) {
 }
 
 // Friend Posts Controller
-function friendPostController(userService,$route, $rootScope, $routeParams, $location) {
+function friendPostController(userService,$route, $rootScope, $routeParams, $location, $interval) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -436,6 +427,18 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
         }
     }
 
+    $interval(checkUpdate,1000);
+    function checkUpdate(){
+        userService.getPost(vm.friend_id)
+            .then(function (friendPosts) {
+                var newposts = friendPosts.results;
+                var res = angular.equals(newposts,vm.friendPosts);
+                if (!res){
+                    vm.friendPosts = newposts;
+                }
+            });
+    }
+
     // get the information of current user's friend
     function getFriend(){
         userService.getAuthorById(vm.friend_id)
@@ -454,12 +457,8 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
 
     // make comment for post with id
     function makeComment(id){
-        userService.newComment(id, vm.comment)
-            .then(function(response){
-                if (response){
-                    $route.reload();
-                };
-            });
+        userService.newComment(id, vm.comment);
+        vm.comment=null;
     }
 
     // unfriend with an author
@@ -477,7 +476,6 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     // delete a comment in a post which current user owned
     function deleteComment(id){
         userService.deleteComment(id);
-        $route.reload();
     }
 }
 
@@ -532,7 +530,7 @@ function myInfoController(userService, $q, $route, $location, $rootScope, FlashS
     }
 }
 
-function githubController(userService, $q, $route, $location, $rootScope, FlashService, Upload){
+function githubController(userService, $q, $route, $location, $rootScope, FlashService, Upload, $interval){
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -563,8 +561,20 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
             .then(function (mygit) {
                 vm.github=mygit.data;
             });
-
     }
+
+    $interval(checkUpdate,1000);
+    function checkUpdate(){
+        userService.getGithub(vm.currentAuthor.github)
+            .then(function (mygit) {
+                var newgit = mygit.data;
+                var res = angular.equals(newgit,vm.github);
+                if (!res){
+                    vm.github = newgit;
+                }
+            });
+    }
+
     // make a new post
     function makePost(){
         vm.dataLoading = true;
@@ -586,18 +596,17 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
                     vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
                 }
                 userService.newPost(vm.post);
-                $route.reload();
             });
         } else {
             userService.newPost(vm.post);
-            $route.reload();
         };
+        vm.post = null;
     }
 
 
 }
 
-function friendRequestController(userService, $route, $rootScope) {
+function friendRequestController(userService, $route, $rootScope, $interval) {
     var vm = this;
 
     vm.currentAuthor = $rootScope.globals.currentUser.author;
@@ -628,6 +637,18 @@ function friendRequestController(userService, $route, $rootScope) {
         userService.request()
             .then(function(response){
                 vm.sendRequest = response.data.results;
+            })
+    }
+
+    $interval(checkUpdate,1000);
+    function checkUpdate(){
+        userService.request()
+            .then(function(response){
+                var newreq = response.data.results;
+                var res = angular.equals(newreq, vm.sendRequest);
+                if (!res){
+                    vm.sendRequest = newreq;
+                }
             })
     }
 

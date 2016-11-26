@@ -11,6 +11,8 @@ authenticationService.$inject = ['$http', '$cookies', '$rootScope', '$timeout', 
 function authenticationService($http, $cookies, $rootScope, $timeout, userService) {
     var service = {};
 
+    var host = "https://socialnets404.herokuapp.com";
+
     service.login = login;
     service.setCredentials = setCredentials;
     service.clearCredentials = clearCredentials;
@@ -20,9 +22,8 @@ function authenticationService($http, $cookies, $rootScope, $timeout, userServic
     // make a post request to server with username and password to see if it is authenticate
     function login(username, password) {
         var user = {'username':username, 'password':password};
-        // var host_heroku = "socialnets404.herokuapp.com";
-        // var host_heroku_local = "127.0.0.1:8000";
-        return $http.post('https://'+"socialnets404.herokuapp.com"+'/socialnet/auth/', user)
+
+        return $http.post(host+'/socialnet/auth/', user)
             .then(handleSuccess, handleError);
     }
 
