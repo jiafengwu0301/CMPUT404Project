@@ -4,25 +4,25 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/socialnet/#/">Bloooooooog</a>
+            <a class="navbar-brand" href="/#/">Bloooooooog</a>
         </div>
 
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/socialnet/#/">Home</a></li>
+            <li class="active"><a href="/#/">Home</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="/socialnet/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
-            <li><a href="/socialnet/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+            <li><a href="/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+            <li><a href="/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
         </ul>
 
         <div class="col-md-6">
             <form class="navbar-form" role="search">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search Author" ng-model="vm.searchArray">
-                    
+
                     <li class="list-group-item" ng-repeat="author in vm.allAuthor | filter:{displayName: vm.searchArray}" ng-hide='vm.searchArray.length===0'>
-                        <a href="/socialnet/#/friendPost/{{author.id}}">{{author.displayName}}</a>
+                        <a href="/#/friendPost/{{author.id}}">{{author.displayName}}</a>
                     </li>
 
                     <div class="input-group-btn">
@@ -46,7 +46,7 @@
 
         <div>
             <li ng-repeat="request in vm.sendRequest" class="list-group-item" ng-hide="request.receiver.id!==vm.currentAuthor.id">
-                <a  href="/socialnet/#/friendPost/{{request.sender.id}}">{{request.sender.displayName}}</a>
+                <a  href="/#/friendPost/{{request.sender.id}}">{{request.sender.displayName}}</a>
                 <button type="button" class="btn btn-danger pull-right btn-xs" ng-click="vm.reject(request.sender.id)">Reject</button>
                 <button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.accept(request.sender.id)" ng-show="request.sender.local===true">Accept</button>
                 <button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.acceptRemote(request.sender)" ng-show="request.sender.local===false">Accept</button>
@@ -56,7 +56,7 @@
         <hr>
         <h4>Request Send:</h4>
         <div>
-            <li ng-repeat="request1 in vm.sendRequest" class="list-group-item" ng-show="request1.receiver.id!==vm.currentAuthor.id"><a  href="/socialnet/#/friendPost/{{request1.receiver.id}}">{{request1.receiver.displayName}}</a></li>
+            <li ng-repeat="request1 in vm.sendRequest" class="list-group-item" ng-show="request1.receiver.id!==vm.currentAuthor.id"><a  href="/#/friendPost/{{request1.receiver.id}}">{{request1.receiver.displayName}}</a></li>
         </div>
         <hr>
     </div>
@@ -69,9 +69,9 @@
         </div>
 
         <ul class="list-group">
-            <li class="list-group-item"><a href="/socialnet/#/managefriends">Manage My Friends</a></li>
-            <li class="list-group-item"><a href="/socialnet/#/myposts">Manage My Posts</a></li>
-            <li class="list-group-item"><a href="/socialnet/#/firendRequest">Friend Request</a></li>
+            <li class="list-group-item"><a href="/#/managefriends">Manage My Friends</a></li>
+            <li class="list-group-item"><a href="/#/myposts">Manage My Posts</a></li>
+            <li class="list-group-item"><a href="/#/firendRequest">Friend Request</a></li>
         </ul>
     </div>
 </div>

@@ -4,16 +4,16 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/socialnet/#/">Bloooooooog</a>
+            <a class="navbar-brand" href="/#/">Bloooooooog</a>
         </div>
 
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/socialnet/#/">Home</a></li>
+            <li class="active"><a href="/#/">Home</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="/socialnet/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
-            <li><a href="/socialnet/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+            <li><a href="/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+            <li><a href="/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
         </ul>
 
         <div class="col-md-6">
@@ -22,7 +22,7 @@
                     <input type="text" class="form-control" placeholder="Search Author" ng-model="vm.searchArray">
 
                     <li class="list-group-item" ng-repeat="author in vm.allAuthor | filter:{displayName: vm.searchArray}" ng-hide='vm.searchArray.length===0'>
-                        <a href="/socialnet/#/friendPost/{{author.id}}">{{author.displayName}}</a>
+                        <a href="/#/friendPost/{{author.id}}">{{author.displayName}}</a>
                     </li>
 
                     <div class="input-group-btn">
@@ -50,14 +50,17 @@
 
                 <span>Public: </span>
                 <select ng-model="vm.post.visibility" ng-init="vm.post.visibility='PUBLIC'" required>
-                    <option value="PUBLIC" selected>Public</option>
+                    <option value="PUBLIC">Public</option>
+                    <option value="FOAF">Friends of Friend</option>
+                    <option value="FRIENDS">Friends Only</option>
                     <option value="PRIVATE">Private</option>
+                    <option value="SERVERONLY">Server Only</option>
                 </select>
 
                 <span>Content Type: </span>
                 <select ng-model="vm.post.content_type" ng-init="vm.post.content_type='text/plain'" required>
                     <option value="text/plain">Plain</option>
-                    <option value="text/markdown">Markdown</option>
+                    <option value="text/x-markdown">Markdown</option>
                 </select>
 
                 <input type="file" ngf-select ng-model="vm.image" name="file" accept="image/*" ngf-max-size="10MB" ng-multiple="false">
@@ -66,7 +69,7 @@
 
         <hr>
 
-        <h2><small><a href="/socialnet/#/">Recent Posts</a> My Github Activity</small></h2>
+        <h2><small><a href="/#/">Recent Posts</a> My Github Activity</small></h2>
 
         <hr>
 
@@ -81,7 +84,7 @@
 
             <h5 ng-hide="!activity.payload.commits[0].message.length">Commit message: {{activity.payload.commits[0].message}}</h5>
         </div>
-        
+
         <h5 ng-show="!vm.github" align="center">404 NOT FOUND</h5>
     </div>
 
@@ -93,9 +96,9 @@
         </div>
 
         <ul class="list-group">
-            <li class="list-group-item"><a href="/socialnet/#/managefriends">Manage My Friends</a></li>
-            <li class="list-group-item"><a href="/socialnet/#/myposts">Manage My Posts</a></li>
-            <li class="list-group-item"><a href="/socialnet/#/firendRequest">Friend Request</a></li>
+            <li class="list-group-item"><a href="/#/managefriends">Manage My Friends</a></li>
+            <li class="list-group-item"><a href="/#/myposts">Manage My Posts</a></li>
+            <li class="list-group-item"><a href="/#/firendRequest">Friend Request</a></li>
         </ul>
     </div>
 

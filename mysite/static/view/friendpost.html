@@ -3,16 +3,16 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/socialnet/#/">Bloooooooog</a>
+            <a class="navbar-brand" href="/#/">Bloooooooog</a>
         </div>
 
         <ul class="nav navbar-nav">
-            <li class="active"><a href="/socialnet/#/">Home</a></li>
+            <li class="active"><a href="/#/">Home</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="/socialnet/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
-            <li><a href="/socialnet/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+            <li><a href="/#/manageinfo"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+            <li><a href="/#/login"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
         </ul>
 
         <div class="col-md-6">
@@ -21,7 +21,7 @@
                     <input type="text" class="form-control" placeholder="Search Author" ng-model="vm.searchArray">
 
                     <li class="list-group-item" ng-repeat="author in vm.allAuthor | filter:{displayName: vm.searchArray}" ng-hide='vm.searchArray.length===0'>
-                        <a href="/socialnet/#/friendPost/{{author.id}}">{{author.displayName}}</a>
+                        <a href="/#/friendPost/{{author.id}}">{{author.displayName}}</a>
                     </li>
 
                     <div class="input-group-btn">
@@ -53,9 +53,9 @@
 
             <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
 
-            <div ng-show="post.content_type==='text/markdown'" btf-markdown="post.content"></div>
+            <div ng-show="post.content_type==='text/x-markdown'" btf-markdown="post.content"></div>
 
-            <img ng-show="post.image" ng-if="post.contentType!=='text/markdown'" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
+            <img ng-show="post.image" ng-if="post.contentType!=='text/x-markdown'" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
             <hr>
 
@@ -72,7 +72,7 @@
                     <span>Content Type: </span>
                     <select ng-model="vm.comment.content_type" ng-init="vm.comment.content_type='text/plain'" required>
                         <option value="text/plain">Plain</option>
-                        <option value="text/markdown">Markdown</option>
+                        <option value="text/x-markdown">Markdown</option>
                     </select>
 
                     <button type="submit" class="btn pull-right" >Submit</button>
@@ -81,7 +81,7 @@
 
             <div ng-show="collapsed_comments">
                 <li class="list-group-item" ng-repeat = 'comment in post.comments'>
-                    <button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.content_type==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span>
+                    <button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.content_type==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/x-markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span>
                 </li>
             </div>
         </div>
@@ -105,9 +105,9 @@
         <br>
 
         <ul class="list-group">
-            <li class="list-group-item"><a href="/socialnet/#/managefriends">Manage My Friends</a></li>
-            <li class="list-group-item"><a href="/socialnet/#/myposts">Manage My Posts</a></li>
-            <li class="list-group-item"><a href="/socialnet/#/firendRequest">Friend Request</a></li>
+            <li class="list-group-item"><a href="/#/managefriends">Manage My Friends</a></li>
+            <li class="list-group-item"><a href="/#/myposts">Manage My Posts</a></li>
+            <li class="list-group-item"><a href="/#/firendRequest">Friend Request</a></li>
         </ul>
     </div>
 
