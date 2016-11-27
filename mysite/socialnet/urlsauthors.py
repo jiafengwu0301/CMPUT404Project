@@ -11,8 +11,6 @@ urlpatterns = [
 	url(r'^(?P<pk>[^/]+)/network/$', viewsauthors.AuthorNetworkView.as_view(), name='author_network'),
 	url(r'^friend_request/(?P<pk>[^/]+)/$',
 	    viewsauthors.SendFriendRequestView.as_view({'post': 'send_request'}), name='send_f_request'),
-	url(r'^remote/friendrequest/$',
-	   viewsauthors.SendRemoteFriendRequestView.as_view({'post': 'send_request'}), name='send_rf_request'),
 	url(r'^friends/friend_requests/$', viewsauthors.FriendRequestByAuthorView.as_view(), name='f_request_by_author'),
 	url(r'^friends/unfriend/(?P<pk>[^/]+)/$',
 	    viewsauthors.UnfriendView.as_view({'delete': 'unfriend'}), name='f_request_by_author'),

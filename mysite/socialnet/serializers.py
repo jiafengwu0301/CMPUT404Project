@@ -207,8 +207,7 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 
 
 class CommentAuthorSerializer(serializers.ModelSerializer):
-	first_name = serializers.CharField(source='user.first_name')
-	last_name = serializers.CharField(source='user.last_name')
+	id = serializers.CharField()
 
 	class Meta:
 		model = Author
@@ -216,14 +215,13 @@ class CommentAuthorSerializer(serializers.ModelSerializer):
 			'displayName',
 			'id',
 			'host',
-			'first_name',
-			'last_name',
-			'avatar',
 		]
 
 
 class CommentSerializer(serializers.ModelSerializer):
-	author = CommentAuthorSerializer(read_only=True)
+	author = CommentAuthorSerializer()
+	#query = serializers.CharField(allow_blank=True, allow_null=True)
+	post = serializers.URLField(source='post.source', allow_blank=True)
 
 	class Meta:
 		model = Comment
@@ -233,7 +231,10 @@ class CommentSerializer(serializers.ModelSerializer):
 			'pubdate',
 			'id',
 			'contentType',
+			'post',
 		]
+
+
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -265,6 +266,16 @@ class PostSerializer(serializers.ModelSerializer):
 			'comments',
 			'visibility',
 			'image'
+		]
+
+
+class ListCommentsSerializer(serializers.ModelSerializer):
+	comments = CommentSerializer(many=True)
+
+	class Meta:
+		model = Post
+		fields = [
+			'comments',
 		]
 
 

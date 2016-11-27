@@ -8,8 +8,8 @@ import unicodedata
 
 # Create your models here.
 
-LOCALHOST = "http://127.0.0.1:8000/socialnet"
-REMOTEHOST = "http://socialnets404.herokuapp.com/socialnet"
+LOCALHOST = "http://127.0.0.1:8000"
+REMOTEHOST = "http://socialnets404.herokuapp.com"
 
 
 class Node(models.Model):
@@ -29,8 +29,8 @@ class Author(models.Model):
 	avatar = models.URLField(blank=True)
 	date_created = models.DateTimeField(auto_now_add=True)
 	friends = models.ManyToManyField("self", blank=True, related_name='friends')
-	host = models.URLField(default="http://127.0.0.1:8000/socialnet")
-	url = models.URLField(default="http://127.0.0.1:8000/socialnet")
+	host = models.URLField(default="http://socialnets404.herokuapp.com")
+	url = models.URLField(default="http://socialnets404.herokuapp.com")
 
 	def __str__(self):
 		return self.user.username
@@ -61,7 +61,7 @@ class Post(models.Model):
 	visibility = models.CharField(default='PUBLIC', max_length=10)
 	contentType = (
 		("text/plain", 'text/plain'),
-		("text/markdown", 'text/markdown')
+		("text/x-markdown", 'text/x-markdown')
 	)
 	image = models.URLField(blank=True)
 	contentType = models.CharField(max_length=15, choices=contentType, default="text/plain")
@@ -87,7 +87,7 @@ class Comment(models.Model):
 	pubdate = models.DateTimeField(auto_now_add=True)
 	contentType = (
 		("text/plain", 'text/plain'),
-		("text/markdown", 'text/markdown')
+		("text/x-markdown", 'text/x-markdown')
 	)
 	contentType = models.CharField(max_length=15, choices=contentType, default="text/plain")
 

@@ -126,15 +126,10 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 			try:
 				author_host = author_host.split("/", 3)[2]
 				friend_host = friend_host.split("/", 3)[2]
-				print author_host
-				print friend_host
 			except:
 				pass
 			node_author = Node.objects.get(node_url="http://"+author_host)
-			try:
-				node_friend = Node.objects.get(node_url="http://"+friend_host+"/socialnet")
-			except:
-				node_friend = Node.objects.get(node_url="http://"+friend_host)
+			node_friend = Node.objects.get(node_url="http://"+friend_host)
 		except django_exceptions.ObjectDoesNotExist:
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
 		# check if json is ok. if yes, get authors that are trying to be friends
@@ -156,14 +151,18 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 				author.friends.add(friend)
 				return response.Response(status=status.HTTP_202_ACCEPTED)
 			except django_exceptions.ObjectDoesNotExist:
-				friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
+				try:
+					FriendRequest.objects.get(sender=friend, receiver=author)
+				except django_exceptions.ObjectDoesNotExist:
+					friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
 			try:
 				data['query'] = 'friendrequest'
 				res = self.send_to_remote(node_author.node_url+'/friendrequest', data)
 				return response.Response(res, status=status.HTTP_200_OK)
 
 			except:
-				return response.Response("REMOTE SERVER ERROR", status=status.HTTP_504_GATEWAY_TIMEOUT)
+				return response.Response("REMOTE SERVER ERROR", status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
 
 class FriendRequestByAuthorView(generics.ListAPIView):
 	serializer_class = FriendRequestSerializer
