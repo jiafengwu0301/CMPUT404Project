@@ -42,11 +42,21 @@ class AuthorFriendSerializer(serializers.ModelSerializer):
 		]
 
 
+class AuthorFriendToFriendsUrlSerializer(serializers.ModelSerializer):
+	id = serializers.CharField()
+
+	class Meta:
+		model = Author
+		fields = [
+			'id'
+		]
+
+
 class AuthorSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name')
 	last_name = serializers.CharField(source='user.last_name')
 	email = serializers.CharField(source='user.email')
-	friends = AuthorFriendSerializer(many=True)
+	authors = AuthorFriendSerializer(many=True)
 
 	class Meta:
 		model = Author
@@ -57,7 +67,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'github',
 			'host',
 			'avatar',
-			'friends',
+			'authors',
 			'email',
 			'displayName',
 			'url',
@@ -65,31 +75,47 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class AuthorNetworkSerializer(serializers.ModelSerializer):
-	friends = AuthorFriendSerializer(many=True)
+	authors = AuthorFriendSerializer(many=True)
 
 	class Meta:
 		model = Author
 		fields = [
-			'friends'
+			'authors'
 		]
 
 
-'''
-	"author": {
-	    # UUID
-		"id":"de305d54-75b4-431b-adb2-eb6b9e546013",
-		"host":"http://127.0.0.1:5454/",
-		"displayName":"Greg Johnson"
-	},
-	"friend": {
-	    # UUID
-		"id":"de305d54-75b4-431b-adb2-eb6b9e637281",
-		"host":"http://127.0.0.1:5454/",
-		"displayName":"Lara Croft",
-		"url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e"
-	}
+class FriendsField(serializers.Field):
 
-'''
+	def to_internal_value(self, data):
+		pass
+
+	def to_native(self, value):
+		return value.id
+
+	def to_representation(self, value):
+		return value.id
+
+	#def get_choices(self, include_blank=True, blank_choice=BLANK_CHOICE_DASH, limit_choices_to=None):
+	#	pass
+
+
+class AuthorFriendListSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Author
+		fields = [
+			'authors'
+		]
+
+
+class AuthorFriendSpecialListSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Author
+		fields = [
+			'authors',
+			'id'
+		]
 
 
 class AuthorFriendRequestSerializer(serializers.ModelSerializer):
@@ -169,7 +195,7 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source='user.first_name', allow_blank=True, allow_null=True)
 	last_name = serializers.CharField(source='user.last_name', allow_blank=True, allow_null=True)
 	password = serializers.CharField(source='user.password', style={'input_type': 'password'},
-	                                 allow_blank=True, allow_null=True)
+									 allow_blank=True, allow_null=True)
 	uid = serializers.CharField(source='user.id', read_only=True, allow_blank=True)
 	github = serializers.CharField(allow_blank=True, allow_null=True)
 
@@ -345,11 +371,11 @@ class RemotePostSerializer(serializers.ModelSerializer):
 	u'description': u'',
 	u'author': {
 				u'url': u'http://ssrapp.herokuapp.com/author/5d50bfad-58e7-4ea7-9c22-0bada2673530',
-	            u'host': u'http://ssrapp.herokuapp.com/',
-	            u'github': None,
-	            u'displayName': u'admin',
-	            u'id': u'5d50bfad-58e7-4ea7-9c22-0bada2673530'
-	           },
+				u'host': u'http://ssrapp.herokuapp.com/',
+				u'github': None,
+				u'displayName': u'admin',
+				u'id': u'5d50bfad-58e7-4ea7-9c22-0bada2673530'
+			   },
 	u'title': u'ssr post',
 	u'comments': [],
 	u'next': u'http://ssrapp.herokuapp.com/posts/9e57f33a-9dbf-4afe-bda1-3a065a2a69ad/comments/',
@@ -379,12 +405,12 @@ class CreatePostSerializer(serializers.ModelSerializer):
 
 
 class FriendsAuthorSerializer(serializers.ModelSerializer):
-	friends = AuthorFriendSerializer(many=True)
+	authors = AuthorFriendSerializer(many=True)
 
 	class Meta:
 		model = Author
 		fields = [
-			'friends',
+			'authors',
 		]
 
 

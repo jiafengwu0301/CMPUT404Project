@@ -1,4 +1,5 @@
 import json
+from _testcapi import raise_exception
 from itertools import chain
 import requests
 from django.contrib.auth.models import User
@@ -15,7 +16,7 @@ from . import permissions as my_permissions
 from .models import Author, FriendRequest, Node
 from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
 	UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorFriendSerializer, \
-	FriendRequestSerializer, RemoteRequestSerializer
+	FriendRequestSerializer, RemoteRequestSerializer, AuthorFriendListSerializer, AuthorFriendSpecialListSerializer
 
 
 class AuthorListView(generics.ListAPIView):
@@ -58,6 +59,44 @@ class AuthorAuthenticationView(views.APIView):
 class AuthorNetworkView(generics.RetrieveAPIView):
 	queryset = Author.objects.all()
 	serializer_class = AuthorNetworkSerializer
+
+
+class AuthorFriendListView(viewsets.ModelViewSet):
+	queryset = Author.objects.all()
+	serializer_class = AuthorFriendListSerializer
+
+	def retrieve(self, request, *args, **kwargs):
+		self.serializer_class = AuthorFriendListSerializer
+		instance = self.get_object()
+		serializer = self.get_serializer(instance)
+		data = serializer.data
+		data['query'] = 'friends'
+		return response.Response(data, status=status.HTTP_200_OK)
+
+	def is_friend(self,request, *args, **kwargs):
+		self.serializer_class = AuthorFriendSpecialListSerializer
+		instance = self.get_object()
+		serializer = self.get_serializer(instance)
+		to_be_removed = []
+		data = request.data
+		count = 0
+		for aid in data['authors']:
+			is_friend = False
+			for friend in instance.authors.all():
+				if aid == str(friend.id):
+					print aid + " is equals to " + str(friend.id)
+					is_friend = True
+				else:
+					print aid + " is not equals to " + str(friend.id)
+
+			if not is_friend:
+				print aid + " and " + str(instance.id) + " are not friends at all."
+				to_be_removed.append(count)
+			count += 1
+		for i in reversed(to_be_removed):
+			print i
+			data['authors'].pop(i)
+		return response.Response(data['authors'], status=status.HTTP_200_OK)
 
 
 class SendFriendRequestView(viewsets.ModelViewSet):
@@ -148,13 +187,13 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 			try:
 				friendRequest = FriendRequest.objects.get(sender=author, receiver=friend)
 				friendRequest.delete()
-				author.friends.add(friend)
+				author.authors.add(friend)
 				return response.Response(status=status.HTTP_202_ACCEPTED)
 			except django_exceptions.ObjectDoesNotExist:
 				try:
 					FriendRequest.objects.get(sender=friend, receiver=author)
 				except django_exceptions.ObjectDoesNotExist:
-					friendRequest = FriendRequest.objects.create(sender=friend, receiver=author)
+					FriendRequest.objects.create(sender=friend, receiver=author)
 			try:
 				data['query'] = 'friendrequest'
 				res = self.send_to_remote(node_author.node_url+'/friendrequest', data)
@@ -188,7 +227,7 @@ class AcceptFriendRequestView(viewsets.ModelViewSet):
 		sender = get_object_or_404(Author, id=kwargs['pk'])
 		friend_req = get_object_or_404(FriendRequest, sender=sender)
 		friend_req.delete()
-		receiver.friends.add(sender)
+		receiver.authors.add(sender)
 		return response.Response(status=status.HTTP_202_ACCEPTED)
 
 	@detail_route(methods=['delete'])
@@ -212,7 +251,7 @@ class UnfriendView(viewsets.ModelViewSet):
 	def unfriend(self, request, **kwargs):
 		unfriender = request.user.author
 		unfriended = get_object_or_404(Author, id=kwargs['pk'])
-		unfriender.friends.remove(unfriended)
+		unfriender.authors.remove(unfriended)
 		return response.Response(status=status.HTTP_202_ACCEPTED)
 
 

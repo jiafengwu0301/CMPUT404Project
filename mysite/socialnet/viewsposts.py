@@ -1,5 +1,7 @@
 import uuid
 from itertools import chain
+
+import datetime
 import requests
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -209,12 +211,27 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 			                                 comment=data['comment'], contentType=data['contentType'])
 			return response.Response(status=status.HTTP_200_OK)
 		except django_exceptions.ObjectDoesNotExist:
-			try:
-				data['query'] = 'addComment'
-				res = self.send_to_remote(data['post']+'/comments', data)
-				return response.Response(res, status=status.HTTP_200_OK)
-			except:
-				return response.Response("REMOTE SERVER ERROR", status=status.HTTP_503_SERVICE_UNAVAILABLE)
+			#try:
+			commentText = data['comment']
+			contentType = data['contentType']
+			query = 'addComment'
+			post = data['post']
+			author = data['author']
+			request = {
+				'query': query,
+				'post': post,
+				'comment': {
+					'author': author,
+					'comment': commentText,
+					'contentType': contentType,
+					'published': str(datetime.datetime.now().isoformat()),
+					'guid': str(uuid.uuid4())
+				}
+			}
+			res = self.send_to_remote(data['post']+'/comments', request)
+			return response.Response([res, request], status=status.HTTP_200_OK)
+			#except:
+			#	return response.Response("REMOTE SERVER ERROR", status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
 # POST a new comment in the post designated in the URL.

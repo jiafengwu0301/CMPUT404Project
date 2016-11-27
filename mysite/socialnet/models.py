@@ -28,9 +28,9 @@ class Author(models.Model):
 	github = models.CharField(max_length=255)
 	avatar = models.URLField(blank=True)
 	date_created = models.DateTimeField(auto_now_add=True)
-	friends = models.ManyToManyField("self", blank=True, related_name='friends')
-	host = models.URLField(default="http://socialnets404.herokuapp.com")
-	url = models.URLField(default="http://socialnets404.herokuapp.com")
+	authors = models.ManyToManyField("self", blank=True, related_name='friends')
+	host = models.URLField(default="http://socialnets404.herokuapp.com/")
+	url = models.URLField(default="http://socialnets404.herokuapp.com/")
 
 	def __str__(self):
 		return self.user.username
@@ -51,8 +51,8 @@ class FriendRequest(models.Model):
 class Post(models.Model):
 
 	title = models.CharField(max_length=40, default="Title", blank=True)
-	source = models.URLField(default=REMOTEHOST)
-	origin = models.URLField(default=REMOTEHOST)
+	source = models.URLField(default="http://socialnets404.herokuapp.com/")
+	origin = models.URLField(default="http://socialnets404.herokuapp.com/")
 	description = models.CharField(max_length=40, default="description", blank=True)
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	published = models.DateTimeField(auto_now_add=True)
