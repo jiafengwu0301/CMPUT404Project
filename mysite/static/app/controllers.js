@@ -109,7 +109,6 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     vm.sendRemoteRequest = sendRemoteRequest;
     vm.request= null;
 
-
     initController();
 
     function initController() {
@@ -164,7 +163,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             }).success(function(data){
                 deferred.resolve(data);
                 vm.post.image = deferred.promise.$$state.value.url;
-                if (vm.post.contentType === 'text/markdown'){
+                if (vm.post.contentType === 'text/x-markdown'){
                     vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
                 }
                 userService.newPost(vm.post);
@@ -193,7 +192,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             }).success(function(data){
                 deferred.resolve(data);
                 vm.edit.image = deferred.promise.$$state.value.url;
-                if (vm.edit.contentType === 'text/markdown'){
+                if (vm.edit.contentType === 'text/x-markdown'){
                     vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
                 }
                 userService.editPost(id, vm.edit);
@@ -212,14 +211,26 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     }
 
     // make comment for posts that current user can see
-    function makeComment(id){
-        userService.newComment(id, vm.comment);
+    function makeComment(id,source){
+        var request = {
+            'post': source,
+            'comment': vm.comment.comment,
+            'contentType': vm.comment.contentType,
+            'author': {
+                'displayName': vm.currentAuthor.displayName,
+                'id': vm.currentAuthor.id,
+                'host': vm.currentAuthor.host,
+            }
+        }
+        userService.newComment(id, request);
     }
+
     // delete a comment in a post which current user owned
     function deleteComment(id){
         userService.deleteComment(id);
     }
 
+    // send remote friend request
     function sendRemoteRequest(remotefriend){
         var request = {
             "author": {
@@ -275,7 +286,6 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
 
     $interval(loadAllMyPost,1000);
 
-
     // load all author
     function loadAllAuthor(){
         userService.getAllAuthor()
@@ -305,7 +315,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
             }).success(function(data){
                 deferred.resolve(data);
                 vm.edit.image = deferred.promise.$$state.value.url;
-                if (vm.edit.contentType === 'text/markdown'){
+                if (vm.edit.contentType === 'text/x-markdown'){
                     vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
                 }
                 userService.editPost(id, vm.edit);
@@ -313,13 +323,24 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
         } else {
             userService.editPost(id, vm.edit);
         }
-        vm.edit=null;
+        vm.edit.content = "";
+        vm.edit.description = "";
+        vm.edit.title = "";
     }
 
     // make a comment for post with id
-    function makeComment(id){
-        userService.newComment(id, vm.comment);
-        vm.comment=null;
+    function makeComment(id,source){
+        var request = {
+            'post': source,
+            'comment': vm.comment.comment,
+            'contentType': vm.comment.contentType,
+            'author': {
+                'displayName': vm.currentAuthor.displayName,
+                'id': vm.currentAuthor.id,
+                'host': vm.currentAuthor.host,
+            }
+        }
+        userService.newComment(id, request);
     }
 
     // delete a comment in a post which current user owned
@@ -431,9 +452,18 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     }
 
     // make comment for post with id
-    function makeComment(id){
-        userService.newComment(id, vm.comment);
-        vm.comment=null;
+    function makeComment(id,source){
+        var request = {
+            'post': source,
+            'comment': vm.comment.comment,
+            'contentType': vm.comment.contentType,
+            'author': {
+                'displayName': vm.currentAuthor.displayName,
+                'id': vm.currentAuthor.id,
+                'host': vm.currentAuthor.host,
+            }
+        }
+        userService.newComment(id, request);
     }
 
     // unfriend with an author
@@ -561,7 +591,7 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
             }).success(function(data){
                 deferred.resolve(data);
                 vm.post.image = deferred.promise.$$state.value.url;
-                if (vm.post.contentType === 'text/markdown'){
+                if (vm.post.contentType === 'text/x-markdown'){
                     vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
                 }
                 userService.newPost(vm.post);
@@ -569,10 +599,10 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
         } else {
             userService.newPost(vm.post);
         };
-        vm.post = null;
+        vm.post.content = "";
+        vm.post.description = "";
+        vm.post.title = "";
     }
-
-
 }
 
 function friendRequestController(userService, $route, $rootScope, $interval) {

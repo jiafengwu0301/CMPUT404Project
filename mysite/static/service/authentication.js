@@ -23,7 +23,7 @@ function authenticationService($http, $cookies, $rootScope, $timeout, userServic
     function login(username, password) {
         var user = {'username':username, 'password':password};
 
-        return $http.post(host+'/socialnet/auth/', user)
+        return $http.post(host+'/auth/', user)
             .then(handleSuccess, handleError);
     }
 

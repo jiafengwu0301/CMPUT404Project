@@ -39,22 +39,22 @@ function userService($http,$rootScope,$location,$cookies) {
 
     // create a user
     function createUser(author){
-        return $http.post(protocol+host+'/socialnet/authors/create/',author).then(handleSuccess, handleError('Error'));
+        return $http.post(protocol+host+'/author/create/',author).then(handleSuccess, handleError('Error'));
     }
 
     // update author's informations
     function updateAuthor(id, update){
-        return $http.put(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/'+id+'/update/', update)
+        return $http.put(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/'+id+'/update/', update)
     }
 
     // get all posts that current use has permission
     function getAllPost(){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/posts/').then(handleSuccess, handleError('Error'));
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/').then(handleSuccess, handleError('Error'));
     }
 
     // get all author
     function getAllAuthor(){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/')
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/')
     }
 
     // get Github avtivity
@@ -70,88 +70,88 @@ function userService($http,$rootScope,$location,$cookies) {
 
     // get post by id
     function getPost(id){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/'+id+'/posts/').then(handleSuccess, handleError('Error'));
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/'+id+'/posts/').then(handleSuccess, handleError('Error'));
     }
 
     // make a new post for current user
     function newPost(post){
         var a = JSON.stringify(post);
-        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/posts/create/',JSON.parse(a)).then(handleSuccess, handleError('Error'));
+        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/create/',JSON.parse(a)).then(handleSuccess, handleError('Error'));
     }
 
     // delete a post by id
     function deletePost(id){
-        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/posts/'+id+'/destroy/');
+        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/'+id+'/destroy/');
     }
 
     // edit a post by id and the post with edit
     function editPost(id, post){
         var a = JSON.stringify(post);
-        return $http.put(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/posts/'+id+'/update/', JSON.parse(a));
+        return $http.put(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/'+id+'/update/', JSON.parse(a));
     }
 
     // get all friends by author id
     function getAllMyFriend(id){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/'+id+'/network/').then(handleSuccess, handleError('Error'));
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/'+id+'/network/').then(handleSuccess, handleError('Error'));
     }
 
     // get friend's post by friend's id
     function getFriendPosts(id){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/'+id+'/posts/').then(handleSuccess, handleError('Error'));
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/'+id+'/posts/').then(handleSuccess, handleError('Error'));
     }
 
     // get an author by its id
     function getAuthorById(id){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/'+id+'/').then(handleSuccess, handleError('Error'));
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/'+id+'/').then(handleSuccess, handleError('Error'));
     }
 
     // get current author's information
     function getAuthorForAuthentication(id,username,password){
-        return $http.get(protocol+username+':'+password+'@'+host+'/socialnet/authors/'+id+'/').then(handleSuccess, handleError('Error'));
+        return $http.get(protocol+username+':'+password+'@'+host+'/author/'+id+'/').then(handleSuccess, handleError('Error'));
     }
 
     // make a new comment by post id and comment data
     function newComment(id,comment){
-        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/posts/'+id+'/comments/create/',comment).then(handleSuccess, handleError('Error'));
+        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/'+id+'/comments/',comment).then(handleSuccess, handleError('Error'));
     }
 
     // delete a comment by its id
     function deleteComment(id){
-        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/comments/'+id+'/destroy/').then(handleSuccess, handleError('Error'));
+        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/comments/'+id+'/destroy/').then(handleSuccess, handleError('Error'));
     }
 
     // unfriend with an author
     function removeFriend(id){
-        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/friends/unfriend/'+id+'/')
+        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/friends/unfriend/'+id+'/')
     }
 
     // send a friend request to an author
     function sendFriendRequest(id){
-        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/friend_request/'+id+'/')
+        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/friend_request/'+id+'/')
     }
 
     // get all request you send and receive
     function request(){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/friends/friend_requests/')
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/friends/friend_requests/')
     }
 
     // accept a friend request
     function acceptRequest(id){
-        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/friend_request/accept/'+id+'/')
+        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/friend_request/accept/'+id+'/')
     }
 
     // reject a friend request
     function rejectRequest(id){
-        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/friend_request/reject/'+id+'/')
+        return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/friend_request/reject/'+id+'/')
     }
 
     // get remote posts
     function getRemotePosts(){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/posts/remote/')
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/remote/')
     }
 
     function sendRemoteFriendRequest(request){
-        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/socialnet/authors/remote/friendrequest/',request)
+        return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/friendrequest/',request)
     }
 
     // if success, return the data
