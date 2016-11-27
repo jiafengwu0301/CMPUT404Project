@@ -49,7 +49,7 @@ function userService($http,$rootScope,$location,$cookies) {
 
     // get all posts that current use has permission
     function getAllPost(){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/').then(handleSuccess, handleError('Error'));
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/posts/').then(handleSuccess, handleError('Error'));
     }
 
     // get all author
