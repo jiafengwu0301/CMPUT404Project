@@ -128,11 +128,11 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
                                 newposts.push(Object.values(remotePosts.data)[i].posts[j]);
                             }
                         }
+                        var res =angular.equals(newposts,vm.allPosts);
+                        if (!res){
+                            vm.allPosts = newposts;
+                        }
                     })
-                var res =angular.equals(newposts,vm.allPosts);
-                if (!res){
-                    vm.allPosts = newposts;
-                }
             });
     }
 
