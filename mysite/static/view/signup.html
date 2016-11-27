@@ -12,64 +12,88 @@
 
                 <div class="form-group" ng-class="{ 'has-error': form.displayName.$dirty && form.displayName.$error.required }">
                     <h2>First Name: </h2>
+
                     <input type="text" name="displayName" id="displayName" class="form-control" placeholder="Enter First Name" ng-model="vm.user.displayName" required />
+
                     <span ng-show="form.displayName.$dirty && form.displayName.$error.required" class="help-block">First name is required</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.first_name.$dirty && form.first_name.$error.required }">
                     <h2>First Name: </h2>
+
                     <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Enter First Name" ng-model="vm.user.first_name" required />
+
                     <span ng-show="form.first_name.$dirty && form.first_name.$error.required" class="help-block">First name is required</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.last_namelast_name.$dirty && form.last_name.$error.required }">
                     <h2>Last Name: </h2>
+
                     <input type="text" name="last_name" id="last_name" class="form-control" placeholder="Enter Last Name" ng-model="vm.user.last_name" required />
+
                     <span ng-show="form.last_namelast_namelast_name.$dirty && form.last_name.$error.required" class="help-block">Last name is required</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
                     <h2>Username:</h2>
+
                     <input type="text" name="username" id="username" class="form-control" placeholder="Enter Username" ng-model="vm.user.username" ng-maxlength="150" required />
+
                     <p><small>150 characters or fewer. Letters, digits and @ . + - _ only.</small></p>
+
                     <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+
                     <span ng-show ="form.username.$error.maxlength" class="help-block">150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
                     <h2>Password:</h2>
+
                     <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" ng-model="vm.user.password" ng-minlength="8" required />
+
                     <p><small>At least 8 characters.</small></p>
+
                     <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+
                     <span ng-show ="form.password.$error.minlength" class="help-block">This password is too short. It must contain at least 8 characters.</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.password_confirm.$dirty && form.password_confirm.$error.required }">
                     <h2>Confirm Password:</h2>
+
                     <input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Confirm Password" ng-confirm-field ng-model="password_confirm" confirm-against="vm.user.password" ng-minlength="8"/>
+
                     <p><small>At least 8 characters.</small></p>
+
                     <span ng-show="form.password_confirm.$error.noMatch" class="help-block">Fields do not match</span>
+
                     <span ng-show ="form.password_confirm.$error.minlength" class="help-block">This password is too short. It must contain at least 8 characters.</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.github.$dirty && form.github.$error.required }">
                     <h2>Github Username:</h2>
+
                     <input type="text" name="github" id="github" class="form-control" placeholder="Enter Github Username" ng-model="vm.user.github" required />
+
                     <span ng-show="form.github.$dirty && form.github.$error.required" class="help-block">Github is required</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
                     <h2>Email:</h2>
+
                     <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" ng-model="vm.user.email" required />
+
                     <span ng-show="form.email.$dirty && form.email.$error.required" class="help-block">Email is required</span>
                 </div>
 
                 <div class="form-group">
                     <h2>Avatar:</h2>
+
                     <input type="file" ngf-select ng-model="vm.avatar" name="file" accept="image/*" ngf-max-size="10MB" ng-multiple="false">
                 </div>
 
                 <br><br>
+                
                 <div class="form-actions">
                     <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Sign Up</button>
                     <img ng-if="vm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
