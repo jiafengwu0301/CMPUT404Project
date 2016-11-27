@@ -15,7 +15,7 @@ from rest_framework.decorators import detail_route
 from . import permissions as my_permissions
 from .models import Post, Comment, Node, REMOTEHOST, LOCALHOST, Author, PostVisibility
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer, \
-	RemotePostSerializer
+	RemotePostSerializer, LocalPostSerializer
 
 
 class PostPagination(pagination.PageNumberPagination):
@@ -73,13 +73,15 @@ class PostCreateView(viewsets.ModelViewSet):
 		if serializer.is_valid(raise_exception=True):
 			post = serializer.save()
 			post.author = author
-			post.source = REMOTEHOST + "/posts/" + str(post.id) + "/"
+			post.source = REMOTEHOST + "/posts/" + str(post.id)
 			post.origin = post.source
 			post.save()
 			if post.visibility == 'FRIENDS':
-				#for author in author.authors.all():
-					#postvisibility = PostVisibility.objects.create(author=)
+				for author in author.authors.all():
+					PostVisibility.objects.create(author=author, post=post, visible=True)
+			if post.visibility == 'FOAF':
 				pass
+
 			return response.Response(status=status.HTTP_201_CREATED)
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -96,7 +98,7 @@ class PostListView(generics.ListAPIView):
 
 # List of posts that are visible for the user
 class CurrentAuthorPostListView(generics.ListAPIView):
-	serializer_class = PostSerializer
+	serializer_class = LocalPostSerializer
 	pagination_class = PostPagination
 	permission_classes = [permissions.IsAuthenticated]
 

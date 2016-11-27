@@ -68,6 +68,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 	last_name = serializers.CharField(source='user.last_name')
 	email = serializers.CharField(source='user.email')
 	authors = AuthorFriendSerializer(many=True)
+	local = serializers.BooleanField(source="is_local")
 
 	class Meta:
 		model = Author
@@ -82,6 +83,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'email',
 			'displayName',
 			'url',
+			'local'
 		]
 
 
@@ -292,6 +294,28 @@ class PostSerializer(serializers.ModelSerializer):
 			'comments',
 			'visibility',
 			'image'
+		]
+
+class LocalPostSerializer(serializers.ModelSerializer):
+	comments = CommentSerializer(many=True)
+	author = AuthorSerializer()
+
+	class Meta:
+		model = Post
+		fields = [
+			'id',
+			'published',
+			'title',
+			'description',
+			'contentType',
+			'content',
+			'source',
+			'origin',
+			'author',
+			'comments',
+			'visibility',
+			'image',
+
 		]
 
 
