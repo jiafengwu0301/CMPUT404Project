@@ -5,6 +5,7 @@ from . import viewsauthors, viewsposts
 urlpatterns = [
 	url(r'^$', viewsauthors.AuthorListView.as_view(), name='author_list'),
 	url(r'^create/$', viewsauthors.AuthorCreateView.as_view(), name='author_list'),
+	url(r'^posts/$', viewsposts.CurrentAuthorPostListView.as_view(), name='author_list'),
 	url(r'^(?P<pk>[^/]+)/$', viewsauthors.AuthorRetrieveView.as_view(), name='author_detail'),
 	url(r'^(?P<pk>[^/]+)/update/$', viewsauthors.AuthorUpdateView.as_view(), name='author_update'),
 	url(r'^(?P<pk>[^/]+)/posts/$', viewsposts.PostByAuthorListView.as_view(), name='author_posts'),

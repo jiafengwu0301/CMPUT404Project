@@ -82,8 +82,17 @@ class PostCreateView(viewsets.ModelViewSet):
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-# List of posts that are visible for the user
 class PostListView(generics.ListAPIView):
+	serializer_class = PostSerializer
+	pagination_class = PostPagination
+
+	def get_queryset(self):
+		result_list = Post.objects.filter(visibility="PUBLIC")
+		return result_list
+
+
+# List of posts that are visible for the user
+class CurrentAuthorPostListView(generics.ListAPIView):
 	serializer_class = PostSerializer
 	pagination_class = PostPagination
 
