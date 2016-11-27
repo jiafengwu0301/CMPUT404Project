@@ -329,9 +329,18 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
     }
 
     // make a comment for post with id
-    function makeComment(id){
-        userService.newComment(id, vm.comment);
-        vm.comment=null;
+    function makeComment(id,source){
+        var request = {
+            'post': source,
+            'comment': vm.comment.comment,
+            'contentType': vm.comment.contentType,
+            'author': {
+                'displayName': vm.currentAuthor.displayName,
+                'id': vm.currentAuthor.id,
+                'host': vm.currentAuthor.host,
+            }
+        }
+        userService.newComment(id, request);
     }
 
     // delete a comment in a post which current user owned
@@ -443,9 +452,18 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     }
 
     // make comment for post with id
-    function makeComment(id){
-        userService.newComment(id, vm.comment);
-        vm.comment=null;
+    function makeComment(id,source){
+        var request = {
+            'post': source,
+            'comment': vm.comment.comment,
+            'contentType': vm.comment.contentType,
+            'author': {
+                'displayName': vm.currentAuthor.displayName,
+                'id': vm.currentAuthor.id,
+                'host': vm.currentAuthor.host,
+            }
+        }
+        userService.newComment(id, request);
     }
 
     // unfriend with an author

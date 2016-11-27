@@ -66,7 +66,7 @@
             </div>
 
             <div ng-show="collapsed_newcomment">
-                <form name="form" ng-submit="vm.makeComment(post.id)" role="form">
+                <form name="form" ng-submit="vm.makeComment(post.id,post.source)" role="form">
                     <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.comment" required></textarea>
 
                     <span>Content Type: </span>
