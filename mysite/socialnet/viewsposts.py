@@ -92,7 +92,6 @@ class PostListView(generics.ListAPIView):
 			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author)
 			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see))
 		except AttributeError:
-			print "ERROR"
 			result_list = public_posts
 		return result_list
 
@@ -105,10 +104,6 @@ class RemotePostListView(viewsets.ViewSet):
 		nodes = Node.objects.all()
 		remote_json_posts = {}
 		for url in nodes:
-			print str(url)
-			print LOCALHOST
-			print REMOTEHOST
-			print str(url) != LOCALHOST and str(url) != REMOTEHOST
 			if str(url) != LOCALHOST and str(url) != REMOTEHOST:
 				r = requests.get(str(url) + "/posts", auth=("admin", "password123"))
 				remote_json_posts[str(url)] = r.json()
@@ -167,7 +162,6 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		return r
 
 	def makeAuthor(self, data, node_url):
-		print "Making author"
 		id = data['id']
 		displayNamesplit = data['displayName'].split(" ")
 		username = displayNamesplit[0] + id[0:7]
@@ -189,19 +183,17 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		try:
 			try:
 				data = json.loads(json.dumps(request.data))
-				print data
 				author_host = data['author']['host']
 				is_json = True
 			except:
 				author_host = str(request.data['author.host'])
-				try:
-					author_host = author_host.split("/", 3)[2]
-				except:
-					pass
-				print author_host
+			try:
+				author_host = author_host.split("/", 3)[2]
+			except:
+				pass
 			node_author = Node.objects.get(node_url="http://" + author_host)
 		except django_exceptions.ObjectDoesNotExist:
-			return response.Response(status=status.HTTP_403_FORBIDDEN)
+			return response.Response(author_host, status=status.HTTP_403_FORBIDDEN)
 
 		serializer = CommentSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
@@ -213,8 +205,6 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		post_id = kwargs['pk']
 		try:
 			post = Post.objects.get(id=post_id)
-			print data['comment'] + "\n\n\n"
-			print data['contentType'] + "\n\n\n"
 			comment = Comment.objects.create(post=post, author=author,
 			                                 comment=data['comment'], contentType=data['contentType'])
 			return response.Response(status=status.HTTP_200_OK)
