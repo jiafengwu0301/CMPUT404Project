@@ -1,23 +1,21 @@
+import datetime
+import json
 import uuid
 from itertools import chain
 
-import datetime
 import requests
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.core import exceptions as django_exceptions
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions, views, response, status
+from rest_framework import generics, permissions, response, status
 from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 
 from . import permissions as my_permissions
-from .models import Post, Comment, PostVisibility, Node, REMOTEHOST, LOCALHOST, Author
+from .models import Post, Comment, Node, REMOTEHOST, LOCALHOST, Author
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer, \
-	RemotePostSerializer, ListCommentsSerializer
-import json
+	RemotePostSerializer
 
 
 class PostPagination(pagination.PageNumberPagination):
@@ -170,8 +168,8 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 
 	# pagination_class = PostPagination
 
-	def send_to_remote(self, url, data):
-		r = requests.post(url, json=data, auth=("admin", "password123"))
+	def send_to_remote(self, url, data, node):
+		r = requests.post(url, json=data, auth=(node.rcred_username, node.rcred_password))
 		return r
 
 	def makeAuthor(self, data, node_url):
@@ -239,7 +237,7 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 					'guid': str(uuid.uuid4())
 				}
 			}
-			res = self.send_to_remote(data['post']+'/comments', request)
+			res = self.send_to_remote(data['post']+'/comments', request, node_author)
 			return response.Response([res, request], status=status.HTTP_200_OK)
 			#except:
 			#	return response.Response("REMOTE SERVER ERROR", status=status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -289,3 +287,4 @@ class PostCommentsRetrieveView(viewsets.ViewSet):
 				r = requests.get(str(url) + "/posts", auth=("admin", "password123"))
 				remote_json_posts[str(url)] = r.json()
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)
+

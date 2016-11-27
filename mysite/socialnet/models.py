@@ -15,8 +15,9 @@ REMOTEHOST = "http://socialnets404.herokuapp.com"
 class Node(models.Model):
 	node_url = models.URLField()
 	access_to_posts = models.BooleanField()
-	access_to_images = models.BooleanField()
 	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+	rcred_username = models.CharField(max_length=255, default="admin")
+	rcred_password = models.CharField(max_length=255, default="password123")
 
 	def __str__(self):
 		return str(self.node_url)
@@ -32,6 +33,7 @@ class Author(models.Model):
 	authors = models.ManyToManyField("self", blank=True, related_name='friends')
 	host = models.URLField(default="http://socialnets404.herokuapp.com/")
 	url = models.URLField(default="http://socialnets404.herokuapp.com/")
+	is_active = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.user.username

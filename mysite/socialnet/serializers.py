@@ -3,7 +3,7 @@ from rest_framework import response
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Post, Author, Comment, FriendRequest, REMOTEHOST
+from .models import Post, Author, Comment, FriendRequest, REMOTEHOST, Node
 from django.contrib.auth.models import User
 
 
@@ -186,6 +186,7 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 		user.save()
 		author = Author.objects.create(user=user, **validated_data)
 		author.url = REMOTEHOST + "/authors/" + str(author.id) + "/"
+		author.is_active = False
 		author.save()
 		return author
 
@@ -448,9 +449,52 @@ class AuthenticateSerializer(serializers.ModelSerializer):
 		password = validation_data.get('password', None);
 		try:
 			user = User.objects.get(username=username)
+			author = Author.objects.get(user=user)
 		except:
 			raise ValidationError("Incorrect login/password.")
 		if user.check_password(password):
-			attrs['author'] = user.author
-			return attrs
+			if author.is_active:
+				attrs['author'] = user.author
+				return attrs
+			else:
+				raise ValidationError("User not Active.")
 		raise ValidationError("Incorrect login/password.")
+
+
+class NodeSerializer(serializers.ModelSerializer):
+	username = serializers.CharField(source='user.username')
+	password = serializers.CharField(source='user.password', style={'input_type': 'password'}, write_only=True)
+	rcred_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
+	class Meta:
+		model = Node
+		fields = [
+			'id',
+			'username',
+			'password',
+			'rcred_username',
+			'rcred_password',
+			'node_url',
+			'access_to_posts'
+		]
+
+	def create(self, validated_data):
+		user = validated_data.pop('user')
+		username = user['username']
+		print username
+		password = user['password']
+		print password
+		rcred_username = validated_data.pop('rcred_username')
+		rcred_password = validated_data.pop('rcred_password')
+		node_url = validated_data.pop('node_url')
+		access_to_posts = validated_data.pop('access_to_posts')
+		user = User.objects.create(username=username, email="notusing@email.com")
+		user.username = username
+		user.set_password(password)
+		user.save()
+		node = Node.objects.create(rcred_username=rcred_username, rcred_password=rcred_password,
+		                           node_url=node_url, access_to_posts=access_to_posts, user=user)
+		node.save()
+		return node
+
+

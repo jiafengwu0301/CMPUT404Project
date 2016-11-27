@@ -51,7 +51,6 @@ class AuthorAuthenticationView(views.APIView):
 		serializer = AuthenticateSerializer(data=data)
 		if serializer.is_valid(raise_exception=True):
 			new_data = serializer.data
-			print
 			return response.Response(new_data, status=status.HTTP_200_OK)
 		return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -126,9 +125,10 @@ class SendFriendRequestView(viewsets.ModelViewSet):
 class SendRemoteFriendRequestView(viewsets.ViewSet):
 	serializer_class = RemoteRequestSerializer
 	queryset = FriendRequest.objects.all()
+	permission_classes = [permissions.IsAuthenticated]
 
-	def send_to_remote(self, url, data):
-		r = requests.post(url, json=data, auth=("admin", "password123"))
+	def send_to_remote(self, url, data, node):
+		r = requests.post(url, json=data, auth=(node.rcred_username, node.rcred_password))
 		return r
 
 	def makeAuthor(self, data, node_url):
@@ -196,7 +196,7 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 					FriendRequest.objects.create(sender=friend, receiver=author)
 			try:
 				data['query'] = 'friendrequest'
-				res = self.send_to_remote(node_author.node_url+'/friendrequest', data)
+				res = self.send_to_remote(node_author.node_url+'/friendrequest', data, node_author)
 				return response.Response(res, status=status.HTTP_200_OK)
 
 			except:
@@ -255,3 +255,20 @@ class UnfriendView(viewsets.ModelViewSet):
 		return response.Response(status=status.HTTP_202_ACCEPTED)
 
 
+class AuthorIsFriendListView(viewsets.ModelViewSet):
+	queryset = Author.objects.all()
+	serializer_class = AuthorFriendListSerializer
+
+	def is_friend(self,request, *args, **kwargs):
+		author1 = get_object_or_404(Author, id=kwargs['pk1'])
+		author2 = get_object_or_404(Author, id=kwargs['pk2'])
+		is_friend = False
+		for friend in author1.authors.all():
+			if str(friend.id) == str(author2.id):
+				is_friend = True
+		res = {
+			'query': "friends",
+			'authors': [str(author1.id), str(author2.id)],
+			'friends': is_friend
+		}
+		return response.Response(res, status=status.HTTP_200_OK)
