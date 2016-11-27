@@ -9,12 +9,12 @@ urlpatterns = [
 	url(r'^author/', include('socialnet.urlsauthors')),
 	url(r'^comments/', include('socialnet.urlscomments')),
 	url(r'^auth/', viewsauthors.AuthorAuthenticationView.as_view(), name='auth'),
-	url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-	url(r'^friendrequest/$',
+	url(r'^api-auth', include('rest_framework.urls', namespace='rest_framework')),
+	url(r'^friendrequest$',
 	    viewsauthors.SendRemoteFriendRequestView.as_view({'post': 'send_request'}), name='send_rf_request'),
-	url(r'^friends/(?P<pk>[^/]+)/$', viewsauthors.
+	url(r'^friends/(?P<pk>[^/]+)$', viewsauthors.
 	    AuthorFriendListView.as_view({'get': 'retrieve', 'post': 'is_friend'}), name='author_friends'),
-	url(r'^friends/(?P<pk1>[^/]+)/(?P<pk2>[^/]+)/$', viewsauthors.
+	url(r'^friends/(?P<pk1>[^/]+)/(?P<pk2>[^/]+)$', viewsauthors.
 	    AuthorIsFriendListView.as_view({'get': 'is_friend'}), name='is_friend'),
 	url(r'^nodes/$', views.NodeListView.as_view(), name='node'),
 	url(r'^nodes/create/$', views.NodeCreateView.as_view(), name='node_create'),
