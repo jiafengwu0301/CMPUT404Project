@@ -85,6 +85,7 @@ class PostCreateView(viewsets.ModelViewSet):
 class PostListView(generics.ListAPIView):
 	serializer_class = PostSerializer
 	pagination_class = PostPagination
+	permission_classes = [permissions.IsAuthenticated]
 
 	def get_queryset(self):
 		result_list = Post.objects.filter(visibility="PUBLIC")
@@ -95,6 +96,7 @@ class PostListView(generics.ListAPIView):
 class CurrentAuthorPostListView(generics.ListAPIView):
 	serializer_class = PostSerializer
 	pagination_class = PostPagination
+	permission_classes = [permissions.IsAuthenticated]
 
 	def get_queryset(self):
 		public_posts = Post.objects.filter(visibility="PUBLIC")

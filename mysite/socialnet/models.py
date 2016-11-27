@@ -16,6 +16,7 @@ class Node(models.Model):
 	node_url = models.URLField()
 	access_to_posts = models.BooleanField()
 	access_to_images = models.BooleanField()
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
 
 	def __str__(self):
 		return str(self.node_url)
