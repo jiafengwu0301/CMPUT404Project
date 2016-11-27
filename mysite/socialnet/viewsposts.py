@@ -13,7 +13,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 
 from . import permissions as my_permissions
-from .models import Post, Comment, Node, REMOTEHOST, LOCALHOST, Author
+from .models import Post, Comment, Node, REMOTEHOST, LOCALHOST, Author, PostVisibility
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer, \
 	RemotePostSerializer
 
@@ -76,6 +76,10 @@ class PostCreateView(viewsets.ModelViewSet):
 			post.source = REMOTEHOST + "/posts/" + str(post.id) + "/"
 			post.origin = post.source
 			post.save()
+			if post.visibility == 'FRIENDS':
+				#for author in author.authors.all():
+					#postvisibility = PostVisibility.objects.create(author=)
+				pass
 			return response.Response(status=status.HTTP_201_CREATED)
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -98,12 +102,13 @@ class CurrentAuthorPostListView(generics.ListAPIView):
 
 	def get_queryset(self):
 		public_posts = Post.objects.filter(visibility="PUBLIC")
+		server_only = Post.objects.filter(visibility="SERVER_ONLY")
 		try:
 			my_private_posts = Post.objects.filter(author=self.request.user.author, visibility="PRIVATE")
-			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author)
-			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see))
+			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author, postvisibility__visible=True)
+			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see, server_only))
 		except AttributeError:
-			result_list = public_posts
+			result_list = list(chain(public_posts, server_only))
 		return result_list
 
 

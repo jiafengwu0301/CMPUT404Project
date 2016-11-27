@@ -15,14 +15,14 @@ import uuid
 from . import permissions as my_permissions
 from .models import Author, FriendRequest, Node
 from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
-	UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorFriendSerializer, \
+	UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorSerializer, \
 	FriendRequestSerializer, RemoteRequestSerializer, AuthorFriendListSerializer, AuthorFriendSpecialListSerializer
 
 
 class AuthorListView(generics.ListAPIView):
 	queryset = Author.objects.all()
-	serializer_class = AuthorFriendSerializer
-	permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+	serializer_class = AuthorSerializer
+	permission_classes = [permissions.IsAuthenticated, my_permissions.IsAdminOrIsLocalUser]
 
 
 class AuthorCreateView(generics.CreateAPIView):
@@ -39,7 +39,7 @@ class AuthorUpdateView(generics.UpdateAPIView):
 
 class AuthorRetrieveView(generics.RetrieveAPIView):
 	queryset = Author.objects.all()
-	serializer_class = AuthorFriendSerializer
+	serializer_class = AuthorSerializer
 	permission_classes = [permissions.IsAuthenticated]
 
 

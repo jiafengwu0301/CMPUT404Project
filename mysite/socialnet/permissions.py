@@ -71,3 +71,13 @@ class IsNodeSeeingIt(permissions.BasePermission):
 			return request.user.node.access_to_posts
 		except:
 			return True
+
+
+class IsAdminOrIsLocalUser(permissions.BasePermission):
+	message = "you dont have access"
+
+	def has_permission(self, request, view):
+		try:
+			return (request.user and request.user.is_staff) or request.user.author.is_local()
+		except:
+			return False

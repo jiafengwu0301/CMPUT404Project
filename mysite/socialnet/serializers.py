@@ -8,37 +8,48 @@ from django.contrib.auth.models import User
 
 
 class FriendSerializer(serializers.ModelSerializer):
-	first_name = serializers.CharField(source='user.first_name')
-	last_name = serializers.CharField(source='user.last_name')
+	#first_name = serializers.CharField(source='user.first_name')
+	#last_name = serializers.CharField(source='user.last_name')
 
 	class Meta:
 		model = Author
 		fields = [
 			'id',
-			'first_name',
-			'last_name',
+			'displayName',
 			'avatar',
 			'host',
 			'github',
 		]
 
 
-class AuthorFriendSerializer(serializers.ModelSerializer):
-	first_name = serializers.CharField(source='user.first_name')
-	last_name = serializers.CharField(source='user.last_name')
-	local = serializers.BooleanField(source='is_local')
+class RemoteAuthorSerializer(serializers.ModelSerializer):
+	id = serializers.CharField()
 
 	class Meta:
 		model = Author
 		fields = [
 			'displayName',
 			'id',
-			'first_name',
-			'last_name',
-			'avatar',
 			'host',
+			'url',
+			'github'
+		]
+
+
+class AuthorFriendSerializer(serializers.ModelSerializer):
+	#first_name = serializers.CharField(source='user.first_name')
+	#last_name = serializers.CharField(source='user.last_name')
+	#local = serializers.BooleanField(source='is_local')
+
+	class Meta:
+		model = Author
+		fields = [
+			'displayName',
+			'id',
+			'host',
+			'url',
 			'github',
-			'local',
+			'is_local'
 		]
 
 
@@ -233,20 +244,8 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 		return value
 
 
-class CommentAuthorSerializer(serializers.ModelSerializer):
-	id = serializers.CharField()
-
-	class Meta:
-		model = Author
-		fields = [
-			'displayName',
-			'id',
-			'host',
-		]
-
-
 class CommentSerializer(serializers.ModelSerializer):
-	author = CommentAuthorSerializer()
+	author = RemoteAuthorSerializer()
 	#query = serializers.CharField(allow_blank=True, allow_null=True)
 	post = serializers.URLField(source='post.source', allow_blank=True)
 
@@ -276,7 +275,7 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
 	comments = CommentSerializer(many=True)
-	author = AuthorFriendSerializer()
+	author = RemoteAuthorSerializer()
 
 	class Meta:
 		model = Post
