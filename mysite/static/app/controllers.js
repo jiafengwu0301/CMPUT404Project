@@ -167,13 +167,14 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
                     vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
                 }
                 userService.newPost(vm.post);
+                vm.post=null;
             });
         } else {
             userService.newPost(vm.post);
+            vm.post.content = "";
+            vm.post.description = "";
+            vm.post.title = "";
         };
-        vm.post.content = "";
-        vm.post.description = "";
-        vm.post.title = "";
     }
 
     // edit a post that current user owned
@@ -196,13 +197,14 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
                     vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
                 }
                 userService.editPost(id, vm.edit);
+                vm.edit=null;
             });
         } else {
             userService.editPost(id, vm.edit);
+            vm.edit.content = "";
+            vm.edit.description = "";
+            vm.edit.title = "";
         }
-        vm.edit.content = "";
-        vm.edit.description = "";
-        vm.edit.title = "";
     }
 
     // delete the post that current user owned
@@ -319,13 +321,14 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
                     vm.edit.content += "<br><img src='"+vm.edit.image+"' height='200px'/>";
                 }
                 userService.editPost(id, vm.edit);
+                vm.edit=null;
             });
         } else {
             userService.editPost(id, vm.edit);
+            vm.edit.content = "";
+            vm.edit.description = "";
+            vm.edit.title = "";
         }
-        vm.edit.content = "";
-        vm.edit.description = "";
-        vm.edit.title = "";
     }
 
     // make a comment for post with id
@@ -595,13 +598,14 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
                     vm.post.content += "<br><img src='"+vm.post.image+"' height='200px'/>";
                 }
                 userService.newPost(vm.post);
+                vm.post=null;
             });
         } else {
             userService.newPost(vm.post);
+            vm.post.content = "";
+            vm.post.description = "";
+            vm.post.title = "";
         };
-        vm.post.content = "";
-        vm.post.description = "";
-        vm.post.title = "";
     }
 }
 
