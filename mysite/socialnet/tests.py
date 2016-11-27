@@ -12,7 +12,7 @@ import base64
 class HostTest(APITestCase):
     def test_host(self):
         factory = APIRequestFactory()
-        request = factory.get('/socialnet/posts/', {}, format = 'json')
+        request = factory.get('/posts/', {}, format = 'json')
         self.assertEqual(request.get_host(), 'testserver')
 
 class AuthorApiTest(APITestCase):
@@ -28,7 +28,7 @@ class AuthorApiTest(APITestCase):
             "last_name": "Usertest1",
             "github": "testUser1@github.com"
         }
-        request = factory.post('/socialnet/authors/create/', data, format='json')
+        request = factory.post('/author/create/', data, format='json')
         view = AuthorCreateView.as_view()
         response = view(request)
         self.assertEqual(response.status_code,201)
@@ -50,7 +50,7 @@ class PostApiTest(APITestCase):
 
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
-        response = self.client.post('/socialnet/posts/create/' ,{
+        response = self.client.post('/posts/create/' ,{
                         "title": "first post",
                         "description": "this is my first post",
                         "content_type": "text/markdown",
@@ -60,22 +60,22 @@ class PostApiTest(APITestCase):
 
 
         #test get posts
-        response = self.client.get('/socialnet/posts/', {}, format='json')
+        response = self.client.get('/posts/', {}, format='json')
         self.assertEqual(response.status_code, 200)
         request_msg = response.data['posts']
         self.post_id = request_msg[0]['id']
         # print self.post_id
 
         #test get a single post with post_id
-        response = self.client.get('/socialnet/posts/%s/' % self.post_id, {}, format ='json')
+        response = self.client.get('/posts/%s/' % self.post_id, {}, format ='json')
         self.assertEqual(response.status_code, 200)
 
         #test all the posts of a single user that are public
-        response = self.client.get('/socialnet/authors/%s/posts/' % self.uid, {}, format = 'json')
+        response = self.client.get('/author/%s/posts/' % self.uid, {}, format = 'json')
         self.assertEqual(response.status_code, 200)
 
         #test update a post
-        response = self.client.put('/socialnet/posts/%s/update/' % self.post_id, {
+        response = self.client.put('/posts/%s/update/' % self.post_id, {
             "title": "update post",
             "description": "this is an updated msg",
             "content_type": "text/markdown",
@@ -84,7 +84,7 @@ class PostApiTest(APITestCase):
         self.assertEqual(response.status_code, 200)
 
         #delete posts
-        response = self.client.delete('/socialnet/posts/%s/destroy/' % self.post_id, {}, format='json')
+        response = self.client.delete('/posts/%s/destroy/' % self.post_id, {}, format='json')
         self.assertEqual(response.status_code, 204)
 
 class CommentsAndFriendsApiTest(APITestCase):
@@ -112,20 +112,20 @@ class CommentsAndFriendsApiTest(APITestCase):
         #create a post
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
-        response = self.client.post('/socialnet/posts/create/' ,{
+        response = self.client.post('/posts/create/' ,{
                         "title": "first post",
                         "description": "this is my first post",
                         "content_type": "text/markdown",
                         "content": "this is my first post for test"
         })
-        response = self.client.get('/socialnet/posts/', {}, format='json')
+        response = self.client.get('/posts/', {}, format='json')
         request_msg = response.data['posts']
         self.post_id = request_msg[0]['id']
 
     def test_create_comment(self):
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
-        response = self.client.post('/socialnet/posts/%s/comments/create/' % self.post_id, {
+        response = self.client.post('/posts/%s/comments/create/' % self.post_id, {
             "comment": "here is my first comment",
             "content_type": "text/markdown"
         })
@@ -136,44 +136,44 @@ class CommentsAndFriendsApiTest(APITestCase):
 
 
         # test to get comments
-        response = self.client.get('/socialnet/posts/%s/' % self.post_id, {}, format = 'json')
+        response = self.client.get('/posts/%s/' % self.post_id, {}, format = 'json')
         self.assertEqual(response.status_code, 200)
         comments = response.data['comments']
         self.assertTrue(comments[0]['id'] != None)
 
         #test to get a comment
-        response = self.client.get('/socialnet/comments/%s/' % self.comment_id, {}, format = 'json')
+        response = self.client.get('/comments/%s/' % self.comment_id, {}, format = 'json')
         self.assertEqual(response.status_code, 200)
 
         #test delete the comment
-        response = self.client.delete('/socialnet/comments/%s/destroy/' % self.comment_id)
+        response = self.client.delete('/comments/%s/destroy/' % self.comment_id)
         self.assertEqual(response.status_code, 204)
 
     def test_send_friend_request(self):
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
         #test to send a friend request
-        response = self.client.post('/socialnet/authors/friend_request/%s/' % self.uid2, {}, format = 'json')
+        response = self.client.post('/author/friend_request/%s/' % self.uid2, {}, format = 'json')
         self.assertEqual(response.status_code, 202)
 
     def test_get_friend_requests(self):
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser2:testUser000'))
         #get friend request list
-        response = self.client.get('/socialnet/authors/friends/friend_requests/', {}, format = 'json')
+        response = self.client.get('/author/friends/friend_requests/', {}, format = 'json')
         self.assertEqual(response.status_code, 200)
 
     def test_accept_friend_requests(self):
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser2:testUser000'))
         #accept the friend request
-        response = self.client.post('/socialnet/authors/friend_request/%s/' % self.uid1, {}, format = 'json')
+        response = self.client.post('/author/friend_request/%s/' % self.uid1, {}, format = 'json')
         self.assertEqual(response.status_code, 202)
 
     def test_friends(self):
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
         #get friend list for user1
-        response = self.client.get('/socialnet/authors/%s/network/' % self.uid1, {}, format = 'json')
+        response = self.client.get('/author/%s/network/' % self.uid1, {}, format = 'json')
         # print 111111111111111111
         self.assertEqual(response.status_code, 200)
