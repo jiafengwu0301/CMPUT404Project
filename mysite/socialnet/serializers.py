@@ -185,7 +185,7 @@ class FullAuthorSerializer(serializers.ModelSerializer):
 		user.set_password(user_data['password'])
 		user.save()
 		author = Author.objects.create(user=user, **validated_data)
-		author.host = REMOTEHOST + "/author/" + str(author.id)
+		author.url = REMOTEHOST + "/author/" + str(author.id)
 		author.is_active = False
 		author.save()
 		return author
