@@ -61,3 +61,13 @@ class IsOwnerForModifyAuthor(permissions.BasePermission):
 	def has_object_permission(self, request, view, obj):
 		return Author.objects.get(id=request.user.author.id) == \
 		       Author.objects.get(id=view.kwargs['pk'])
+
+
+class IsNodeSeeingIt(permissions.BasePermission):
+	message = "This node cant access Posts"
+
+	def has_permission(self, request, view):
+		try:
+			return request.user.node.access_to_posts
+		except:
+			return True
