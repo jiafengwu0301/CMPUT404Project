@@ -216,7 +216,9 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		try:
 			try:
 				data = json.loads(json.dumps(request.data))
+				print "ha"
 				author_host = data['author']['host']
+				print "HAHA"
 				is_json = True
 			except:
 				author_host = str(request.data['author.host'])
