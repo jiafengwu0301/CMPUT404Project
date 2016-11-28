@@ -445,7 +445,6 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
                 userService.checkFriend(vm.currentAuthor.id, vm.friend.id)
                     .then(function (check) {
                     vm.check = check.data.friends;
-                    alert(vm.check);
             });
         })
     }
@@ -648,13 +647,11 @@ function friendRequestController(userService, $route, $rootScope, $interval) {
     // accept the friend request
     function accept(id){
         userService.acceptRequest(id);
-        $route.reload();
     }
 
     // reject friend request
     function reject(id){
         userService.rejectRequest(id);
-        $route.reload();
     }
 
     // accept remote friend request
@@ -674,6 +671,5 @@ function friendRequestController(userService, $route, $rootScope, $interval) {
         };
         userService.sendRemoteFriendRequest(request);
         alert("Remote Friend Request Accpeted");
-        $route.reload();
     }
 }
