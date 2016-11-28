@@ -212,7 +212,7 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		return author
 
 	def create(self, request, *args, **kwargs):
-		# http://ssrapp.herokuapp.com/posts/bddb01ab-b5ee-4a2e-a3cd-0fc3d61a5fcf
+		print request.data
 		try:
 			try:
 				data = json.loads(json.dumps(request.data))
