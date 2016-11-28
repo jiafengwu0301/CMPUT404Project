@@ -54,7 +54,7 @@ function userService($http,$rootScope,$location,$cookies) {
 
     // get all author
     function getAllAuthor(){
-        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author')
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/')
     }
 
     // get Github avtivity
