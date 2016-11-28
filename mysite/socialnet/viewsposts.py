@@ -213,15 +213,23 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 
 	def create(self, request, *args, **kwargs):
 		print request.data
+		author_is_remote = False
 		try:
 			try:
 				data = json.loads(json.dumps(request.data))
 				print "ha"
-				author_host = data['author']['host']
+				try:
+					author_host = data['author']['host']
+				except:
+					author_host = data['comment']['author']['host']
+					author_is_remote = True
 				print "HAHA"
-				is_json = True
 			except:
-				author_host = str(request.data['author.host'])
+				try:
+					author_host = str(request.data['author.host'])
+				except:
+					author_host = str(request.data['comment.author.host'])
+					author_is_remote = True
 			try:
 				author_host = author_host.split("/", 3)[2]
 			except:
@@ -234,39 +242,47 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		if serializer.is_valid(raise_exception=True):
 			data = serializer.data
 		try:
-			author = Author.objects.get(id=data['author']['id'])
+			if author_is_remote:
+				author = Author.objects.get(id=data['comment']['author']['id'])
+			else:
+				author = Author.objects.get(id=data['author']['id'])
 		except django_exceptions.ObjectDoesNotExist:
-			author = self.makeAuthor(data['author'], node_author.node_url)
+			if author_is_remote:
+				author = self.makeAuthor(data['comment']['author'], node_author.node_url)
+			else:
+				author = self.makeAuthor(data['author'], node_author.node_url)
 		post_id = kwargs['pk']
 		try:
 			post = Post.objects.get(id=post_id)
-			comment = Comment.objects.create(post=post, author=author,
-			                                 comment=data['comment'], contentType=data['contentType'])
+			if author_is_remote:
+				comment = Comment.objects.create(post=post, author=author,
+			                                     comment=data['comment']['comment'], contentType=data['contentType'])
+			else:
+				comment = Comment.objects.create(post=post, author=author,
+				                                 comment=data['comment'], contentType=data['contentType'])
 			return response.Response(status=status.HTTP_200_OK)
 		except django_exceptions.ObjectDoesNotExist:
-			#try:
-			commentText = data['comment']
-			contentType = data['contentType']
-			query = 'addComment'
-			post = data['post']
-			author = data['author']
-			request = {
-				'query': query,
-				'post': post,
-				'comment': {
-					'author': author,
-					'comment': commentText,
-					'contentType': contentType,
-					'published': str(datetime.datetime.now().isoformat()),
-					'guid': str(uuid.uuid4())
+			if not author_is_remote:
+				commentText = data['comment']
+				contentType = data['contentType']
+				query = 'addComment'
+				post = data['post']
+				author = data['author']
+				request = {
+					'query': query,
+					'post': post,
+					'comment': {
+						'author': author,
+						'comment': commentText,
+						'contentType': contentType,
+						'published': str(datetime.datetime.now().isoformat()),
+						'guid': str(uuid.uuid4())
+					}
 				}
-			}
-			print request
-			res = self.send_to_remote(data['post']+'/comments', request, node_author)
-			return response.Response([res, request], status=status.HTTP_200_OK)
-			#except:
-			#	return response.Response("REMOTE SERVER ERROR", status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
+				print request
+				res = self.send_to_remote(data['post']+'/comments', request, node_author)
+				return response.Response([res, request], status=status.HTTP_200_OK)
+		return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
 # POST a new comment in the post designated in the URL.
 class CommentCreateView(generics.CreateAPIView):
