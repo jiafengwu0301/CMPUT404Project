@@ -48,8 +48,8 @@
             <li ng-repeat="request in vm.sendRequest" class="list-group-item" ng-hide="request.receiver.id!==vm.currentAuthor.id">
                 <a  href="/#/friendPost/{{request.sender.id}}">{{request.sender.displayName}}</a>
                 <button type="button" class="btn btn-danger pull-right btn-xs" ng-click="vm.reject(request.sender.id)">Reject</button>
-                <button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.accept(request.sender.id)" ng-show="request.sender.local===true">Accept</button>
-                <button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.acceptRemote(request.sender)" ng-show="request.sender.local===false">Accept</button>
+                <button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.accept(request.sender.id)" ng-show="request.sender.is_local===true">Accept</button>
+                <button type="button" class="btn btn-primary pull-right btn-xs" ng-click="vm.acceptRemote(request.sender)" ng-show="request.sender.is_local===false">Accept</button>
             </li>
         </div>
 
