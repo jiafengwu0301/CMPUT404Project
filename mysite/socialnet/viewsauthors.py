@@ -304,10 +304,10 @@ class AuthorIsFriendListView(viewsets.ModelViewSet):
 		}
 		aux = res
 		if not author1.is_local():
-			aux = requests.post(node_author1.node_url + "/friends/" + author1.id + "/" + author2.id,
+			aux = requests.post(node_author1.node_url + "/friends/" + str(author1.id) + "/" + str(author2.id),
 			                    auth=(node_author1.rcred_username, node_author1.rcred_password))
 		elif not author2.is_local():
-			aux = requests.post(node_author2.node_url + "/friends/" + author1.id + "/" + author2.id,
+			aux = requests.post(node_author2.node_url + "/friends/" + str(author1.id) + "/" + str(author2.id),
 			                    auth=(node_author2.rcred_username, node_author2.rcred_password))
 		if aux['friends'] and res['friends']:
 			return response.Response(res, status=status.HTTP_200_OK)
