@@ -135,8 +135,9 @@ class RemotePostListView(viewsets.ViewSet):
 					try:
 						r = requests.get(str(node) + "/posts", auth=(node.rcred_username, node.rcred_password), timeout=3)
 					except:
-						if r.status_code == 200:
-							remote_json_posts[str(node)] = r.json()
+						pass
+					if r.status_code == 200:
+						remote_json_posts[str(node)] = r.json()
 				else:
 					print "NO ACCESS"
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)
