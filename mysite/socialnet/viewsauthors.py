@@ -16,7 +16,8 @@ from . import permissions as my_permissions
 from .models import Author, FriendRequest, Node, PostVisibility
 from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
 	UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorSerializer, \
-	FriendRequestSerializer, RemoteRequestSerializer, AuthorFriendListSerializer, AuthorFriendSpecialListSerializer
+	FriendRequestSerializer, RemoteRequestSerializer, AuthorFriendListSerializer, \
+	AuthorFriendSpecialListSerializer, AuthorRetrieveSerializer
 
 
 class AuthorListView(generics.ListAPIView):
@@ -39,7 +40,7 @@ class AuthorUpdateView(generics.UpdateAPIView):
 
 class AuthorRetrieveView(generics.RetrieveAPIView):
 	queryset = Author.objects.all()
-	serializer_class = AuthorSerializer
+	serializer_class = AuthorRetrieveSerializer
 	permission_classes = [permissions.IsAuthenticated]
 
 
@@ -73,7 +74,7 @@ class AuthorFriendListView(viewsets.ModelViewSet):
 		data['query'] = 'friends'
 		return response.Response(data, status=status.HTTP_200_OK)
 
-	def is_friend(self,request, *args, **kwargs):
+	def is_friend(self, request, *args, **kwargs):
 		self.serializer_class = AuthorFriendSpecialListSerializer
 		instance = self.get_object()
 		serializer = self.get_serializer(instance)
@@ -147,14 +148,14 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 			return User.objects.get(username=username)
 		author = Author.objects.create(user=user, id=uuid.UUID(id),
 		                               displayName=str(data['displayName']), github="noGitHUB",
-		                               host=node_url, url=node_url+"/author/"+id)
+		                               host=node_url, url=node_url + "/author/" + id)
 		return author
 
 	@detail_route(methods=['post'])
 	def send_request(self, request):
 		# check if node is allowed. if not, 403
 		try:
-			try :
+			try:
 				data = json.loads(json.dumps(request.data))
 				print data
 				author_host = data['author']['host']
@@ -168,8 +169,8 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 				friend_host = friend_host.split("/", 3)[2]
 			except:
 				pass
-			node_author = Node.objects.get(node_url="http://"+author_host)
-			node_friend = Node.objects.get(node_url="http://"+friend_host)
+			node_author = Node.objects.get(node_url="http://" + author_host)
+			node_friend = Node.objects.get(node_url="http://" + friend_host)
 		except django_exceptions.ObjectDoesNotExist:
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
 		# check if json is ok. if yes, get authors that are trying to be friends
@@ -184,7 +185,7 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 				friend = Author.objects.get(id=data['friend']['id'])
 			except django_exceptions.ObjectDoesNotExist:
 				friend = self.makeAuthor(data['friend'], node_friend.node_url)
-			#check if there its for accept or not. if not, add the friend request
+			# check if there its for accept or not. if not, add the friend request
 			try:
 				friendRequest = FriendRequest.objects.get(sender=author, receiver=friend)
 				friendRequest.delete()
@@ -204,8 +205,12 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 					FriendRequest.objects.create(sender=friend, receiver=author)
 			try:
 				data['query'] = 'friendrequest'
-				res = self.send_to_remote(node_author.node_url+'/friendrequest', data, node_author)
-				return response.Response(res, status=status.HTTP_200_OK)
+				print "I GOT HERE"
+				if friend.is_local():
+					res = self.send_to_remote(node_author.node_url + '/friendrequest', data, node_author)
+					return response.Response(res, status=status.HTTP_200_OK)
+				else:
+					return response.Response("Friend Request received", status=status.HTTP_200_OK)
 
 			except:
 				return response.Response("REMOTE SERVER ERROR", status=status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -274,9 +279,20 @@ class AuthorIsFriendListView(viewsets.ModelViewSet):
 	queryset = Author.objects.all()
 	serializer_class = AuthorFriendListSerializer
 
-	def is_friend(self,request, *args, **kwargs):
+	def is_friend(self, request, *args, **kwargs):
 		author1 = get_object_or_404(Author, id=kwargs['pk1'])
 		author2 = get_object_or_404(Author, id=kwargs['pk2'])
+		try:
+			author1_host = str(author1.host).split("/", 3)[2]
+			author2_host = str(author2.host).split("/", 3)[2]
+		except:
+			pass
+		try:
+			node_author1 = Node.objects.get(node_url="http://" + author1_host)
+			node_author2 = Node.objects.get(node_url="http://" + author2_host)
+		except django_exceptions.ObjectDoesNotExist:
+			return response.Response(status=status.HTTP_403_FORBIDDEN)
+
 		is_friend = False
 		for friend in author1.authors.all():
 			if str(friend.id) == str(author2.id):
@@ -286,4 +302,22 @@ class AuthorIsFriendListView(viewsets.ModelViewSet):
 			'authors': [str(author1.id), str(author2.id)],
 			'friends': is_friend
 		}
-		return response.Response(res, status=status.HTTP_200_OK)
+		aux = res
+		if not author1.is_local():
+			aux = requests.post(node_author1.node_url + "/friends/" + author1.id + "/" + author2.id,
+			                    auth=(node_author1.rcred_username, node_author1.rcred_password))
+		elif not author2.is_local():
+			aux = requests.post(node_author2.node_url + "/friends/" + author1.id + "/" + author2.id,
+			                    auth=(node_author2.rcred_username, node_author2.rcred_password))
+		if aux['friends'] and res['friends']:
+			return response.Response(res, status=status.HTTP_200_OK)
+		else:
+			if aux['friends']:
+				res = {
+					'query': "friends",
+					'authors': [str(author1.id), str(author2.id)],
+					'friends': is_friend
+				}
+			else:
+				res = aux
+			return response.Response(res, status=status.HTTP_200_OK)

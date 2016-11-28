@@ -132,8 +132,11 @@ class RemotePostListView(viewsets.ViewSet):
 			if str(node) != LOCALHOST and str(node) != REMOTEHOST:
 				print "PASSED"
 				if node.access_to_posts:
-					r = requests.get(str(node) + "/posts", auth=(node.rcred_username, node.rcred_password))
-					remote_json_posts[str(node)] = r.json()
+					try:
+						r = requests.get(str(node) + "/posts", auth=(node.rcred_username, node.rcred_password), timeout=3)
+					except:
+						if r.status_code == 200:
+							remote_json_posts[str(node)] = r.json()
 				else:
 					print "NO ACCESS"
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)

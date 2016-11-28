@@ -64,26 +64,38 @@ class AuthorFriendToFriendsUrlSerializer(serializers.ModelSerializer):
 
 
 class AuthorSerializer(serializers.ModelSerializer):
-	first_name = serializers.CharField(source='user.first_name')
-	last_name = serializers.CharField(source='user.last_name')
 	email = serializers.CharField(source='user.email')
-	authors = AuthorFriendSerializer(many=True)
+	authors = RemoteAuthorSerializer(many=True)
 	local = serializers.BooleanField(source="is_local")
 
 	class Meta:
 		model = Author
 		fields = [
 			'id',
-			'first_name',
-			'last_name',
-			'github',
-			'host',
-			'avatar',
-			'authors',
-			'email',
 			'displayName',
 			'url',
+			'host',
+			'authors',
+			'github',
+			'email',
 			'local'
+		]
+
+
+class AuthorRetrieveSerializer(serializers.ModelSerializer):
+	email = serializers.CharField(source='user.email')
+	authors = RemoteAuthorSerializer(many=True)
+
+	class Meta:
+		model = Author
+		fields = [
+			'id',
+			'displayName',
+			'url',
+			'host',
+			'authors',
+			'github',
+			'email',
 		]
 
 
