@@ -76,11 +76,17 @@ class PostCreateView(viewsets.ModelViewSet):
 			post.source = REMOTEHOST + "/posts/" + str(post.id)
 			post.origin = post.source
 			post.save()
+
+			#visibility
 			if post.visibility == 'FRIENDS':
-				for author in author.authors.all():
-					PostVisibility.objects.create(author=author, post=post, visible=True)
+				for a in author.authors.all():
+					PostVisibility.objects.create(author=a, post=post, visible=True)
+
 			if post.visibility == 'FOAF':
-				pass
+				for a in author.authors.all():
+					PostVisibility.objects.create(author=a, post=post, visible=True)
+					for b in a.authors.all():
+						PostVisibility.objects.create(author=b, post=post, visible=True)
 
 			return response.Response(status=status.HTTP_201_CREATED)
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
@@ -104,9 +110,9 @@ class CurrentAuthorPostListView(generics.ListAPIView):
 
 	def get_queryset(self):
 		public_posts = Post.objects.filter(visibility="PUBLIC")
-		server_only = Post.objects.filter(visibility="SERVER_ONLY")
+		server_only = Post.objects.filter(visibility="SERVERONLY")
 		try:
-			my_private_posts = Post.objects.filter(author=self.request.user.author, visibility="PRIVATE")
+			my_private_posts = Post.objects.filter(author=self.request.user.author).exclude(visibility="PUBLIC")
 			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author, postvisibility__visible=True)
 			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see, server_only))
 		except AttributeError:

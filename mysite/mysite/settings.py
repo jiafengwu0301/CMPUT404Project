@@ -49,6 +49,8 @@ MIDDLEWARE = [
 	'django.middleware.common.CommonMiddleware',
 ]
 
+APPEND_SLASH = False
+
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = (
