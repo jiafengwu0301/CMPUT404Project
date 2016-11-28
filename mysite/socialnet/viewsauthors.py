@@ -13,7 +13,7 @@ from rest_framework.decorators import detail_route
 import uuid
 
 from . import permissions as my_permissions
-from .models import Author, FriendRequest, Node
+from .models import Author, FriendRequest, Node, PostVisibility
 from .serializers import FullAuthorSerializer, AuthenticateSerializer, \
 	UpdateAuthorSerializer, AuthorNetworkSerializer, AuthorSerializer, \
 	FriendRequestSerializer, RemoteRequestSerializer, AuthorFriendListSerializer, AuthorFriendSpecialListSerializer
@@ -189,6 +189,13 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 				friendRequest = FriendRequest.objects.get(sender=author, receiver=friend)
 				friendRequest.delete()
 				author.authors.add(friend)
+				post_visibilities = PostVisibility.objects.filter(post__author=receiver)
+				for pv in post_visibilities:
+					if pv.post.visibility == 'FRIENDS' or pv.post.visibility == 'FOAF':
+						PostVisibility.objects.create(post=pv.post, author=friend)
+						if pv.post.visibility == 'FOAF':
+							for f in friend.authors:
+								PostVisibility.objects.create(post=pv.post, author=f)
 				return response.Response(status=status.HTTP_202_ACCEPTED)
 			except django_exceptions.ObjectDoesNotExist:
 				try:
@@ -229,6 +236,13 @@ class AcceptFriendRequestView(viewsets.ModelViewSet):
 		friend_req = get_object_or_404(FriendRequest, sender=sender)
 		friend_req.delete()
 		receiver.authors.add(sender)
+		post_visibilities = PostVisibility.objects.filter(post__author=receiver)
+		for pv in post_visibilities:
+			if pv.post.visibility == 'FRIENDS' or pv.post.visibility == 'FOAF':
+				PostVisibility.objects.create(post=pv.post, author=sender)
+				if pv.post.visibility == 'FOAF':
+					for f in sender.authors:
+						PostVisibility.objects.create(post=pv.post, author=f)
 		return response.Response(status=status.HTTP_202_ACCEPTED)
 
 	@detail_route(methods=['delete'])
