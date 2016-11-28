@@ -306,7 +306,7 @@ class PostCommentsRetrieveView(viewsets.ViewSet):
 		remote_json_posts = {}
 		for url in nodes:
 			if str(url) != LOCALHOST and str(url) != REMOTEHOST:
-				r = requests.get(str(url) + "/posts", auth=("admin", "password123"))
+				r = requests.get(str(url) + "/posts", auth=(url.rcred_username, url.rcred_password))
 				remote_json_posts[str(url)] = r.json()
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)
 
