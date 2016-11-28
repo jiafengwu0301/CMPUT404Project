@@ -373,7 +373,7 @@ function myFriendController(userService, $rootScope) {
     function loadAllMyFriend(){
         userService.getAllMyFriend(vm.currentAuthor.id)
             .then(function (myFriends) {
-                vm.myFriends = myFriends.friends;
+                vm.myFriends = myFriends.authors;
             });
     }
 
@@ -396,7 +396,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     vm.friend = [];
     vm.allAuthor = [];
     vm.searchArray = null;
-    vm.allFriend = null;
+    vm.check = null;
     vm.deleteFriend = deleteFriend;
     vm.friendRequest = friendRequest;
     vm.comment=null;
@@ -409,7 +409,6 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
         getFriendPost();
         loadAllAuthor();
         getFriend();
-        getAllAuthorFriend();
     }
 
     // load all authors
@@ -443,15 +442,12 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
         userService.getAuthorById(vm.friend_id)
             .then(function (friend) {
                 vm.friend = friend;
+                userService.checkFriend(vm.currentAuthor.id, vm.friend.id)
+                    .then(function (check) {
+                    vm.check = check.data.friends;
+                    alert(vm.check);
             });
-    }
-
-    // get all friend
-    function getAllAuthorFriend(){
-        userService.getAllMyFriend(vm.currentAuthor.id)
-            .then(function (myFriends) {
-            vm.allFriend = myFriends.friends;
-        });
+        })
     }
 
     // make comment for post with id

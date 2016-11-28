@@ -51,9 +51,9 @@
 
             <hr>
 
-            <p ng-show="post.content_type==='text/plain'">{{post.content}}</p>
+            <p ng-show="post.contentType==='text/plain'">{{post.content}}</p>
 
-            <div ng-show="post.content_type==='text/x-markdown'" btf-markdown="post.content"></div>
+            <div ng-show="post.contentType==='text/x-markdown'" btf-markdown="post.content"></div>
 
             <img ng-show="post.image" ng-if="post.contentType!=='text/x-markdown'" ng-src="{{post.image}}" onError="angular.element(this).scope().post.image = false" height="200px"/>
 
@@ -70,7 +70,7 @@
                     <textarea style="resize:none" class="form-control" rows="1" id="comment" placeholder="Leave a comments here..." ng-model = "vm.comment.comment" required></textarea>
 
                     <span>Content Type: </span>
-                    <select ng-model="vm.comment.content_type" ng-init="vm.comment.content_type='text/plain'" required>
+                    <select ng-model="vm.comment.contentType" ng-init="vm.comment.contentType='text/plain'" required>
                         <option value="text/plain">Plain</option>
                         <option value="text/x-markdown">Markdown</option>
                     </select>
@@ -81,7 +81,7 @@
 
             <div ng-show="collapsed_comments">
                 <li class="list-group-item" ng-repeat = 'comment in post.comments'>
-                    <button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.content_type==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span><span ng-show="comment.content_type==='text/x-markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span>
+                    <button type="button" class="btn-xs btn-danger pull-right" ng-click = "vm.deleteComment(comment.id)" ng-show="comment.author.id===vm.currentAuthor.id">Delete</button><span ng-show="comment.contentType==='text/plain'">{{comment.author.displayName}}: {{comment.comment}}</span><span ng-show="comment.contentType==='text/x-markdown'">{{comment.author.displayName}}:<span btf-markdown="comment.comment"></span></span>
                 </li>
             </div>
         </div>
@@ -95,11 +95,9 @@
         </div>
 
         <div>
-            <button type="button" class="btn btn-primary" ng-repeat="friend in vm.allFriend" ng-hide="vm.friend.id===friend.id"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
+            <button type="button" class="btn btn-primary" ng-show="vm.check===false"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
 
-            <button type="button" class="btn btn-primary" ng-show="vm.allFriend.length===0"  ng-click="vm.friendRequest(vm.friend.id)">Send Friend Request</button>
-
-            <button ng-repeat="friend in vm.allFriend | filter: {id: vm.friend.id}" type="button" class="btn btn-danger" ng-if="friend.length!==0" ng-click="vm.deleteFriend(vm.friend.id)">UnFriend</button>
+            <button type="button" class="btn btn-danger" ng-show="vm.check===true" ng-click="vm.deleteFriend(vm.friend.id)">UnFriend</button>
         </div>
 
         <br>

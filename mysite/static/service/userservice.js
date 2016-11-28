@@ -34,6 +34,7 @@ function userService($http,$rootScope,$location,$cookies) {
     service.rejectRequest = rejectRequest;
     service.getRemotePosts = getRemotePosts;
     service.sendRemoteFriendRequest = sendRemoteFriendRequest;
+    service.checkFriend = checkFriend;
 
     return service;
 
@@ -152,6 +153,10 @@ function userService($http,$rootScope,$location,$cookies) {
 
     function sendRemoteFriendRequest(request){
         return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/friendrequest',request)
+    }
+
+    function checkFriend(id1,id2){
+        return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/friends/'+id1+'/'+id2)
     }
 
     // if success, return the data
