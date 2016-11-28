@@ -19,6 +19,7 @@ class FriendSerializer(serializers.ModelSerializer):
 			'avatar',
 			'host',
 			'github',
+			'avatar',
 		]
 
 
@@ -32,7 +33,8 @@ class RemoteAuthorSerializer(serializers.ModelSerializer):
 			'id',
 			'host',
 			'url',
-			'github'
+			'github',
+			'avatar',
 		]
 
 
@@ -49,7 +51,8 @@ class AuthorFriendSerializer(serializers.ModelSerializer):
 			'host',
 			'url',
 			'github',
-			'is_local'
+			'is_local',
+			'avatar',
 		]
 
 
@@ -78,7 +81,8 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'authors',
 			'github',
 			'email',
-			'local'
+			'local',
+			'avatar',
 		]
 
 
