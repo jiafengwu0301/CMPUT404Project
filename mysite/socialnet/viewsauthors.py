@@ -189,7 +189,7 @@ class SendRemoteFriendRequestView(viewsets.ViewSet):
 				friendRequest = FriendRequest.objects.get(sender=author, receiver=friend)
 				friendRequest.delete()
 				author.authors.add(friend)
-				post_visibilities = PostVisibility.objects.filter(post__author=receiver)
+				post_visibilities = PostVisibility.objects.filter(post__author=author)
 				for pv in post_visibilities:
 					if pv.post.visibility == 'FRIENDS' or pv.post.visibility == 'FOAF':
 						PostVisibility.objects.create(post=pv.post, author=friend)
