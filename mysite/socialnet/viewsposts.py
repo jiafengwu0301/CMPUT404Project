@@ -259,6 +259,7 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 					'guid': str(uuid.uuid4())
 				}
 			}
+			print request
 			res = self.send_to_remote(data['post']+'/comments', request, node_author)
 			return response.Response([res, request], status=status.HTTP_200_OK)
 			#except:
@@ -309,4 +310,3 @@ class PostCommentsRetrieveView(viewsets.ViewSet):
 				r = requests.get(str(url) + "/posts", auth=(url.rcred_username, url.rcred_password))
 				remote_json_posts[str(url)] = r.json()
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)
-
