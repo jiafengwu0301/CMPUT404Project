@@ -226,7 +226,7 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 				pass
 			node_author = Node.objects.get(node_url="http://" + author_host)
 		except django_exceptions.ObjectDoesNotExist:
-			return response.Response(author_host, status=status.HTTP_403_FORBIDDEN)
+			return response.Response(status=status.HTTP_403_FORBIDDEN)
 
 		serializer = CommentSerializer(data=request.data)
 		if serializer.is_valid(raise_exception=True):
