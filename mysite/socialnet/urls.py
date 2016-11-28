@@ -10,7 +10,7 @@ urlpatterns = [
 	url(r'^comments/', include('socialnet.urlscomments')),
 	url(r'^auth/', viewsauthors.AuthorAuthenticationView.as_view(), name='auth'),
 	url(r'^api-auth', include('rest_framework.urls', namespace='rest_framework')),
-	url(r'^friendrequest/$',
+	url(r'^friendrequest$',
 	    viewsauthors.SendRemoteFriendRequestView.as_view({'post': 'send_request'}), name='send_rf_request'),
 	url(r'^friends/(?P<pk>[^/]+)$', viewsauthors.
 	    AuthorFriendListView.as_view({'get': 'retrieve', 'post': 'is_friend'}), name='author_friends'),
