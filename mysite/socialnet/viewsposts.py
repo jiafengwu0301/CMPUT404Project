@@ -77,7 +77,7 @@ class PostCreateView(viewsets.ModelViewSet):
 			post.origin = post.source
 			post.save()
 
-			#visibility
+			# visibility
 			if post.visibility == 'FRIENDS':
 				for a in author.authors.all():
 					PostVisibility.objects.create(author=a, post=post, visible=True)
@@ -113,7 +113,8 @@ class CurrentAuthorPostListView(generics.ListAPIView):
 		server_only = Post.objects.filter(visibility="SERVERONLY")
 		try:
 			my_private_posts = Post.objects.filter(author=self.request.user.author).exclude(visibility="PUBLIC")
-			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author, postvisibility__visible=True)
+			posts_i_can_see = Post.objects.filter(postvisibility__author=self.request.user.author,
+			                                      postvisibility__visible=True)
 			result_list = list(chain(public_posts, my_private_posts, posts_i_can_see, server_only))
 		except AttributeError:
 			result_list = list(chain(public_posts, server_only))
@@ -133,7 +134,8 @@ class RemotePostListView(viewsets.ViewSet):
 				print "PASSED"
 				if node.access_to_posts:
 					try:
-						r = requests.get(str(node) + "/posts", auth=(node.rcred_username, node.rcred_password), timeout=3)
+						r = requests.get(str(node) + "/posts", auth=(node.rcred_username, node.rcred_password),
+						                 timeout=3)
 					except:
 						pass
 					if r.status_code == 200:
@@ -208,7 +210,7 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 			return User.objects.get(username=username)
 		author = Author.objects.create(user=user, id=uuid.UUID(id),
 		                               displayName=str(data['displayName']), github="noGitHUB",
-		                               host=node_url, url=node_url+"/authors/"+id)
+		                               host=node_url, url=node_url + "/authors/" + id)
 		return author
 
 	def create(self, request, *args, **kwargs):
@@ -255,9 +257,11 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		try:
 			post = Post.objects.get(id=post_id)
 			if author_is_remote:
+				print "Author Remote"
 				comment = Comment.objects.create(post=post, author=author,
-			                                     comment=data['comment']['comment'], contentType=data['contentType'])
+				                                 comment=data['comment']['comment'], contentType=data['contentType'])
 			else:
+				print "Author Local"
 				comment = Comment.objects.create(post=post, author=author,
 				                                 comment=data['comment'], contentType=data['contentType'])
 			return response.Response(status=status.HTTP_200_OK)
@@ -280,9 +284,10 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 					}
 				}
 				print request
-				res = self.send_to_remote(data['post']+'/comments', request, node_author)
+				res = self.send_to_remote(data['post'] + '/comments', request, node_author)
 				return response.Response([res, request], status=status.HTTP_200_OK)
 		return response.Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 # POST a new comment in the post designated in the URL.
 class CommentCreateView(generics.CreateAPIView):
