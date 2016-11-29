@@ -226,8 +226,6 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     function makeComment(id,source){
         var id = generateUUID();
         var date = new Date().toISOString();
-        alert(id);
-        alert(date);
         var request = {
             'query':'addComment',
             'post': source,
@@ -369,8 +367,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
     function makeComment(id,source){
         var id = generateUUID();
         var date = new Date().toISOString();
-        alert(id);
-        alert(date);
+
         var request = {
             'query':'addComment',
             'post': source,
@@ -511,8 +508,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     function makeComment(id,source){
         var id = generateUUID();
         var date = new Date().toISOString();
-        alert(id);
-        alert(date);
+
         var request = {
             'query':'addComment',
             'post': source,
