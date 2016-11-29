@@ -212,6 +212,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
         userService.deletePost(id);
     }
 
+    // Reference: https://jsfiddle.net/briguy37/2MVFd/
     function generateUUID() {
         var d = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -226,8 +227,6 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
     function makeComment(id,source){
         var id = generateUUID();
         var date = new Date().toISOString();
-        alert(id);
-        alert(date);
         var request = {
             'query':'addComment',
             'post': source,
@@ -355,6 +354,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
         }
     }
 
+    // Reference: https://jsfiddle.net/briguy37/2MVFd/
     function generateUUID() {
         var d = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -369,8 +369,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
     function makeComment(id,source){
         var id = generateUUID();
         var date = new Date().toISOString();
-        alert(id);
-        alert(date);
+
         var request = {
             'query':'addComment',
             'post': source,
@@ -497,6 +496,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
         })
     }
 
+    // Reference: https://jsfiddle.net/briguy37/2MVFd/
     function generateUUID() {
         var d = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -511,8 +511,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
     function makeComment(id,source){
         var id = generateUUID();
         var date = new Date().toISOString();
-        alert(id);
-        alert(date);
+
         var request = {
             'query':'addComment',
             'post': source,

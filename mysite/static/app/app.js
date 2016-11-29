@@ -66,6 +66,7 @@ function config($routeProvider, $locationProvider) {
         controllerAs:'vm'
     })
 
+    // show firend requests
     .when('/firendRequest',{
         templateUrl: 'friendRequest.html',
         controller: 'friendRequestController',
