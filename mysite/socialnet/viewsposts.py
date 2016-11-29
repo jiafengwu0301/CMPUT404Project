@@ -267,7 +267,7 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 			if author_is_remote:
 				print "Creating remote comment with remote author created/geted"
 				comment = Comment.objects.create(post=post, author=author,
-				                                 comment=data['comment']['comment'], contentType=data['contentType'])
+				                                 comment=data['comment']['comment'], contentType=data['comment']['contentType'])
 			else:
 				comment = Comment.objects.create(post=post, author=author,
 				                                 comment=data['comment'], contentType=data['contentType'])

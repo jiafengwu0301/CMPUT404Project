@@ -1,19 +1,19 @@
 {
+ "query": "addComment",
+ "post": "http://ssrapp.herokuapp.com/posts/e0420969-e020-4bdb-8285-3ea5d0f97878",
  "comment": {
+   "author": {
+     "url": "http://ssrapp.herokuapp.com/author/4ad70a6f-c695-4c69-a34c-60cbac984345",
+     "host": "http://ssrapp.herokuapp.com/",
+     "github": null,
+     "displayName": "haha",
+     "id": "4ad70a6f-c695-4c69-a34c-60cbac984345"
+   },
    "published": "2016-11-28T22:21:04.995475",
    "id": "ad3cc891-818f-477e-9136-cf492bf81d40",
    "comment": "testtest",
    "contentType": "text/plain",
    "guid": "ad3cc891-818f-477e-9136-cf492bf81d40",
-   "pubDate": "2016-11-28T22:21:04.995475",
-   "author": {
-     "url": "http://ssrapp.herokuapp.com/author/4ad70a6f-c695-4c69-a34c-60cbac984345",
-     "host": "http://ssrapp.herokuapp.com/",
-     "github": None,
-     "displayName": "haha",
-     "id": "4ad70a6f-c695-4c69-a34c-60cbac984345"
-   }
- },
- "query": "addComment",
- "post": "http://ssrapp.herokuapp.com/posts/e0420969-e020-4bdb-8285-3ea5d0f97878"
+   "pubDate": "2016-11-28T22:21:04.995475"
+ }
 }
