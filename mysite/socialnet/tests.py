@@ -86,7 +86,7 @@ class PostApiTest(APITestCase):
         #delete posts
         response = self.client.delete('/posts/%s/destroy' % self.post_id, {}, format='json')
         self.assertEqual(response.status_code, 204)
-#
+
 class CommentsAndFriendsApiTest(APITestCase):
     def setUp(self):
         #create an user
@@ -135,7 +135,6 @@ class CommentsAndFriendsApiTest(APITestCase):
         #get the id of comment
         self.comment_id = response.data['id']
 
-
         # test to get comments
         response = self.client.get('/posts/%s' % self.post_id, {}, format = 'json')
         self.assertEqual(response.status_code, 200)
@@ -156,34 +155,42 @@ class CommentsAndFriendsApiTest(APITestCase):
         #test to send a friend request
         response = self.client.post('/author/friend_request/%s' % self.uid2, {}, format = 'json')
         self.assertEqual(response.status_code, 202)
+        # print self.uid2
 
-    def test_get_friend_requests(self):
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser2:testUser000'))
-        #get friend request list
+        #test get friend request list
+
         response = self.client.get('/author/friends/friend_requests', {}, format = 'json')
         self.assertEqual(response.status_code, 200)
 
-    def test_accept_friend_requests(self):
-        self.client = APIClient()
-        self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser2:testUser000'))
-        #accept the friend request
-        response = self.client.post('/author/friend_request/%s' % self.uid1, {}, format = 'json')
+        #test accept friend request
+        response = self.client.post('/author/friend_request/accept/%s' % self.uid1, {}, format = 'json')
         self.assertEqual(response.status_code, 202)
 
-    def test_friends(self):
-        self.client = APIClient()
-        self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
-        #get friend list for user1
-        response = self.client.get('/author/%s/network' % self.uid1, {}, format = 'json')
-        # print 111111111111111111
+        #test get friend list for user2, since user1 and user2 are friends now
+        response = self.client.get('/author/%s/network' % self.uid2, {}, format = 'json')
         self.assertEqual(response.status_code, 200)
 
-        #=========================================================================>
-        #maybe  we should test the reject as well
-        #maybe we should test friend request from the node as well
-        #maybe we should test something else as well
-        #some ideas should be done below here
-        #just create some comments here
-        #u can ignore those
-        #=========================================================================>
+        #test unfriend a friend
+        response = self.client.delete('/author/friends/unfriend/%s' % self.uid1, {}, format = 'json')
+        self.assertEqual(response.status_code, 202)
+
+        #test get the friend list for user 2 again,
+        response = self.client.get('/author/%s/network' % self.uid2, {}, format = 'json')
+        self.assertEqual(response.status_code, 200)
+        request = response.data['authors']
+        self.assertTrue(request == [])
+
+
+    def test_reject_friend_requests(self):
+
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
+        #test to send a friend request
+        response = self.client.post('/author/friend_request/%s' % self.uid2, {}, format = 'json')
+        self.assertEqual(response.status_code, 202)
+
+        #test reject friend request
+        response = self.client.delete('/author/friend_request/reject/%s' % self.uid1, {}, format = 'json')
+        self.assertEqual(response.status_code, 202)
