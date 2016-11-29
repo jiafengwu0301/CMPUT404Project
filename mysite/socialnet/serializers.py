@@ -24,6 +24,8 @@ class FriendSerializer(serializers.ModelSerializer):
 
 
 class RemoteAuthorSerializer(serializers.ModelSerializer):
+	id = serializers.CharField()
+
 	class Meta:
 		model = Author
 		fields = [
