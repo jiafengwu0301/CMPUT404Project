@@ -136,7 +136,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             });
     }
 
-    $interval(loadAllPosts,1000);
+    // $interval(loadAllPosts,1000);
 
     // load all author
     function loadAllAuthor(){
@@ -212,16 +212,40 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
         userService.deletePost(id);
     }
 
+    function generateUUID() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random()*16)%16 | 0;
+            d = Math.floor(d/16);
+            return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    };
+
     // make comment for posts that current user can see
     function makeComment(id,source){
+        var id = generateUUID();
+        var date = new Date().toISOString();
+        alert(id);
+        alert(date);
         var request = {
+            'query':'addComment',
             'post': source,
-            'comment': vm.comment.comment,
-            'contentType': vm.comment.contentType,
-            'author': {
-                'displayName': vm.currentAuthor.displayName,
-                'id': vm.currentAuthor.id,
-                'host': vm.currentAuthor.host,
+            'comment':{
+                'author': {
+                    'displayName': vm.currentAuthor.displayName,
+                    'id': vm.currentAuthor.id,
+                    'host': vm.currentAuthor.host,
+                    'url':vm.currentAuthor.url,
+                    'github':vm.currentAuthor.github,
+                },
+                'comment': vm.comment.comment,
+                'contentType': vm.comment.contentType,
+                'published': date,
+                'id': id,
+                'guid':id,
+                'pubDate': date,
+
             }
         }
         userService.newComment(id, request);
@@ -331,16 +355,40 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
         }
     }
 
-    // make a comment for post with id
+    function generateUUID() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random()*16)%16 | 0;
+            d = Math.floor(d/16);
+            return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    };
+
+    // make comment for posts that current user can see
     function makeComment(id,source){
+        var id = generateUUID();
+        var date = new Date().toISOString();
+        alert(id);
+        alert(date);
         var request = {
+            'query':'addComment',
             'post': source,
-            'comment': vm.comment.comment,
-            'contentType': vm.comment.contentType,
-            'author': {
-                'displayName': vm.currentAuthor.displayName,
-                'id': vm.currentAuthor.id,
-                'host': vm.currentAuthor.host,
+            'comment':{
+                'author': {
+                    'displayName': vm.currentAuthor.displayName,
+                    'id': vm.currentAuthor.id,
+                    'host': vm.currentAuthor.host,
+                    'url':vm.currentAuthor.url,
+                    'github':vm.currentAuthor.github,
+                },
+                'comment': vm.comment.comment,
+                'contentType': vm.comment.contentType,
+                'published': date,
+                'id': id,
+                'guid':id,
+                'pubDate': date,
+
             }
         }
         userService.newComment(id, request);
@@ -449,16 +497,39 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
         })
     }
 
-    // make comment for post with id
+    function generateUUID() {
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random()*16)%16 | 0;
+            d = Math.floor(d/16);
+            return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+        });
+        return uuid;
+    };
+
+    // make comment for posts that current user can see
     function makeComment(id,source){
+        var id = generateUUID();
+        var date = new Date().toISOString();
+        alert(id);
+        alert(date);
         var request = {
+            'query':'addComment',
             'post': source,
-            'comment': vm.comment.comment,
-            'contentType': vm.comment.contentType,
-            'author': {
-                'displayName': vm.currentAuthor.displayName,
-                'id': vm.currentAuthor.id,
-                'host': vm.currentAuthor.host,
+            'comment':{
+                'author': {
+                    'displayName': vm.currentAuthor.displayName,
+                    'id': vm.currentAuthor.id,
+                    'host': vm.currentAuthor.host,
+                    'url':vm.currentAuthor.url,
+                    'github':vm.currentAuthor.github,
+                },
+                'comment': vm.comment.comment,
+                'contentType': vm.comment.contentType,
+                'published': date,
+                'id': id,
+                'guid':id,
+                'pubDate': date,
             }
         }
         userService.newComment(id, request);
@@ -569,8 +640,6 @@ function githubController(userService, $q, $route, $location, $rootScope, FlashS
                 }
             });
     }
-
-    $interval(loadGitHub,1000);
 
     // make a new post
     function makePost(){
