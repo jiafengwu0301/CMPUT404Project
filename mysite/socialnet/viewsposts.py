@@ -249,7 +249,8 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		except django_exceptions.ObjectDoesNotExist:
 			request = data
 			print request
-			res = self.send_to_remote(data['post'] + '/comments', request, node_author)
+			remote_node = Node.objects.get(url="http://" + data['post'].split("/", 3)[2])
+			res = self.send_to_remote(data['post'] + '/comments', request, remote_node)
 			return response.Response(res, status=status.HTTP_200_OK)
 		#return response.Response("some error on response", status=status.HTTP_502_BAD_GATEWAY)
 
