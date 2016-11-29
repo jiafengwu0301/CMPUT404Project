@@ -11,6 +11,7 @@ from rest_framework import generics, permissions, response, status
 from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
+from rest_framework.compat import coreapi
 
 from . import permissions as my_permissions
 from .models import Post, Comment, Node, REMOTEHOST, LOCALHOST, Author, PostVisibility
@@ -19,6 +20,10 @@ from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer
 
 
 class PostPagination(pagination.PageNumberPagination):
+	page_size = 5
+	page_size_query_param = 'page_size'
+	max_page_size = 50
+
 	def get_paginated_response(self, data):
 		return response.Response({
 			'query': 'posts',
