@@ -3,7 +3,7 @@ from rest_framework import response
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Post, Author, Comment, FriendRequest, REMOTEHOST, Node
+from .models import Post, Author, Comment, FriendRequest, REMOTEHOST, Node, RemoteComment
 from django.contrib.auth.models import User
 
 
@@ -24,8 +24,6 @@ class FriendSerializer(serializers.ModelSerializer):
 
 
 class RemoteAuthorSerializer(serializers.ModelSerializer):
-	id = serializers.CharField()
-
 	class Meta:
 		model = Author
 		fields = [
@@ -263,8 +261,6 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
 	author = RemoteAuthorSerializer()
-	#query = serializers.CharField(allow_blank=True, allow_null=True)
-	#post = serializers.URLField(source='post.source', allow_blank=True)
 	guid = serializers.UUIDField(source='id')
 	published = serializers.DateTimeField(source='pubDate')
 
@@ -281,9 +277,9 @@ class CommentSerializer(serializers.ModelSerializer):
 		]
 
 
-class RemoteCommentSerializer(serializers.Serializer):
-	query = serializers.CharField(allow_blank=True, allow_null=True)
-	post = serializers.URLField(source='post.source', allow_blank=True, allow_null=True)
+class RemoteCommentSerializer(serializers.ModelSerializer):
+	query = serializers.CharField(required=False)
+	post = serializers.URLField(required=False)
 	comment = CommentSerializer()
 
 	class Meta:
@@ -292,6 +288,23 @@ class RemoteCommentSerializer(serializers.Serializer):
 			'query',
 			'post',
 			'comment'
+		]
+
+
+class GetCommentSerializer(serializers.ModelSerializer):
+	author = RemoteAuthorSerializer()
+	#query = serializers.CharField(allow_blank=True, allow_null=True)
+	post = serializers.URLField(source='post.source', allow_blank=True)
+
+	class Meta:
+		model = Comment
+		fields = [
+			'author',
+			'comment',
+			'pubDate',
+			'id',
+			'contentType',
+			'post',
 		]
 
 

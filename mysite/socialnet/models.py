@@ -96,3 +96,9 @@ class Comment(models.Model):
 
 	def __str__(self):
 		return self.author.user.username + " on post from " + self.post.author.user.username
+
+
+class RemoteComment(models.Model):
+	query = models.CharField(max_length=255)
+	post = models.URLField(blank=True)
+	comment = models.ForeignKey(Comment)

@@ -15,7 +15,7 @@ from rest_framework.decorators import detail_route
 from . import permissions as my_permissions
 from .models import Post, Comment, Node, REMOTEHOST, LOCALHOST, Author, PostVisibility
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer, \
-	RemotePostSerializer, LocalPostSerializer, RemoteCommentSerializer
+	RemotePostSerializer, LocalPostSerializer, RemoteCommentSerializer, GetCommentSerializer
 
 
 class PostPagination(pagination.PageNumberPagination):
@@ -138,8 +138,11 @@ class RemotePostListView(viewsets.ViewSet):
 						                 timeout=3)
 					except:
 						pass
-					if r.status_code == 200:
-						remote_json_posts[str(node)] = r.json()
+					try:
+						if r.status_code == 200:
+							remote_json_posts[str(node)] = r.json()
+					except:
+						pass
 				else:
 					print "NO ACCESS"
 		return response.Response(remote_json_posts, status=status.HTTP_200_OK)
@@ -184,13 +187,23 @@ class PostDestroyView(generics.DestroyAPIView):
 class CommentsByPostIdView(viewsets.ModelViewSet):
 	permission_classes = [permissions.IsAuthenticated]
 	pagination_class = CommentPagination
+	serializer_class = RemoteCommentSerializer
+	queryset = Comment.objects.all()
 
 	def get_queryset(self):
 		queryset = Comment.objects.filter(post__id=self.kwargs['pk'])
 		return queryset
 
-	def get_serializer_class(self):
-		return RemoteCommentSerializer
+	def list(self, request, *args, **kwargs):
+		queryset = self.get_queryset()
+		print queryset
+		page = self.paginate_queryset(queryset)
+		if page is not None:
+			serializer = GetCommentSerializer(page, many=True)
+			return self.get_paginated_response(serializer.data)
+
+		serializer = GetCommentSerializer(queryset, many=True)
+		return response.Response(serializer.data)
 
 	def send_to_remote(self, url, data, node):
 		r = requests.post(url, json=data, auth=(node.rcred_username, node.rcred_password))
