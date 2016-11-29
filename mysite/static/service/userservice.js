@@ -126,7 +126,7 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.delete(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/friends/unfriend/'+id)
     }
 
-    // send a friend request to an author
+    // send a friend request to an local author
     function sendFriendRequest(id){
         return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/author/friend_request/'+id)
     }
@@ -151,10 +151,13 @@ function userService($http,$rootScope,$location,$cookies) {
         return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/posts/remote')
     }
 
+
+    // send a friend request to an remote author
     function sendRemoteFriendRequest(request){
         return $http.post(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/friendrequest',request)
     }
 
+    // check if two author is friend or not
     function checkFriend(id1,id2){
         return $http.get(protocol+Base64.decode($rootScope.globals.currentUser.authdata)+'@'+host+'/friends/'+id1+'/'+id2)
     }
