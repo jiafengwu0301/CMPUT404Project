@@ -19,6 +19,10 @@ from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer
 
 
 class PostPagination(pagination.PageNumberPagination):
+	page_size = 5
+	page_size_query_param = 'size'
+	max_page_size = 50
+
 	def get_paginated_response(self, data):
 		return response.Response({
 			'query': 'posts',
@@ -31,6 +35,10 @@ class PostPagination(pagination.PageNumberPagination):
 
 
 class CommentPagination(pagination.PageNumberPagination):
+	page_size = 5
+	page_size_query_param = 'size'
+	max_page_size = 50
+
 	def get_paginated_response(self, data):
 		if self.request.method == 'GET':
 			return response.Response({
