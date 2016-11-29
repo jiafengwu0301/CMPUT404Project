@@ -136,7 +136,7 @@ function homeController(userService, $q, $route, $rootScope, $location, FlashSer
             });
     }
 
-    // $interval(loadAllPosts,1000);
+    $interval(loadAllPosts,2000);
 
     // load all author
     function loadAllAuthor(){
@@ -309,7 +309,7 @@ function myPostController(userService, $q, $route, $rootScope, $location,Upload,
             });
     }
 
-    $interval(loadAllMyPost,1000);
+    $interval(loadAllMyPost,2000);
 
     // load all author
     function loadAllAuthor(){
@@ -482,7 +482,7 @@ function friendPostController(userService,$route, $rootScope, $routeParams, $loc
         }
     }
 
-    $interval(getFriendPost,1000);
+    $interval(getFriendPost,2000);
 
     // get the information of current user's friend
     function getFriend(){
@@ -710,7 +710,7 @@ function friendRequestController(userService, $route, $rootScope, $interval) {
             })
     }
 
-    $interval(loadAllRequest,1000);
+    $interval(loadAllRequest,2000);
 
     // accept the friend request
     function accept(id){
