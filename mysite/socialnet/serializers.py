@@ -3,7 +3,7 @@ from rest_framework import response
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Post, Author, Comment, FriendRequest, REMOTEHOST, Node, RemoteComment
+from .models import Post, Author, Comment, FriendRequest, REMOTEHOST, Node
 from django.contrib.auth.models import User
 
 
