@@ -33,8 +33,6 @@ class AuthorApiTest(APITestCase):
         response = view(request)
         self.assertEqual(response.status_code,201)
 
-
-
 class PostApiTest(APITestCase):
 
     def setUp(self):
@@ -52,6 +50,11 @@ class PostApiTest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser1:testUser345'))
         response = self.client.get('/author/%s' % self.uid, {}, format = 'json')
         self.assertEqual(response.status_code, 200)
+
+        #test get all Users
+        response = self.client.get('/author/', {}, format = 'json')
+        self.assertEqual(response.status_code, 200)
+
     def test_post(self):
 
         self.client = APIClient()
