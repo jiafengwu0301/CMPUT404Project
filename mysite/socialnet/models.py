@@ -87,7 +87,7 @@ class Comment(models.Model):
 	author = models.ForeignKey(Author)
 	post = models.ForeignKey(Post, related_name='comments')
 	comment = models.CharField(max_length=255)
-	pubdate = models.DateTimeField(auto_now_add=True)
+	pubDate = models.DateTimeField(auto_now_add=True)
 	contentType = (
 		("text/plain", 'text/plain'),
 		("text/x-markdown", 'text/x-markdown')

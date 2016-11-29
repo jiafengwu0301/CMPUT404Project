@@ -34,7 +34,6 @@ class RemoteAuthorSerializer(serializers.ModelSerializer):
 			'host',
 			'url',
 			'github',
-			'avatar',
 		]
 
 
@@ -265,20 +264,35 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
 	author = RemoteAuthorSerializer()
 	#query = serializers.CharField(allow_blank=True, allow_null=True)
-	post = serializers.URLField(source='post.source', allow_blank=True)
+	#post = serializers.URLField(source='post.source', allow_blank=True)
+	guid = serializers.UUIDField(source='id')
+	published = serializers.DateTimeField(source='pubDate')
 
 	class Meta:
 		model = Comment
 		fields = [
+			'id',
 			'author',
 			'comment',
-			'pubdate',
-			'id',
+			'pubDate',
+			'guid',
 			'contentType',
-			'post',
+			'published'
 		]
 
 
+class RemoteCommentSerializer(serializers.Serializer):
+	query = serializers.CharField(allow_blank=True, allow_null=True)
+	post = serializers.URLField(source='post.source', allow_blank=True, allow_null=True)
+	comment = CommentSerializer()
+
+	class Meta:
+		model = Comment
+		fields = [
+			'query',
+			'post',
+			'comment'
+		]
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -311,6 +325,7 @@ class PostSerializer(serializers.ModelSerializer):
 			'visibility',
 			'image'
 		]
+
 
 class LocalPostSerializer(serializers.ModelSerializer):
 	comments = CommentSerializer(many=True)

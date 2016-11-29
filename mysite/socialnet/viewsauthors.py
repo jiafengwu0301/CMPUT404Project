@@ -280,44 +280,55 @@ class AuthorIsFriendListView(viewsets.ModelViewSet):
 	serializer_class = AuthorFriendListSerializer
 
 	def is_friend(self, request, *args, **kwargs):
-		author1 = get_object_or_404(Author, id=kwargs['pk1'])
-		author2 = get_object_or_404(Author, id=kwargs['pk2'])
 		try:
-			author1_host = str(author1.host).split("/", 3)[2]
-			author2_host = str(author2.host).split("/", 3)[2]
-		except:
-			pass
-		try:
-			node_author1 = Node.objects.get(node_url="http://" + author1_host)
-			node_author2 = Node.objects.get(node_url="http://" + author2_host)
-		except django_exceptions.ObjectDoesNotExist:
-			return response.Response(status=status.HTTP_403_FORBIDDEN)
+			author1 = get_object_or_404(Author, id=kwargs['pk1'])
+			author2 = get_object_or_404(Author, id=kwargs['pk2'])
+			try:
+				author1_host = str(author1.host).split("/", 3)[2]
+				author2_host = str(author2.host).split("/", 3)[2]
+			except:
+				pass
+			try:
+				node_author1 = Node.objects.get(node_url="http://" + author1_host)
+				node_author2 = Node.objects.get(node_url="http://" + author2_host)
+			except django_exceptions.ObjectDoesNotExist:
+				return response.Response(status=status.HTTP_403_FORBIDDEN)
 
-		is_friend = False
-		for friend in author1.authors.all():
-			if str(friend.id) == str(author2.id):
-				is_friend = True
-		res = {
-			'query': "friends",
-			'authors': [str(author1.id), str(author2.id)],
-			'friends': is_friend
-		}
-		aux = res
-		if not author1.is_local():
-			aux = requests.post(node_author1.node_url + "/friends/" + str(author1.id) + "/" + str(author2.id),
-			                    auth=(node_author1.rcred_username, node_author1.rcred_password))
-		elif not author2.is_local():
-			aux = requests.post(node_author2.node_url + "/friends/" + str(author1.id) + "/" + str(author2.id),
-			                    auth=(node_author2.rcred_username, node_author2.rcred_password))
-		if aux['friends'] and res['friends']:
-			return response.Response(res, status=status.HTTP_200_OK)
-		else:
-			if aux['friends']:
-				res = {
-					'query': "friends",
-					'authors': [str(author1.id), str(author2.id)],
-					'friends': is_friend
-				}
-			else:
-				res = aux
-			return response.Response(res, status=status.HTTP_200_OK)
+			is_friend = False
+			for friend in author1.authors.all():
+				if str(friend.id) == str(author2.id):
+					is_friend = True
+			res = {
+				'query': "friends",
+				'authors': [str(author1.id), str(author2.id)],
+				'friends': is_friend
+			}
+			aux = res
+			if not author1.is_local():
+				aux = requests.post(node_author1.node_url + "/friends/" + str(author1.id) + "/" + str(author2.id),
+				                    auth=(node_author1.rcred_username, node_author1.rcred_password))
+			elif not author2.is_local():
+				aux = requests.post(node_author2.node_url + "/friends/" + str(author1.id) + "/" + str(author2.id),
+				                    auth=(node_author2.rcred_username, node_author2.rcred_password))
+			try:
+				if aux['friends'] and res['friends']:
+					return response.Response(res, status=status.HTTP_200_OK)
+				else:
+					if aux['friends']:
+						res = {
+							'query': "friends",
+							'authors': [str(author1.id), str(author2.id)],
+							'friends': is_friend
+						}
+					else:
+						res = aux
+					return response.Response(res, status=status.HTTP_200_OK)
+			except:
+				return response.Response(res, status=status.HTTP_200_OK)
+		except:
+			res = {
+				'query': "friends",
+				'authors': [kwargs['pk1'], kwargs['pk2']],
+				'friends': False
+			}
+			return response.Response(res, status.HTTP_200_OK)

@@ -15,7 +15,7 @@ from rest_framework.decorators import detail_route
 from . import permissions as my_permissions
 from .models import Post, Comment, Node, REMOTEHOST, LOCALHOST, Author, PostVisibility
 from .serializers import PostSerializer, CreatePostSerializer, CommentSerializer, CreateCommentSerializer, \
-	RemotePostSerializer, LocalPostSerializer
+	RemotePostSerializer, LocalPostSerializer, RemoteCommentSerializer
 
 
 class PostPagination(pagination.PageNumberPagination):
@@ -182,7 +182,6 @@ class PostDestroyView(generics.DestroyAPIView):
 
 
 class CommentsByPostIdView(viewsets.ModelViewSet):
-	serializer_class = CommentSerializer
 	permission_classes = [permissions.IsAuthenticated]
 	pagination_class = CommentPagination
 
@@ -190,7 +189,8 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		queryset = Comment.objects.filter(post__id=self.kwargs['pk'])
 		return queryset
 
-	# pagination_class = PostPagination
+	def get_serializer_class(self):
+		return RemoteCommentSerializer
 
 	def send_to_remote(self, url, data, node):
 		r = requests.post(url, json=data, auth=(node.rcred_username, node.rcred_password))
@@ -218,18 +218,19 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		author_is_remote = False
 		try:
 			try:
+				print "HAHAHAHAHAHAHAHA"
 				data = json.loads(json.dumps(request.data))
-				print "ha"
 				try:
 					author_host = data['author']['host']
 				except:
+					print "This author is REMOTE! remote json."
 					author_host = data['comment']['author']['host']
 					author_is_remote = True
-				print "HAHA"
 			except:
 				try:
 					author_host = str(request.data['author.host'])
 				except:
+					print "This author is REMOTE! remote form."
 					author_host = str(request.data['comment.author.host'])
 					author_is_remote = True
 			try:
@@ -241,15 +242,22 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 			return response.Response(status=status.HTTP_403_FORBIDDEN)
 
 		serializer = CommentSerializer(data=request.data)
-		if serializer.is_valid(raise_exception=True):
-			data = serializer.data
+		if author_is_remote:
+			data = request.data
+		else:
+			if serializer.is_valid(raise_exception=True):
+				data = serializer.data
+
+
 		try:
 			if author_is_remote:
+				print "Using remote data to get author"
 				author = Author.objects.get(id=data['comment']['author']['id'])
 			else:
 				author = Author.objects.get(id=data['author']['id'])
 		except django_exceptions.ObjectDoesNotExist:
 			if author_is_remote:
+				print "Creating remote author with remote data "
 				author = self.makeAuthor(data['comment']['author'], node_author.node_url)
 			else:
 				author = self.makeAuthor(data['author'], node_author.node_url)
@@ -257,11 +265,10 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 		try:
 			post = Post.objects.get(id=post_id)
 			if author_is_remote:
-				print "Author Remote"
+				print "Creating remote comment with remote author created/geted"
 				comment = Comment.objects.create(post=post, author=author,
 				                                 comment=data['comment']['comment'], contentType=data['contentType'])
 			else:
-				print "Author Local"
 				comment = Comment.objects.create(post=post, author=author,
 				                                 comment=data['comment'], contentType=data['contentType'])
 			return response.Response(status=status.HTTP_200_OK)
@@ -286,8 +293,6 @@ class CommentsByPostIdView(viewsets.ModelViewSet):
 				print request
 				res = self.send_to_remote(data['post'] + '/comments', request, node_author)
 				return response.Response([res, request], status=status.HTTP_200_OK)
-		return response.Response(status=status.HTTP_400_BAD_REQUEST)
-
 
 # POST a new comment in the post designated in the URL.
 class CommentCreateView(generics.CreateAPIView):
