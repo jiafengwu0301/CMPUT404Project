@@ -159,8 +159,8 @@ class CommentsAndFriendsApiTest(APITestCase):
 
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION = 'Basic '+ base64.b64encode('testUser2:testUser000'))
-        #test get friend request list
 
+        #test get friend request list
         response = self.client.get('/author/friends/friend_requests', {}, format = 'json')
         self.assertEqual(response.status_code, 200)
 
@@ -170,6 +170,10 @@ class CommentsAndFriendsApiTest(APITestCase):
 
         #test get friend list for user2, since user1 and user2 are friends now
         response = self.client.get('/author/%s/network' % self.uid2, {}, format = 'json')
+        self.assertEqual(response.status_code, 200)
+
+        #test get all friend's post
+        response = self.client.get('/author/%s/posts' % self.uid1, {}, format = 'json')
         self.assertEqual(response.status_code, 200)
 
         #test unfriend a friend
