@@ -69,6 +69,8 @@ class AuthorSerializer(serializers.ModelSerializer):
 	email = serializers.CharField(source='user.email')
 	authors = RemoteAuthorSerializer(many=True)
 	local = serializers.BooleanField(source="is_local")
+	first_name = serializers.CharField(source="user.first_name")
+	last_name = serializers.CharField(source="user.last_name")
 
 	class Meta:
 		model = Author
@@ -82,6 +84,8 @@ class AuthorSerializer(serializers.ModelSerializer):
 			'email',
 			'local',
 			'avatar',
+			'first_name',
+			'last_name'
 		]
 
 
@@ -238,6 +242,7 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 			'last_name',
 			'github',
 			'avatar',
+			'displayName',
 		]
 
 	def update(self, instance, validated_data):
