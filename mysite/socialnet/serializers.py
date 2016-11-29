@@ -255,6 +255,7 @@ class UpdateAuthorSerializer(serializers.ModelSerializer):
 			user.set_password(user_data['password'])
 		instance.github = self.value_or_keep(instance.github, validated_data.get('github', instance.github))
 		instance.avatar = self.value_or_keep(instance.avatar, validated_data.get('avatar', instance.avatar))
+		instance.displayName = self.value_or_keep(instance.displayName, validated_data.get('displayName', instance.displayName))
 		user.save()
 		instance.save()
 		return instance
