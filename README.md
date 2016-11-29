@@ -1,6 +1,6 @@
 # CMPUT404Project
 
-This is a temporary README for a group project of CMPUT404.
+This is a README for a group project of CMPUT404.
 
 Copyright 2016
 ```
